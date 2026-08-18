@@ -1,0 +1,135 @@
+import { BRAND } from '../config/brand.js';
+import { DecisionAnalysis } from './DecisionAnalysis.jsx';
+import { EvidencePanel } from './EvidencePanel.jsx';
+import { LayerControls } from './LayerControls.jsx';
+import { PortfolioBuilder } from './PortfolioBuilder.jsx';
+import { ReplayPanel } from './ReplayPanel.jsx';
+import { ScenarioControls } from './ScenarioControls.jsx';
+import { SectionHeading } from './SectionHeading.jsx';
+
+export function SandboxPanel({
+  scenario,
+  onScenarioChange,
+  summary,
+  metrics,
+  baseline,
+  monteCarlo,
+  capturedVolumeM3,
+  budgetCredits,
+  onBudgetChange,
+  selectedType,
+  onSelectType,
+  selectedCell,
+  userPlan,
+  userCost,
+  canAddSelected,
+  onAddSelected,
+  onRemoveUserProject,
+  onClearUser,
+  aiPlan,
+  aiDiagnostics,
+  alternatives,
+  alternativeBusy,
+  alternativeError,
+  selectedAiProfileId,
+  onGenerateAlternatives,
+  onSelectAlternative,
+  frontier,
+  frontierBusy,
+  frontierError,
+  onAnalyzeFrontier,
+  onExportDecisionPackage,
+  stability,
+  stabilityBusy,
+  stabilityError,
+  onAnalyzeStability,
+  pareto,
+  paretoBusy,
+  paretoError,
+  onAnalyzePareto,
+  evidence,
+  replay,
+  replayContract,
+  layerState,
+  onToggleLayer,
+}) {
+  return (
+    <>
+      <p className="eyebrow">{BRAND.event} · hillside proving ground</p>
+      <h1>From climate risk to robust action.</h1>
+      <p className="lede">
+        Compare physical adaptation portfolios across uncertain futures, budgets and transparent
+        public-policy priorities.
+      </p>
+
+      <section className="proving-ground-strip">
+        <SectionHeading step={2} title={BRAND.provingGround}>
+          {BRAND.provingGroundRole} — city screening in, high-resolution action testing here.
+        </SectionHeading>
+        <div className="fact-strip">
+          <span><small>Buildings</small><b>{summary?.buildings?.toLocaleString() ?? '1,588'}</b></span>
+          <span><small>People proxy</small><b>~{summary?.population_proxy?.toLocaleString() ?? '4,057'}</b></span>
+          <span><small>High hazard</small><b>{summary?.high_hazard_buildings?.toLocaleString() ?? '1,445'}</b></span>
+          <span><small>Median slope</small><b>{summary?.median_slope_deg ?? 25.4}°</b></span>
+        </div>
+      </section>
+
+      <ScenarioControls
+        scenario={scenario}
+        onScenarioChange={onScenarioChange}
+        summary={summary}
+        metrics={metrics}
+      />
+
+      <PortfolioBuilder
+        budgetCredits={budgetCredits}
+        onBudgetChange={onBudgetChange}
+        selectedType={selectedType}
+        onSelectType={onSelectType}
+        selectedCell={selectedCell}
+        userPlan={userPlan}
+        userCost={userCost}
+        canAddSelected={canAddSelected}
+        onAddSelected={onAddSelected}
+        onRemoveUserProject={onRemoveUserProject}
+        onClearUser={onClearUser}
+        aiPlan={aiPlan}
+        aiDiagnostics={aiDiagnostics}
+        alternatives={alternatives}
+        alternativeBusy={alternativeBusy}
+        alternativeError={alternativeError}
+        selectedAiProfileId={selectedAiProfileId}
+        onGenerateAlternatives={onGenerateAlternatives}
+        onSelectAlternative={onSelectAlternative}
+        stability={stability}
+      />
+
+      <DecisionAnalysis
+        baseline={baseline}
+        metrics={metrics}
+        monteCarlo={monteCarlo}
+        capturedVolumeM3={capturedVolumeM3}
+        frontier={frontier}
+        frontierBusy={frontierBusy}
+        frontierError={frontierError}
+        budgetCredits={budgetCredits}
+        onAnalyzeFrontier={onAnalyzeFrontier}
+        onExport={onExportDecisionPackage}
+        canExport={Boolean(metrics)}
+        stability={stability}
+        stabilityBusy={stabilityBusy}
+        stabilityError={stabilityError}
+        onAnalyzeStability={onAnalyzeStability}
+        pareto={pareto}
+        paretoBusy={paretoBusy}
+        paretoError={paretoError}
+        onAnalyzePareto={onAnalyzePareto}
+        activePolicyLabel={aiDiagnostics?.profile?.label}
+      />
+
+      <ReplayPanel replay={replay} contract={replayContract} />
+      <EvidencePanel evidence={evidence} />
+      <LayerControls layerState={layerState} onToggleLayer={onToggleLayer} />
+    </>
+  );
+}
