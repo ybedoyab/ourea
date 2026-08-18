@@ -1,0 +1,178 @@
+[
+  {
+    "profileId": "balanced",
+    "profile": {
+      "label": "Balanced",
+      "description": "Balances robust exposure reduction with modest equity and access weighting.",
+      "equityWeight": 0.25,
+      "accessWeight": 0.1,
+      "downsidePenalty": 0.55
+    },
+    "spentCredits": 10,
+    "projects": [
+      {
+        "cell_id": 35,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 1,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 35,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 2,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 29,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 28,
+        "type": "rwh"
+      }
+    ],
+    "benefitProxy": {
+      "deterministic": 79.802,
+      "equity": 78.5903,
+      "access": 51.4242,
+      "p10": 64.5363,
+      "median": 80.6741,
+      "p90": 93.9948,
+      "downsideRetention": 0.8
+    }
+  },
+  {
+    "profileId": "equity",
+    "profile": {
+      "label": "Equity-first",
+      "description": "Places substantially more decision weight on cells with high stratum-1 exposure.",
+      "equityWeight": 1.2,
+      "accessWeight": 0.05,
+      "downsidePenalty": 0.55
+    },
+    "spentCredits": 10,
+    "projects": [
+      {
+        "cell_id": 35,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 1,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 35,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 2,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 28,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 36,
+        "type": "rwh"
+      }
+    ],
+    "benefitProxy": {
+      "deterministic": 79.8038,
+      "equity": 79.0896,
+      "access": 51.6522,
+      "p10": 63.0349,
+      "median": 80.3197,
+      "p90": 92.7829,
+      "downsideRetention": 0.7848
+    }
+  },
+  {
+    "profileId": "access",
+    "profile": {
+      "label": "Access-first",
+      "description": "Places substantially more decision weight on cells supporting mapped hillside access.",
+      "equityWeight": 0.1,
+      "accessWeight": 1.2,
+      "downsidePenalty": 0.55
+    },
+    "spentCredits": 10,
+    "projects": [
+      {
+        "cell_id": 35,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 1,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 35,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 1,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 2,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 36,
+        "type": "rwh"
+      }
+    ],
+    "benefitProxy": {
+      "deterministic": 80.0935,
+      "equity": 79.3793,
+      "access": 57.3077,
+      "p10": 65.6339,
+      "median": 78.8203,
+      "p90": 95.1101,
+      "downsideRetention": 0.8327
+    }
+  },
+  {
+    "profileId": "low_regret",
+    "profile": {
+      "label": "Low-regret",
+      "description": "Penalizes lower-tail uncertainty strongly, favoring fewer projects whose marginal benefit remains defensible in adverse development draws.",
+      "equityWeight": 0.25,
+      "accessWeight": 0.1,
+      "downsidePenalty": 1.5
+    },
+    "spentCredits": 10,
+    "projects": [
+      {
+        "cell_id": 35,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 1,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 35,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 2,
+        "type": "drainage"
+      }
+    ],
+    "benefitProxy": {
+      "deterministic": 81.4726,
+      "equity": 80.9475,
+      "access": 56.6078,
+      "p10": 66.3334,
+      "median": 81.903,
+      "p90": 96.5977,
+      "downsideRetention": 0.8099
+    }
+  }
+]

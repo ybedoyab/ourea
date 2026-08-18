@@ -1,0 +1,51 @@
+{
+  "version": "v4",
+  "status": "evidence registry only; optimizer remains on planning credits",
+  "references": [
+    {
+      "id": "rwh_santa_elena_1000l_2023_budget_ceiling",
+      "intervention": "rainwater_harvesting",
+      "location": "Santa Elena, Medellín",
+      "year": 2023,
+      "quantity_systems": 50,
+      "tank_capacity_l": 1000,
+      "official_budget_cop": 105972500,
+      "derived_budget_ceiling_cop_per_system": 2119450,
+      "scope_included": [
+        "1000 L plastic tank",
+        "pipes/key/elbows from gutter to tank",
+        "support structure",
+        "installation",
+        "transport to each household",
+        "practical user training",
+        "minimum six-month warranty"
+      ],
+      "evidence_type": "official procurement budget ceiling",
+      "source": "https://www.fundacionudea.com/sitio/img/nvitaci%C3%B3n_2_a_participar_C90_hog.pdf",
+      "evaluation_source": "https://www.fundacionudea.com/sitio/img/16.%20evaluaci%C3%B3n%20a%20participar_comuna%2090%20hogares%20y%20sector%20comercio-2023.pdf",
+      "guardrail": "This is a procurement budget ceiling, not a winning unit price. Santa Elena is a rural/corregimiento context and the system is 1000 L, so the value is not transferred directly into the Comuna 8 optimizer."
+    },
+    {
+      "id": "rwh_palmitas_2025_subbudget",
+      "intervention": "rainwater_harvesting",
+      "location": "San Sebastián de Palmitas, Medellín",
+      "year": 2025,
+      "official_budget_cop": 75935360,
+      "quantity_systems": null,
+      "evidence_type": "official isolated RWH sub-budget",
+      "source": "https://www.fundacionudea.com/sitio/img/Documentos%20Referencia/Adendas/Evaluaciones/1.%20evaluacio%CC%81n%20a%20participar_c50-%20hogares.pdf",
+      "guardrail": "Do not combine this budget with quantities from a different procurement context."
+    },
+    {
+      "id": "rwh_comuna1_250l_2025_spec",
+      "intervention": "rainwater_harvesting",
+      "location": "Comuna 1, Medellín",
+      "year": 2025,
+      "quantity_systems": 130,
+      "tank_capacity_l": 250,
+      "evidence_type": "official technical procurement specification",
+      "source": "https://www.fundacionudea.com/sitio/img/Documentos%20referencia%202/Segunda_Invitaci%C3%B3n_FUDEA_C1_HOGA.pdf",
+      "guardrail": "No isolated awarded RWH total was recovered in the same evidence record."
+    }
+  ]
+}

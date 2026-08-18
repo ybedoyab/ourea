@@ -1,0 +1,187 @@
+[
+  {
+    "budgetCredits": 4,
+    "spentCredits": 4,
+    "projectCount": 2,
+    "profileId": "balanced",
+    "p10": 27.7497,
+    "median": 39.2766,
+    "p90": 48.8047,
+    "mean": 38.7415,
+    "downsideRetention": 0.7065,
+    "plan": [
+      {
+        "cell_id": 35,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 35,
+        "type": "drainage"
+      }
+    ]
+  },
+  {
+    "budgetCredits": 8,
+    "spentCredits": 8,
+    "projectCount": 4,
+    "profileId": "balanced",
+    "p10": 51.8157,
+    "median": 70.3525,
+    "p90": 82.3978,
+    "mean": 69.0727,
+    "downsideRetention": 0.7365,
+    "plan": [
+      {
+        "cell_id": 35,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 35,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 1,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 2,
+        "type": "drainage"
+      }
+    ]
+  },
+  {
+    "budgetCredits": 12,
+    "spentCredits": 12,
+    "projectCount": 6,
+    "profileId": "balanced",
+    "p10": 77.4417,
+    "median": 97.3405,
+    "p90": 112.7218,
+    "mean": 96.7096,
+    "downsideRetention": 0.7956,
+    "plan": [
+      {
+        "cell_id": 35,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 35,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 1,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 2,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 1,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 28,
+        "type": "rwh"
+      }
+    ]
+  },
+  {
+    "budgetCredits": 16,
+    "spentCredits": 16,
+    "projectCount": 8,
+    "profileId": "balanced",
+    "p10": 101.2471,
+    "median": 121.6884,
+    "p90": 140.0176,
+    "mean": 122.3055,
+    "downsideRetention": 0.832,
+    "plan": [
+      {
+        "cell_id": 35,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 35,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 1,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 2,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 1,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 36,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 28,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 29,
+        "type": "rwh"
+      }
+    ]
+  },
+  {
+    "budgetCredits": 20,
+    "spentCredits": 20,
+    "projectCount": 10,
+    "profileId": "balanced",
+    "p10": 124.0724,
+    "median": 144.59,
+    "p90": 164.2298,
+    "mean": 144.5436,
+    "downsideRetention": 0.8581,
+    "plan": [
+      {
+        "cell_id": 35,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 35,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 1,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 2,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 1,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 36,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 28,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 14,
+        "type": "drainage"
+      },
+      {
+        "cell_id": 29,
+        "type": "rwh"
+      },
+      {
+        "cell_id": 2,
+        "type": "rwh"
+      }
+    ]
+  }
+]

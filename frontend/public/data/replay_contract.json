@@ -1,0 +1,20 @@
+{
+  "historical_replay": {
+    "target_event": "El Faro\u2013Altos de La Torre, 20 June 2022",
+    "requested_raw_period": [
+      "2022-06-05",
+      "2022-06-21"
+    ],
+    "required_features": [
+      "rain_increment_mm",
+      "r1h_mm",
+      "r6h_mm",
+      "r24h_mm",
+      "r3d_mm",
+      "r7d_mm",
+      "r15d_mm"
+    ],
+    "validation_goal": "Test whether the dynamic stress indicator increases in the known affected area before/during the historical event; do not claim exact event probability.",
+    "status": "waiting for SIATA raw station data"
+  }
+}
