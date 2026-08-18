@@ -1,0 +1,387 @@
+import assert from 'node:assert/strict';
+import { readdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = fileURLToPath(new URL('../', import.meta.url));
+const dataDir = join(root, 'public', 'data');
+
+async function json(name) {
+  return JSON.parse(await readFile(join(dataDir, name), 'utf8'));
+}
+
+function sumBy(features, field) {
+  return features.reduce(
+    (sum, feature) =>
+      sum + Number(feature.properties[field] ?? 0),
+    0,
+  );
+}
+
+function approxEqual(actual, expected, tolerance, message) {
+  assert.ok(
+    Math.abs(actual - expected) <= tolerance,
+    `${message}: ${actual} vs ${expected}`,
+  );
+}
+
+function finite(value) {
+  return value !== null &&
+    value !== undefined &&
+    value !== '' &&
+    Number.isFinite(Number(value));
+}
+
+const buildings = await json('buildings.geojson');
+const cells = await json('planning_cells.geojson');
+const screening = await json('medellin_city_priority_screen_v4.geojson');
+const summary = await json('summary.json');
+const registry = await json('intervention_registry.json');
+const evidence = await json('evidence_status.json');
+const replayContract = await json('replay_contract.json');
+const model = JSON.parse(
+  await readFile(
+    join(root, 'src', 'config', 'modelParameters.json'),
+    'utf8',
+  ),
+);
+
+assert.equal(
+  buildings.features.length,
+  1588,
+  'detailed sandbox building count changed unexpectedly',
+);
+assert.equal(
+  cells.features.length,
+  49,
+  'planning cell count changed unexpectedly',
+);
+assert.equal(
+  screening.features.length,
+  271,
+  'city screen should preserve 271 official/special barrio polygons',
+);
+assert.equal(summary.buildings, 1588);
+assert.equal(
+  registry.optimizer.budget_unit,
+  'planning credit, NOT COP',
+);
+assert.equal(model.status, 'development-priors-not-calibrated');
+
+// Detailed building integrity.
+const buildingIds = new Set();
+for (const feature of buildings.features) {
+  const p = feature.properties;
+  assert.ok(finite(p.objectid), 'building missing objectid');
+  assert.ok(
+    !buildingIds.has(p.objectid),
+    `duplicate building objectid ${p.objectid}`,
+  );
+  buildingIds.add(p.objectid);
+  assert.ok(
+    finite(p.cell_id),
+    `building ${p.objectid} missing planning cell`,
+  );
+  assert.ok(
+    Number(p.population_proxy ?? 0) >= 0,
+    `negative population proxy for ${p.objectid}`,
+  );
+  assert.ok(
+    ['Alta', 'Media', 'Baja'].includes(p.hazard_max),
+    `invalid hazard category for ${p.objectid}`,
+  );
+}
+
+// Planning-cell integrity and V1 regression protection.
+const cellIds = new Set();
+const opportunityFields = [
+  'rwh_opportunity',
+  'drainage_corridor_proxy',
+  'restoration_opportunity',
+];
+const obsoleteFields = [
+  'rwh_suitability',
+  'drainage_suitability',
+  'restoration_suitability',
+];
+
+for (const feature of cells.features) {
+  const p = feature.properties;
+  const cellId = Number(p.cell_id);
+  assert.ok(Number.isFinite(cellId), 'planning cell missing numeric ID');
+  assert.ok(
+    !cellIds.has(cellId),
+    `duplicate planning cell ID ${cellId}`,
+  );
+  cellIds.add(cellId);
+
+  assert.ok(Number(p.buildings ?? 0) >= 0);
+  assert.ok(Number(p.population_proxy ?? 0) >= 0);
+  assert.ok(Number(p.households_proxy ?? 0) >= 0);
+
+  for (const field of opportunityFields) {
+    const value = Number(p[field]);
+    assert.ok(
+      Number.isFinite(value),
+      `${field} missing/non-numeric in cell ${cellId}`,
+    );
+    assert.ok(
+      value >= 0 && value <= 1,
+      `${field} outside [0,1] in cell ${cellId}: ${value}`,
+    );
+  }
+
+  for (const field of obsoleteFields) {
+    assert.ok(
+      !(field in p),
+      `obsolete risk-weighted field ${field} remains`,
+    );
+  }
+}
+
+for (const feature of buildings.features) {
+  assert.ok(
+    cellIds.has(Number(feature.properties.cell_id)),
+    `building ${feature.properties.objectid} references unknown planning cell`,
+  );
+}
+
+// Detailed exposure aggregate reconciliation.
+assert.equal(
+  sumBy(cells.features, 'buildings'),
+  summary.buildings,
+);
+assert.equal(
+  sumBy(cells.features, 'high_hazard_buildings'),
+  summary.high_hazard_buildings,
+);
+assert.equal(
+  sumBy(cells.features, 'stratum1_buildings'),
+  summary.stratum_1_buildings,
+);
+approxEqual(
+  sumBy(cells.features, 'population_proxy'),
+  summary.population_proxy,
+  1,
+  'cell population proxy does not reconcile',
+);
+approxEqual(
+  sumBy(cells.features, 'households_proxy'),
+  summary.households_proxy,
+  1,
+  'cell household proxy does not reconcile',
+);
+
+// V4 city-screen integrity.
+const populationMatched = screening.features.filter(
+  (feature) => finite(feature.properties.population_2026),
+);
+assert.equal(
+  populationMatched.length,
+  248,
+  'V4 should safely match 248 of the 249 official urban population records to the current polygon export',
+);
+
+const lensSpecs = [
+  ['priority_exposure', 'rank_exposure'],
+  ['priority_balanced', 'rank_balanced'],
+  ['priority_equity', 'rank_equity'],
+];
+
+for (const feature of populationMatched) {
+  const p = feature.properties;
+  assert.ok(Number(p.population_2026) > 0);
+  assert.ok(finite(p.imcv_ampi_2023));
+  assert.ok(finite(p.hazard_weighted_population_proxy_2026));
+  assert.ok(
+    Number(p.hazard_weighted_population_proxy_2026) >= 0,
+  );
+
+  for (const [scoreField, rankField] of lensSpecs) {
+    const score = Number(p[scoreField]);
+    const rank = Number(p[rankField]);
+    assert.ok(
+      score >= 0 && score <= 1,
+      `${scoreField} outside [0,1] for ${p.BARRIO}`,
+    );
+    assert.ok(
+      Number.isInteger(rank) &&
+      rank >= 1 &&
+      rank <= populationMatched.length,
+      `invalid ${rankField} for ${p.BARRIO}`,
+    );
+  }
+}
+
+for (const [scoreField, rankField] of lensSpecs) {
+  const ordered = [...populationMatched].sort(
+    (a, b) =>
+      Number(b.properties[scoreField]) -
+      Number(a.properties[scoreField]),
+  );
+  const ranks = ordered.map(
+    (feature) => Number(feature.properties[rankField]),
+  );
+  assert.equal(Math.min(...ranks), 1);
+  assert.ok(
+    Math.max(...ranks) <= populationMatched.length,
+    `${rankField} exceeds matched-barrio count`,
+  );
+  for (let index = 1; index < ranks.length; index += 1) {
+    assert.ok(
+      ranks[index] >= ranks[index - 1],
+      `${rankField} is inconsistent with descending ${scoreField}`,
+    );
+  }
+}
+
+const llanaditas = screening.features.filter((feature) =>
+  String(feature.properties.BARRIO ?? '')
+    .toUpperCase()
+    .includes('LLANADITAS'),
+);
+assert.equal(
+  llanaditas.length,
+  1,
+  'Llanaditas should resolve uniquely',
+);
+const ll = llanaditas[0].properties;
+assert.equal(Number(ll.population_2026), 10416);
+assert.equal(Number(ll.rank_hazard_only), 9);
+assert.equal(Number(ll.rank_exposure), 7);
+assert.equal(Number(ll.rank_balanced), 13);
+assert.equal(Number(ll.rank_equity), 22);
+
+// Evidence/replay guardrails.
+assert.ok(
+  Array.isArray(evidence.layers) &&
+  evidence.layers.length >= 8,
+);
+const evidenceIds = new Set(
+  evidence.layers.map((item) => item.id),
+);
+for (const required of [
+  'terrain',
+  'hazard',
+  'buildings',
+  'population',
+  'access',
+  'climate',
+  'intervention_effects',
+  'cost',
+]) {
+  assert.ok(
+    evidenceIds.has(required),
+    `missing evidence status for ${required}`,
+  );
+}
+assert.ok(
+  evidence.global_guardrails.some(
+    (item) => item.includes('not landslide probability'),
+  ),
+);
+assert.ok(
+  evidence.global_guardrails.some(
+    (item) => item.includes('not COP'),
+  ),
+);
+
+const replay = replayContract.historical_replay;
+assert.equal(
+  replay.status,
+  'waiting for SIATA raw station data',
+);
+for (const required of [
+  'rain_increment_mm',
+  'r1h_mm',
+  'r6h_mm',
+  'r24h_mm',
+  'r3d_mm',
+  'r7d_mm',
+  'r15d_mm',
+]) {
+  assert.ok(replay.required_features.includes(required));
+}
+
+// DRY evidence registry.
+assert.ok(
+  !(
+    'development_parameters' in
+    registry.interventions.rainwater_harvesting
+  ),
+);
+assert.equal(
+  registry.parameter_source,
+  'frontend/src/config/modelParameters.json',
+);
+
+// V4 decision-policy configuration.
+const frontierBudgets = model.optimizer.frontierBudgets;
+assert.deepEqual(
+  [...frontierBudgets].sort((a, b) => a - b),
+  frontierBudgets,
+);
+assert.equal(
+  new Set(frontierBudgets).size,
+  frontierBudgets.length,
+);
+assert.ok(
+  Number(model.optimizer.frontierMonteCarloRuns) > 0 &&
+  Number(model.optimizer.frontierScenarioSamples) > 0,
+);
+
+const profiles = model.optimizer.objectiveProfiles;
+assert.deepEqual(
+  Object.keys(profiles).sort(),
+  ['access', 'balanced', 'equity', 'low_regret'].sort(),
+);
+for (const [name, profile] of Object.entries(profiles)) {
+  assert.ok(
+    Number(profile.equityWeight) >= 0,
+    `negative equity weight: ${name}`,
+  );
+  assert.ok(
+    Number(profile.accessWeight) >= 0,
+    `negative access weight: ${name}`,
+  );
+  assert.ok(
+    Number(profile.downsidePenalty) >= 0,
+    `negative downside penalty: ${name}`,
+  );
+}
+
+const pareto = model.optimizer.paretoGrid;
+assert.ok(pareto.equityWeights.length >= 2);
+assert.ok(pareto.accessWeights.length >= 2);
+assert.ok(Number(pareto.optimizerScenarioSamples) > 0);
+assert.ok(Number(pareto.monteCarloRuns) > 0);
+
+async function countPngs(directory) {
+  let count = 0;
+  for (const entry of await readdir(
+    directory,
+    { withFileTypes: true },
+  )) {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) {
+      count += await countPngs(path);
+    } else if (entry.name.endsWith('.png')) {
+      count += 1;
+    }
+  }
+  return count;
+}
+
+const terrainCount = await countPngs(
+  join(root, 'public', 'terrain'),
+);
+assert.ok(
+  terrainCount >= 50,
+  `terrain tile pyramid unexpectedly small: ${terrainCount}`,
+);
+
+console.log(
+  `V4 data validation passed: ${buildings.features.length} buildings, ` +
+  `${cells.features.length} cells, ${screening.features.length} city polygons, ` +
+  `${populationMatched.length} population-matched barrios, ${terrainCount} terrain tiles.`,
+);
