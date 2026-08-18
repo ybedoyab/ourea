@@ -1,0 +1,259 @@
+# OUREA Competition V4 — architecture
+
+## 1. Architectural goal
+
+V4 separates **evidence, uncertainty, public-policy choices and UI** so the product can evolve from a hackathon prototype into a defensible city pilot without rewriting everything when SIATA/calibration data arrive.
+
+## 2. Design principles
+
+### SOLID
+- React components do not own climate/optimization equations.
+- MapLibre lifecycle is isolated from domain logic.
+- Data loading is isolated from rendering.
+- Decision policies are configuration, not hard-coded UI behavior.
+
+### KISS
+- transparent equations before opaque models;
+- only three physical intervention families;
+- no LLM added merely to label the product “AI”;
+- no false house-level probabilities.
+
+### DRY
+
+All numerical development assumptions live in:
+
+`frontend/src/config/modelParameters.json`
+
+This includes:
+- stress weights;
+- effect ranges;
+- planning-credit costs;
+- uncertainty ranges;
+- seeds;
+- sample counts;
+- named objective profiles;
+- sampled trade-off grid.
+
+### Fail visibly
+- required JSON/data failures surface;
+- optional SIATA replay data can be absent safely;
+- missing rainfall stays missing;
+- validation scripts fail on stale/obsolete fields and model artifacts.
+
+## 3. Application structure
+
+### `frontend/src/components/`
+Focused UI pieces:
+- `CityPanel`;
+- `ScenarioControls`;
+- `PortfolioBuilder`;
+- `AlternativePortfolios`;
+- `PortfolioList`;
+- `DecisionAnalysis`;
+- `TradeoffChart`;
+- `StabilityPanel`;
+- `ParetoPanel`;
+- `ReplayPanel`;
+- `EvidencePanel`;
+- `MapLegend`;
+- `LayerControls`.
+
+`SandboxPanel` is composition-oriented.
+
+### `frontend/src/domain/`
+- `climateStress.js` — provisional dynamic/stable stress model;
+- `interventionModel.js` — opportunity, maturity, RWH physics, stacking;
+- `uncertainty.js` — deterministic scenarios/project seeds;
+- `scenarioEngine.js` — deterministic + Monte Carlo portfolio evaluation;
+- `optimizer.js` — profile-aware marginal robust optimizer;
+- `alternatives.js` — four named public-policy portfolios;
+- `frontier.js` — policy-aware budget frontier;
+- `stability.js` — selection stability under uncertainty resampling;
+- `pareto.js` — sampled non-dominated multi-objective trade-offs;
+- `decisionPackage.js` — auditable export.
+
+### `frontend/src/services/`
+- `dataService.js` — required/optional JSON loading;
+- `mapService.js` — MapLibre terrain/layers/city lens/selection/portfolio display.
+
+## 4. City-scale stage
+
+V4 loads:
+
+`frontend/public/data/medellin_city_priority_screen_v4.geojson`
+
+The screen contains official barrio geometry/hazard plus matched official 2026 population and 2023 IMCV/AMPI data.
+
+The map can switch between:
+- Exposure;
+- Balanced;
+- Equity.
+
+The city stage deliberately ends at **shortlisting**, not project optimization.
+
+## 5. Detailed sandbox stage
+
+Stable inputs:
+- 1 m DEM / slope;
+- official mass-movement hazard;
+- cadastral building footprint/floors;
+- socioeconomic stratum;
+- DANE population planning proxy;
+- official access network;
+- roof/open-space/access opportunity features.
+
+Dynamic input today:
+- hypothetical storm depth;
+- antecedent wetness;
+- planning horizon/maturity.
+
+Dynamic target after SIATA:
+- observed rainfall increments;
+- rolling accumulations;
+- optional soil moisture;
+- calibrated/validated dynamic driver.
+
+## 6. Opportunity vs exposure separation
+
+This remains a key correctness guardrail.
+
+Opportunity answers:
+> Where is this intervention physically/plausibly applicable?
+
+Exposure answers:
+> What stress-weighted population is associated with this location?
+
+V4 never folds official hazard into the intervention opportunity field and then multiplies by hazard-weighted exposure again.
+
+## 7. Common-random-number uncertainty
+
+For fair portfolio comparison:
+- climate future `i` is shared across compared portfolios;
+- intervention effect for project `j` in future `i` is keyed to `j+i`;
+- project ordering does not alter its draw;
+- seeds are centralized.
+
+This reduces Monte Carlo comparison noise and makes checkpoints reproducible.
+
+## 8. Profile-aware marginal robust optimizer
+
+For each policy profile:
+1. generate a climate ensemble;
+2. calculate baseline exposure per cell/future;
+3. generate eligible location/intervention candidates;
+4. sample intervention-effect uncertainty;
+5. calculate candidate **marginal** benefit after previously selected projects;
+6. calculate mean/P10/downside;
+7. apply explicit equity/access policy factors;
+8. divide robust value by planning-credit cost;
+9. select the best feasible candidate;
+10. update multiplicative residual exposure;
+11. repeat.
+
+The output retains project-level diagnostics used by the “Why here?” UI.
+
+## 9. Four named policy alternatives
+
+`alternatives.js` runs the same engine under:
+- Balanced;
+- Equity-first;
+- Access-first;
+- Low-regret.
+
+All alternatives share comparison futures.
+
+The UI automatically opens the current **highest-P10** option while leaving all lenses inspectable.
+
+## 10. Budget frontier
+
+`frontier.js` reruns the **active policy profile** at configured budgets and evaluates each selected portfolio under shared futures.
+
+Output:
+- P10;
+- median;
+- P90;
+- downside retention.
+
+## 11. Selection stability
+
+`stability.js` holds the policy definition/budget fixed and resamples uncertainty repeatedly.
+
+Output:
+- frequency with which each project remains selected.
+
+This is decision stability, not probability of true optimality.
+
+## 12. Sampled multi-objective trade-offs
+
+`pareto.js` samples explicit equity/access weights.
+
+Each candidate portfolio is evaluated on:
+- robust median benefit;
+- equity benefit proxy;
+- access benefit proxy.
+
+Duplicate portfolios are removed and non-dominated candidates are returned.
+
+This is intentionally labeled a **sampled non-dominated set**, not an exhaustive Pareto frontier.
+
+## 13. Formal Python cross-check
+
+`scripts/optimizer_milp.py` supplies an independent binary optimization view.
+
+It supports:
+- exact planning-credit budget;
+- exact maximum projects per cell;
+- linearized robust coefficients;
+- balanced budget frontier;
+- named policy cross-checks;
+- nonlinear 500-future post-selection reevaluation.
+
+The formal model and interactive algorithm are related but not identical; disagreement is documented rather than hidden.
+
+## 14. SIATA integration
+
+`scripts/siata_ingest.py` converts real raw station exports into QA'd rainfall features.
+
+`scripts/siata_event_diagnostics.py` summarizes rainfall state around a verified event timestamp.
+
+Neither script creates synthetic rainfall or trains a predictor from one historical event.
+
+See `SIATA_CALIBRATION_PLAN.md`.
+
+## 15. Decision export
+
+`decisionPackage.js` exports schema:
+
+`ourea-decision-package/v2`
+
+It can contain:
+- city lens;
+- active policy;
+- scenario status;
+- selected portfolio;
+- deterministic benefit/equity/access proxies;
+- Monte Carlo uncertainty;
+- all robust alternatives;
+- selection stability;
+- budget frontier;
+- sampled non-dominated trade-offs;
+- evidence registry;
+- scientific guardrails.
+
+## 16. Validation layers
+
+- Node domain/service tests;
+- GeoJSON/data reconciliation;
+- V4 city-screen validation;
+- import/source/DRY checks;
+- deterministic uncertainty fixtures;
+- JS/JSX syntax parse;
+- Python compilation;
+- SIATA ingestion tests;
+- event-diagnostic tests;
+- Python geospatial/config/checkpoint validation;
+- browser checkpoint generation;
+- formal MILP execution;
+- SHA-256 manifest.
+
+A fresh Vite production build remains the final local QA gate because npm registry access is unavailable in this container.
