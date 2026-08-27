@@ -1,0 +1,23 @@
+{
+  "schema": "ourea-community-evidence",
+  "schema_version": 1,
+  "template": true,
+  "status": "template-not-observed-data",
+  "note": "Template only. Do not treat these rows as observed community evidence. Copy to community_evidence.json after a real co-design session. Absence of that file means every project is not assessed.",
+  "records": [
+    {
+      "cell_id": 0,
+      "intervention_type": "rwh",
+      "consultation_status": "not_assessed",
+      "community_position": "unknown",
+      "livelihood_disruption": "unknown",
+      "maintenance_capacity": "unknown",
+      "displacement_risk": "unknown",
+      "accessibility_concern": "unknown",
+      "evidence_type": "none",
+      "source": null,
+      "as_of": null,
+      "notes": "Replace this example after a facilitated community session. Do not invent values for Moravia, Llanaditas or any other neighborhood."
+    }
+  ]
+}

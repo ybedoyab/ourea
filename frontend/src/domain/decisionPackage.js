@@ -1,6 +1,13 @@
+import scientificGuardrails from '../config/scientificGuardrails.json' with { type: 'json' };
+import { BRAND } from '../config/brand.js';
 import { MODEL_PARAMETERS } from '../config/modelConfig.js';
 import { planCostCredits } from './optimizer.js';
 import { policyConsensus } from './alternatives.js';
+import { emptyCommunityAssessment } from './communitySafeguards.js';
+
+export const DECISION_PACKAGE_SCHEMA = 'ourea-decision-package';
+export const DECISION_PACKAGE_SCHEMA_VERSION = 1;
+export const SCIENTIFIC_GUARDRAILS = Object.freeze([...scientificGuardrails.items]);
 
 function portfolioSummary(option) {
   return {
@@ -48,22 +55,25 @@ export function buildDecisionPackage({
   pareto,
   summary,
   evidence,
+  community,
 }) {
   const packageProjects = projects.map((project) => ({
     cell_id: Number(project.cell_id),
     type: project.type,
   }));
+  const communityAssessment = community ?? emptyCommunityAssessment(packageProjects);
 
   return {
-    schema: 'ourea-decision-package/v2',
-    product: 'OUREA',
-    product_expansion: 'Optimized Urban Resilience through Equity & Adaptation',
-    slogan: 'From climate risk to robust action.',
+    schema: DECISION_PACKAGE_SCHEMA,
+    schema_version: DECISION_PACKAGE_SCHEMA_VERSION,
+    product: BRAND.name,
+    product_expansion: BRAND.expansion,
+    slogan: BRAND.slogan,
     generated_at: new Date().toISOString(),
     model_status: MODEL_PARAMETERS.status,
     scope: {
       city: 'Medellín',
-      proving_ground: 'Llanaditas / upper Comuna 8',
+      proving_ground: BRAND.provingGround,
       city_screen_lens: cityLens ?? null,
     },
     portfolio_mode: view,
@@ -88,19 +98,15 @@ export function buildDecisionPackage({
           benefit_proxy: metrics.benefit,
           equity_benefit_proxy: metrics.equityBenefit,
           access_benefit_proxy: metrics.accessBenefit,
-          buildings_above_stress_threshold:
-            metrics.buildingsAboveThreshold,
-          population_proxy_above_stress_threshold:
-            metrics.populationAboveThreshold,
+          buildings_above_stress_threshold: metrics.buildingsAboveThreshold,
+          population_proxy_above_stress_threshold: metrics.populationAboveThreshold,
         }
       : null,
     no_action_metrics: baseline
       ? {
           baseline_exposure_index: baseline.baselineExposure,
-          buildings_above_stress_threshold:
-            baseline.buildingsAboveThreshold,
-          population_proxy_above_stress_threshold:
-            baseline.populationAboveThreshold,
+          buildings_above_stress_threshold: baseline.buildingsAboveThreshold,
+          population_proxy_above_stress_threshold: baseline.populationAboveThreshold,
         }
       : null,
     uncertainty: monteCarlo
@@ -111,30 +117,25 @@ export function buildDecisionPackage({
           benefit_proxy_p90: monteCarlo.p90,
           benefit_proxy_mean: monteCarlo.mean,
           downside_retention:
-            monteCarlo.median > 0
-              ? monteCarlo.p10 / monteCarlo.median
-              : 0,
+            monteCarlo.median > 0 ? monteCarlo.p10 / monteCarlo.median : 0,
         }
       : null,
     optimizer_diagnostics: aiDiagnostics,
-    robust_policy_alternatives:
-      alternatives?.map(portfolioSummary) ?? null,
-    policy_consensus:
-      alternatives?.length
-        ? policyConsensus(alternatives).map((item) => ({
-            cell_id: item.cell_id,
-            type: item.type,
-            selected_by_policies: item.policyCount,
-            policy_share: item.policyShare,
-            consensus_all_named_policies: item.consensus,
-          }))
-        : null,
+    robust_policy_alternatives: alternatives?.map(portfolioSummary) ?? null,
+    policy_consensus: alternatives?.length
+      ? policyConsensus(alternatives).map((item) => ({
+          cell_id: item.cell_id,
+          type: item.type,
+          selected_by_policies: item.policyCount,
+          policy_share: item.policyShare,
+          consensus_all_named_policies: item.consensus,
+        }))
+      : null,
     selection_stability: stability
       ? {
           policy_profile: stability.profileId,
           uncertainty_resamples: stability.runCount,
-          scenario_samples_per_optimization:
-            stability.scenarioSamplesPerOptimization,
+          scenario_samples_per_optimization: stability.scenarioSamplesPerOptimization,
           projects: stability.projects.map((project) => ({
             cell_id: project.cell_id,
             type: project.type,
@@ -175,29 +176,34 @@ export function buildDecisionPackage({
         }
       : null,
     evidence_status: evidence,
-    guardrails: [
-      'Climate Stress is not landslide probability.',
-      'The city screen is a prioritization proxy, not a dynamic climate forecast or investment recommendation.',
-      'The city exposure proxy assumes population is uniformly distributed within each barrio.',
-      'Population values in the detailed sandbox are census-based planning proxies.',
-      'Planning credits are not COP.',
-      'Benefit, equity and access metrics are planning proxies, not people protected/saved or avoided losses.',
-      'Policy-objective weights are transparent development settings and require stakeholder co-design.',
-      'The sampled non-dominated set is not an exhaustive mathematical Pareto frontier.',
-      'Intervention effects and the dynamic climate term remain development priors until calibrated.',
-    ],
+    community_safeguards: {
+      validation_status: communityAssessment.validation_status,
+      validation_label: communityAssessment.validation_label,
+      file_status: communityAssessment.file_status,
+      not_assessed_count: communityAssessment.not_assessed_count,
+      not_assessed_projects: communityAssessment.not_assessed_projects,
+      safeguards_activated: communityAssessment.safeguards_activated,
+      unresolved_concerns: communityAssessment.unresolved_concerns,
+      participatory_records: communityAssessment.participatory_records,
+      records: communityAssessment.records,
+      provenance: {
+        as_of: new Date().toISOString().slice(0, 10),
+        file_status: communityAssessment.file_status,
+        template_ignored: communityAssessment.template_ignored,
+      },
+      guardrail: communityAssessment.guardrail,
+    },
+    guardrails: SCIENTIFIC_GUARDRAILS,
   };
 }
 
 export function downloadDecisionPackage(
   payload,
-  filename = 'ourea_decision_package_v4.json',
+  filename = 'ourea_decision_package.json',
 ) {
   const blob = new Blob(
     [`${JSON.stringify(payload, null, 2)}\n`],
-    {
-      type: 'application/json;charset=utf-8',
-    },
+    { type: 'application/json;charset=utf-8' },
   );
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');

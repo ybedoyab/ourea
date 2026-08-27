@@ -1,4 +1,5 @@
 import { BRAND } from '../config/brand.js';
+import { CommunitySafeguardsPanel } from './CommunitySafeguardsPanel.jsx';
 import { DecisionAnalysis } from './DecisionAnalysis.jsx';
 import { EvidencePanel } from './EvidencePanel.jsx';
 import { LayerControls } from './LayerControls.jsx';
@@ -50,6 +51,9 @@ export function SandboxPanel({
   evidence,
   replay,
   replayContract,
+  communityAssessment,
+  activePlan,
+  onRecordCommunityEvidence,
   layerState,
   onToggleLayer,
 }) {
@@ -127,6 +131,11 @@ export function SandboxPanel({
         activePolicyLabel={aiDiagnostics?.profile?.label}
       />
 
+      <CommunitySafeguardsPanel
+        assessment={communityAssessment}
+        activePlan={activePlan}
+        onRecord={onRecordCommunityEvidence}
+      />
       <ReplayPanel replay={replay} contract={replayContract} />
       <EvidencePanel evidence={evidence} />
       <LayerControls layerState={layerState} onToggleLayer={onToggleLayer} />

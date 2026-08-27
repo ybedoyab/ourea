@@ -27,7 +27,12 @@ import {
 import { sampleScenario, scenarioEnsemble, stableProjectSeed } from '../src/domain/uncertainty.js';
 import { budgetRobustnessFrontier } from '../src/domain/frontier.js';
 import { portfolioSelectionStability } from '../src/domain/stability.js';
-import { buildDecisionPackage } from '../src/domain/decisionPackage.js';
+import {
+  buildDecisionPackage,
+  DECISION_PACKAGE_SCHEMA,
+  DECISION_PACKAGE_SCHEMA_VERSION,
+  SCIENTIFIC_GUARDRAILS,
+} from '../src/domain/decisionPackage.js';
 import {
   generateAlternativePortfolios,
   policyConsensus,
@@ -456,7 +461,8 @@ test('decision package preserves scientific guardrails and portfolio mode', () =
     evidence: { global_guardrails: ['test'] },
   });
 
-  assert.equal(payload.schema, 'ourea-decision-package/v2');
+  assert.equal(payload.schema, DECISION_PACKAGE_SCHEMA);
+  assert.equal(payload.schema_version, DECISION_PACKAGE_SCHEMA_VERSION);
   assert.equal(payload.portfolio_mode, 'user');
   assert.equal(payload.budget.unit, 'planning-credit-not-COP');
   assert.equal(payload.portfolio.length, 1);
@@ -464,8 +470,14 @@ test('decision package preserves scientific guardrails and portfolio mode', () =
   assert.equal(payload.selected_ai_policy, 'balanced');
   assert.ok(Number.isFinite(payload.deterministic_metrics.equity_benefit_proxy));
   assert.ok(Number.isFinite(payload.deterministic_metrics.access_benefit_proxy));
+  assert.deepEqual(payload.guardrails, SCIENTIFIC_GUARDRAILS);
   assert.ok(payload.guardrails.some((item) => item.includes('not landslide probability')));
   assert.ok(payload.guardrails.some((item) => item.includes('not COP')));
+  assert.equal(payload.community_safeguards.validation_status, 'not_assessed');
+  assert.equal(payload.community_safeguards.not_assessed_count, 1);
+  assert.ok(
+    payload.community_safeguards.guardrail.includes('not a prediction'),
+  );
 });
 
 
