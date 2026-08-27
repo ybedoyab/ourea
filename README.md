@@ -8,7 +8,7 @@ Adaptation investment decision intelligence under uncertainty for vulnerable urb
 
 Current product flow:
 
-`CITY SCREEN → DETAILED PROVING GROUND → STRESS THE FUTURE → TEST ACTION → COMPARE ROBUST PORTFOLIOS → UNDERSTAND TRADE-OFFS → INSPECT EVIDENCE → COMMUNITY SAFEGUARDS`
+`CITY SCREEN → DETAILED PROVING GROUND → STRESS THE FUTURE → TEST ACTION → COMPARE ROBUST PORTFOLIOS → UNDERSTAND TRADE-OFFS → INSPECT EVIDENCE → COMMUNITY SAFEGUARDS → PLAN ALIGNMENT`
 
 ## Why Ourea is different
 
@@ -34,7 +34,7 @@ Innovate4Cities 2026 awards additional points when solutions integrate underserv
 
 Ourea already works at city scale with official hazard, 2026 population projections and 2023 IMCV/AMPI. Those layers are **not** community participation. Socioeconomic indices at comuna scale and stratum-1 building share do not prove that a portfolio is socially acceptable.
 
-Community Evidence & Safeguards therefore records whether a technically robust portfolio has enough community evidence to advance. Missing records mean **not assessed**, never support, opposition or low risk. High livelihood, accessibility or displacement concerns mark the portfolio as **requires deliberation**. They do not change optimizer rankings.
+Community Evidence & Safeguards therefore records whether a technically robust portfolio has enough community evidence to advance. Missing records mean **not assessed**, never support, opposition or low risk. `planned` and `in_progress` stay **incomplete**. Only a documented `validated` review can become **community review recorded**. High livelihood, accessibility or displacement concerns mark the portfolio as **requires deliberation**. A malformed evidence file is **invalid**, not silently absent. None of these records change optimizer rankings.
 
 The Moravia neighborhood in Medellín is documented as a learning case for territorial attachment, livelihoods and participation. It is **not** the current proving ground and is not used to alter rankings. See `docs/research/case-studies/moravia.md`.
 
@@ -204,6 +204,12 @@ run_windows.bat
 
 ```bash
 ./run_mac_linux.sh
+```
+
+The launcher scripts must be executable on macOS/Linux:
+
+```bash
+chmod +x run_mac_linux.sh qa_mac_linux.sh
 ```
 
 The launcher performs:

@@ -6,7 +6,7 @@
 
 ## One-line pitch
 
-**OUREA helps cities decide which climate-adaptation interventions to fund, where and in what sequence—while making uncertainty and public-policy trade-offs explicit.**
+**OUREA helps cities compare which climate-adaptation portfolios to fund, and where, while making uncertainty and public-policy trade-offs explicit.**
 
 ## ≤200-character description
 

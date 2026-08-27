@@ -1,5 +1,13 @@
 # Ourea changelog
 
+## Reproducible QA, community evidence and competitive depth — 2026-08-27
+
+- Local GeoJSON QA now loads JSON and builds GeoDataFrames without Fiona/pyogrio native readers.
+- Community evidence treats only documented `validated` reviews as recorded; `planned`/`in_progress` are incomplete; malformed files are invalid rather than absent.
+- Added documentary Comuna 8 plan alignment and a hazard-only vs deterministic vs robust selection benchmark, including a deterministic “what breaks this portfolio?” grid.
+- MapLibre is code-split from the initial application bundle.
+- GitHub Actions and a Playwright smoke test cover Linux QA and the core decision flow.
+
 ## Identity, community safeguards and documentation — 2026-08-27
 
 - The product is named **Ourea** throughout the repository. Retired marketing labels and former product names were removed from UI, docs, data contracts, scripts and artifacts.

@@ -30,7 +30,8 @@ Community categories and copy live in `frontend/src/config/communityEvidence.js`
 
 ### Fail visibly
 - required JSON/data failures surface;
-- optional SIATA replay and community-evidence files can be absent safely;
+- optional SIATA replay can be absent safely;
+- a missing community-evidence file is `not_assessed`; a malformed file is `invalid`;
 - missing rainfall stays missing;
 - validation scripts fail on stale/obsolete fields and model artifacts.
 
@@ -48,6 +49,9 @@ Focused UI pieces:
 - `StabilityPanel`;
 - `ParetoPanel`;
 - `CommunitySafeguardsPanel`;
+- `PlanAlignmentPanel`;
+- `BenchmarkPanel`;
+- `EvidencePanel`;
 - `ReplayPanel`;
 - `EvidencePanel`;
 - `MapLegend`;
@@ -66,7 +70,9 @@ Focused UI pieces:
 - `stability.js` — selection stability under uncertainty resampling;
 - `pareto.js` — sampled non-dominated multi-objective trade-offs;
 - `decisionPackage.js` — auditable export;
-- `communitySafeguards.js` — community evidence status without scoring.
+- `communitySafeguards.js` — community evidence status without scoring;
+- `benchmark.js` — hazard-only vs deterministic vs robust comparison;
+- `sensitivity.js` — deterministic “what breaks this portfolio?” grid.
 
 ### `frontend/src/hooks/`
 - `useOureaData.js` — required and optional data loading;
@@ -76,7 +82,7 @@ Focused UI pieces:
 ### `frontend/src/styles/`
 Tokens, base, layout, city screen, sandbox/portfolio, map overlays and responsive rules are split into small sheets. `index.css` imports them.
 
-Production bundles remain large because MapLibre dominates the JavaScript payload. That is accepted unless a later, maintainable code-split is justified.
+Production MapLibre is loaded through a dedicated chunk / dynamic import so the initial application code can stay smaller than the map runtime.
 
 ### `frontend/src/services/`
 - `dataService.js` — required/optional JSON loading;
@@ -111,7 +117,7 @@ Stable inputs:
 Dynamic input today:
 - hypothetical storm depth;
 - antecedent wetness;
-- planning horizon/maturity.
+- planning-year restoration maturity (not a temporal pathway optimizer).
 
 Dynamic target after SIATA:
 - observed rainfall increments;

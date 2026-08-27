@@ -18,6 +18,8 @@ This index is the entry point. The repository root keeps only `README.md`, `CHAN
 - [Data provenance](methodology/data-provenance.md)
 - [Cost evidence](methodology/cost-evidence.md)
 - [Community evidence and safeguards](methodology/community-safeguards.md)
+- [Comuna 8 plan alignment](methodology/plan-alignment.md)
+- [Selection benchmark](methodology/selection-benchmark.md)
 
 ## Research
 
