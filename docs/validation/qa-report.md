@@ -1,14 +1,14 @@
-# OUREA Competition V4 — QA report
+# Ourea — QA report
 
-**QA date:** 2026-08-18  
-**Artifact:** Competition Build V4 / package 0.4.0  
+**QA date:** 2026-08-27  
+**Artifact:** Ourea / package 0.4.0  
 **Scientific status:** spatial/evidence architecture assembled; SIATA dynamic calibration and final local effect/cost calibration remain pending.
 
 ## Overall status
 
-Every V4 check that can run in this container is currently **PASS**.
+Local revalidation on 2026-08-27: Node tests (40/40), data validation, source validation, Vite production build, SIATA tests (8/8), checkpoint regeneration, MILP, full geospatial validation and manifest regeneration **PASS**.
 
-The only unexecuted release gate is a fresh **Vite production bundle**, because this environment cannot resolve `registry.npmjs.org` (`EAI_AGAIN`). The user is performing that final local QA.
+MapLibre dominates the production JavaScript bundle (~1.24 MB minified). That warning is accepted; a fragile extra split is not worth the maintenance cost.
 
 ## PASS — Node domain/service tests
 
@@ -20,7 +20,7 @@ node --test tests/*.test.js
 ```
 
 Result:
-- **30/30 passed**;
+- **40/40 passed**;
 - 0 failed;
 - 0 skipped.
 
@@ -33,14 +33,15 @@ Coverage includes:
 - budget/duplicate/max-project constraints;
 - profile-aware robust optimizer;
 - four robust policy alternatives;
-- decision package v2;
+- decision package (`ourea-decision-package`, schema_version 1) including community safeguards;
+- community evidence categories, absent-file handling and no silent optimizer change;
 - selection stability;
 - budget frontier;
 - sampled non-dominated trade-offs;
 - named-policy consensus;
 - optional replay loading and required-data failures.
 
-## PASS — V4 frontend data validation
+## PASS — Ourea frontend data validation
 
 Validated:
 - 1,588 detailed buildings;
@@ -52,10 +53,10 @@ Validated:
 - detailed population/household/hazard/stratum aggregates reconcile;
 - intervention opportunity fields remain bounded in `[0,1]`;
 - obsolete V1 risk-weighted suitability fields remain absent;
-- V4 city priority scores/ranks are bounded/consistent;
+- Ourea city priority scores/ranks are bounded/consistent;
 - evidence/replay/model configuration passes.
 
-Llanaditas V4 invariant:
+Llanaditas Ourea invariant:
 - projected 2026 population: **10,416**;
 - hazard-only rank **#9**;
 - exposure rank **#7**;
@@ -64,23 +65,19 @@ Llanaditas V4 invariant:
 
 ## PASS — source / DRY / reproducibility validation
 
-- **33 JS/JSX source files** inspected;
+- **45 JS/JSX source files** inspected;
 - all local imports resolve;
 - no unseeded `Math.random` in the domain model;
 - no obsolete V1 risk-weighted fields;
 - no frontend reference to the obsolete V3 hazard-only city screen;
 - direct dependencies pinned;
 - Node engine declared;
-- V4 policy weights are not duplicated in domain source;
+- Ourea policy weights are not duplicated in domain source;
 - numerical configuration derives from `modelParameters.json`.
 
 ## PASS — JS/JSX syntax parse
 
-TypeScript 5.8.3 transpile/parse check:
-- **33 files**;
-- **0 syntax errors**.
-
-This is not a substitute for the unavailable production Vite bundle.
+JS/JSX parse is covered by Node tests and the Vite production build. Current source validation inspects **45** application files.
 
 ## PASS — Python compilation
 
@@ -201,7 +198,7 @@ Formal named-policy cross-checks:
 - access: solver=true, 10 cr, P10 63.75, median 79.90
 - low_regret: solver=true, 10 cr, P10 64.45, median 80.71
 
-Some formal profiles can collapse to the same project set under linearized coefficients. V4 preserves that result rather than manufacturing differentiation.
+Some formal profiles can collapse to the same project set under linearized coefficients. Ourea preserves that result rather than manufacturing differentiation.
 
 ## PASS — full Python artifact validator
 
@@ -209,26 +206,21 @@ Some formal profiles can collapse to the same project set under linearized coeff
 
 Final result:
 
-`All OUREA Competition V4 validation checks passed.`
+`All Ourea validation checks passed.`
 
 It checks city data, detailed GIS, evidence, browser checkpoints, policy alternatives, policy consensus, trade-offs, SIATA contract and formal optimization artifacts.
 
-## NOT EXECUTED — fresh Vite production bundle
+## PASS — fresh Vite production build
 
-Current environment check:
+`npm run build` succeeded locally on 2026-08-27.
 
-```text
-npm view react version
-→ EAI_AGAIN getaddrinfo registry.npmjs.org
-```
-
-Therefore this artifact does **not** claim a fresh `npm run build` PASS in the container.
+The reporter warns that some chunks exceed 500 kB after minification. MapLibre accounts for most of that payload. Ourea documents the warning rather than adding an unmaintainable extra split.
 
 Final local release gate:
 
 ```bash
 cd frontend
-npm install
+npm ci
 npm test
 npm run build
 npm run dev
@@ -252,4 +244,4 @@ The supplied launch scripts fail fast in that order.
 ## Final browser QA
 
 See:
-`FINAL_QA_USER_CHECKLIST.md`
+`docs/validation/final-user-checklist.md`

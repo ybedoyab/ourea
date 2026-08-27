@@ -1,4 +1,4 @@
-# OUREA Competition V4 — 3-minute demo
+# Ourea — 3-minute demo
 
 ## 0:00–0:15 — What this is
 
@@ -56,12 +56,14 @@ Then budget frontier, stability (12/12 vs sensitive), and sampled non-dominated 
 
 “There is no single best portfolio. Selection frequency is stability under resampling, not probability of optimality.”
 
-## 2:40–3:00 — Evidence and close
+## 2:40–3:00 — Evidence, safeguards and close
 
 Scroll evidence groups: observed / planning proxies / development priors / placeholders.
 
+Community panel: “Technically robust does not mean community-validated. Missing records are not assessed, not support. Moravia is a lesson, not this proving ground.”
+
 SIATA panel: “Historical calibration bridge. Awaiting official rainfall. No synthetic series.”
 
-“Don’t just show me where climate risk is. Let me test what Medellín can do about it — and see which choices stay robust.”
+“Don’t just show me where climate risk is. Let me test what Medellín can do about it — and see which choices stay robust enough to take to residents.”
 
-**OUREA.**
+**Ourea.**

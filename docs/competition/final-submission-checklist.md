@@ -22,22 +22,22 @@ Recommended:
 - [ ] Transportation only if mentor feedback supports critical-access framing
 
 ### Short description ≤200 characters
-- [x] 164-character candidate prepared in `SUBMISSION_DRAFT_V4.md`.
+- [x] 164-character candidate prepared in `docs/competition/submission-draft.md`.
 
 ### Concept deck ≤20 slides PDF
-- [x] 14-slide structure prepared in `DECK_OUTLINE_V4.md`.
+- [x] 14-slide structure prepared in `docs/competition/deck-outline.md`.
 - [ ] Final visual deck exported to PDF.
-- [ ] Every screenshot uses the final competition build.
+- [ ] Every screenshot uses the final Ourea product.
 - [ ] Sources/footnotes readable.
 
 ### Demonstration
-- [x] Interactive competition build prepared.
+- [x] Interactive demonstration prepared.
 - [ ] Final production Vite build passes locally.
 - [ ] Final deployed URL/repository included if available.
 - [ ] 2–3 minute screen recording created as fallback.
 
 ### Pilot plan
-- [x] `PILOT_6_MONTHS.md` prepared.
+- [x] `docs/pilot/six-month-pilot.md` prepared.
 
 ## Evidence / claims gate
 

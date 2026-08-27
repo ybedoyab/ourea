@@ -1,4 +1,4 @@
-# OUREA Competition V4 — competitive / adjacent landscape
+# Ourea — competitive / adjacent landscape
 
 ## Core positioning
 
@@ -76,7 +76,7 @@ Official source:
 Strategic consequence:
 do not bolt misinformation/alerts onto OUREA merely for bonus points.
 
-## V4 differentiation stack
+## Ourea differentiation stack
 
 1. **Decision target:** adaptation investment rather than detection/warning.
 2. **City scale:** Medellín city shortlist + detailed proving ground.

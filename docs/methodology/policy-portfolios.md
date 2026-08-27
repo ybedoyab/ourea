@@ -1,4 +1,4 @@
-# OUREA Competition V4 — robust policy portfolio method
+# Ourea — robust policy portfolio method
 
 ## Decision question
 
@@ -30,7 +30,7 @@ This prevents the V1 error of counting hazard twice.
 
 ## Common-random-number uncertainty
 
-V4 separates:
+Ourea separates:
 1. climate-scenario uncertainty;
 2. intervention-effect uncertainty.
 
@@ -103,7 +103,7 @@ Current result:
 
 Purpose: inspect how stronger weighting of stratum-1 exposure changes project selection.
 
-Important local limitation: 1,540/1,588 buildings in the current detailed sandbox are stratum 1, so the social gradient is structurally limited. V4 does not manufacture stronger differentiation.
+Important local limitation: 1,540/1,588 buildings in the current detailed sandbox are stratum 1, so the social gradient is structurally limited. Ourea does not manufacture stronger differentiation.
 
 ### Access-first
 
@@ -141,7 +141,7 @@ The UI labels this **“highest P10”**, not “the optimal plan”.
 
 ## Policy consensus across named lenses
 
-V4 also reports project membership across the four named policy profiles.
+Ourea also reports project membership across the four named policy profiles.
 
 Current all-policy core:
 - cell 35 — drainage (4/4 profiles)
@@ -151,7 +151,7 @@ This is **policy consensus under the current development model**, not proof of r
 
 ## Selection stability
 
-For the active policy profile, V4 reruns the optimizer across independent uncertainty resamples.
+For the active policy profile, Ourea reruns the optimizer across independent uncertainty resamples.
 
 The reported selection frequency means:
 > how often a project remains selected under repeated development uncertainty draws.
@@ -161,7 +161,7 @@ It does **not** mean:
 
 ## Budget robustness frontier
 
-For the active policy profile, V4 evaluates configured budgets:
+For the active policy profile, Ourea evaluates configured budgets:
 
 `4 / 8 / 12 / 16 / 20 planning credits`
 
@@ -173,7 +173,7 @@ Each resulting portfolio is evaluated under shared future sequences and reports:
 
 ## Multi-objective trade-off exploration
 
-V4 samples a 3×3 grid of explicit equity/access weights and computes a non-dominated set over:
+Ourea samples a 3×3 grid of explicit equity/access weights and computes a non-dominated set over:
 - robust median benefit proxy;
 - equity-benefit proxy;
 - access-benefit proxy.
@@ -207,4 +207,4 @@ A real pilot should co-design weights with:
 - engineering/geotechnical professionals;
 - planning/environmental authorities.
 
-The V4 purpose is to make those trade-offs explicit, inspectable and reproducible.
+The Ourea purpose is to make those trade-offs explicit, inspectable and reproducible.

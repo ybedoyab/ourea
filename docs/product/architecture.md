@@ -1,8 +1,8 @@
-# OUREA Competition V4 — architecture
+# Ourea — architecture
 
 ## 1. Architectural goal
 
-V4 separates **evidence, uncertainty, public-policy choices and UI** so the product can evolve from a hackathon prototype into a defensible city pilot without rewriting everything when SIATA/calibration data arrive.
+Ourea separates **evidence, uncertainty, public-policy choices and UI** so the product can evolve from a hackathon prototype into a defensible city pilot without rewriting everything when SIATA/calibration data arrive.
 
 ## 2. Design principles
 
@@ -20,23 +20,17 @@ V4 separates **evidence, uncertainty, public-policy choices and UI** so the prod
 
 ### DRY
 
-All numerical development assumptions live in:
+All numerical development assumptions live in `frontend/src/config/modelParameters.json`.
 
-`frontend/src/config/modelParameters.json`
+Scientific guardrails live in `frontend/src/config/scientificGuardrails.json`.
 
-This includes:
-- stress weights;
-- effect ranges;
-- planning-credit costs;
-- uncertainty ranges;
-- seeds;
-- sample counts;
-- named objective profiles;
-- sampled trade-off grid.
+Data URLs live in `frontend/src/config/dataPaths.js`.
+
+Community categories and copy live in `frontend/src/config/communityEvidence.js`.
 
 ### Fail visibly
 - required JSON/data failures surface;
-- optional SIATA replay data can be absent safely;
+- optional SIATA replay and community-evidence files can be absent safely;
 - missing rainfall stays missing;
 - validation scripts fail on stale/obsolete fields and model artifacts.
 
@@ -53,6 +47,7 @@ Focused UI pieces:
 - `TradeoffChart`;
 - `StabilityPanel`;
 - `ParetoPanel`;
+- `CommunitySafeguardsPanel`;
 - `ReplayPanel`;
 - `EvidencePanel`;
 - `MapLegend`;
@@ -70,7 +65,18 @@ Focused UI pieces:
 - `frontier.js` — policy-aware budget frontier;
 - `stability.js` — selection stability under uncertainty resampling;
 - `pareto.js` — sampled non-dominated multi-objective trade-offs;
-- `decisionPackage.js` — auditable export.
+- `decisionPackage.js` — auditable export;
+- `communitySafeguards.js` — community evidence status without scoring.
+
+### `frontend/src/hooks/`
+- `useOureaData.js` — required and optional data loading;
+- `useOureaMap.js` — MapLibre lifecycle and view sync;
+- `usePortfolioWorkspace.js` — plans, robust options, diagnostics and session community records.
+
+### `frontend/src/styles/`
+Tokens, base, layout, city screen, sandbox/portfolio, map overlays and responsive rules are split into small sheets. `index.css` imports them.
+
+Production bundles remain large because MapLibre dominates the JavaScript payload. That is accepted unless a later, maintainable code-split is justified.
 
 ### `frontend/src/services/`
 - `dataService.js` — required/optional JSON loading;
@@ -78,9 +84,9 @@ Focused UI pieces:
 
 ## 4. City-scale stage
 
-V4 loads:
+Ourea loads:
 
-`frontend/public/data/medellin_city_priority_screen_v4.geojson`
+`frontend/public/data/medellin_city_priority_screen.geojson`
 
 The screen contains official barrio geometry/hazard plus matched official 2026 population and 2023 IMCV/AMPI data.
 
@@ -123,7 +129,7 @@ Opportunity answers:
 Exposure answers:
 > What stress-weighted population is associated with this location?
 
-V4 never folds official hazard into the intervention opportunity field and then multiplies by hazard-weighted exposure again.
+Ourea never folds official hazard into the intervention opportunity field and then multiplies by hazard-weighted exposure again.
 
 ## 7. Common-random-number uncertainty
 
@@ -218,13 +224,13 @@ The formal model and interactive algorithm are related but not identical; disagr
 
 Neither script creates synthetic rainfall or trains a predictor from one historical event.
 
-See `SIATA_CALIBRATION_PLAN.md`.
+See `docs/methodology/siata-calibration.md`.
 
 ## 15. Decision export
 
 `decisionPackage.js` exports schema:
 
-`ourea-decision-package/v2`
+`ourea-decision-package`
 
 It can contain:
 - city lens;
@@ -238,13 +244,14 @@ It can contain:
 - budget frontier;
 - sampled non-dominated trade-offs;
 - evidence registry;
+- community safeguards;
 - scientific guardrails.
 
 ## 16. Validation layers
 
 - Node domain/service tests;
 - GeoJSON/data reconciliation;
-- V4 city-screen validation;
+- Ourea city-screen validation;
 - import/source/DRY checks;
 - deterministic uncertainty fixtures;
 - JS/JSX syntax parse;
@@ -254,6 +261,7 @@ It can contain:
 - Python geospatial/config/checkpoint validation;
 - browser checkpoint generation;
 - formal MILP execution;
+- optional community-evidence absence;
 - SHA-256 manifest.
 
-A fresh Vite production build remains the final local QA gate because npm registry access is unavailable in this container.
+The Vite production bundle remains large because MapLibre dominates the JavaScript payload. That warning is documented rather than papered over with an unmaintainable split.

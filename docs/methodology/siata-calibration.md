@@ -1,10 +1,10 @@
-# OUREA Competition V4 — SIATA calibration and historical-validation plan
+# Ourea — SIATA calibration and historical-validation plan
 
 ## Current status
 
 Raw SIATA station data have been requested by email for approximately **5–21 June 2022** for upper Comuna 8 / El Faro / Altos de La Torre / Llanaditas and nearby stations.
 
-V4 does not ship a synthetic historical rainfall timeline.
+Ourea does not ship a synthetic historical rainfall timeline.
 
 The software required to ingest and inspect the real response is already implemented.
 
@@ -131,7 +131,7 @@ Minimum:
 7. historical result shown with uncertainty/sensitivity;
 8. all claims stay within what the data support.
 
-## Integration into V4
+## Integration into Ourea
 
 The existing product architecture is deliberately separable:
 

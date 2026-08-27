@@ -1,4 +1,4 @@
-# OUREA — Innovate4Cities 2026 submission draft V4
+# Ourea — Innovate4Cities 2026 submission draft
 
 ## Solution name
 
@@ -60,7 +60,7 @@ OUREA is an AI-driven climate-adaptation decision sandbox with two scales.
 
 ### 1. Screen the city
 
-V4 screens Medellín barrios using:
+Ourea screens Medellín barrios using:
 - official mass-movement hazard coverage;
 - official Medellín/DANE 2026 population projections;
 - official 2023 socioeconomic IMCV/AMPI conditions.
@@ -71,6 +71,8 @@ Users can switch between:
 - Equity.
 
 The screen is explicitly a **shortlisting proxy**, not a dynamic climate prediction or investment recommendation.
+
+IMCV/AMPI and stratum-1 share do not equal community participation. Ourea records community evidence as safeguards, not as a predicted acceptance score. Moravia is a learning case for territorial attachment and livelihoods; Llanaditas remains the proving ground.
 
 ### 2. Test action in a detailed proving ground
 
@@ -93,7 +95,7 @@ Current sandbox:
 
 ## Interventions
 
-V4 tests only three physical adaptation families:
+Ourea tests only three physical adaptation families:
 
 1. **Rainwater harvesting**
    - roof runoff capture;
@@ -122,7 +124,7 @@ The search space contains:
 - equity/access policy preferences;
 - diminishing returns when interventions overlap.
 
-The V4 engine:
+The Ourea engine:
 - evaluates portfolios across uncertainty ensembles;
 - uses marginal robust benefit rather than additive ranking;
 - penalizes downside;
@@ -145,7 +147,7 @@ The UI highlights **highest P10** in the current development ensemble, not “th
 
 At the current 10-credit checkpoint, Low-regret produces the strongest lower-tail P10 while using four projects instead of six.
 
-V4 also exposes **policy consensus**: in the current checkpoint, cell 35 RWH and cell 35 drainage are selected by all four named policy lenses. That is shown as cross-policy decision stability, not universal optimality.
+Ourea also exposes **policy consensus**: in the current checkpoint, cell 35 RWH and cell 35 drainage are selected by all four named policy lenses. That is shown as cross-policy decision stability, not universal optimality.
 
 These numbers are development benefit proxies, not calibrated impact estimates.
 
@@ -201,7 +203,7 @@ Every major layer is labeled as:
 
 Current optimizer costs remain planning credits rather than invented COP values.
 
-V4 now has a real local RWH procurement budget ceiling anchor, but deliberately does not transfer that value blindly into Comuna 8.
+Ourea now has a real local RWH procurement budget ceiling anchor, but deliberately does not transfer that value blindly into Comuna 8.
 
 ## Scalability
 
@@ -229,7 +231,7 @@ A six-month pilot would test whether OUREA helps city/community/technical users:
 
 ## 6-month pilot
 
-See `PILOT_6_MONTHS.md`.
+See `docs/pilot/six-month-pilot.md`.
 
 ## Scientific guardrails
 

@@ -1,4 +1,4 @@
-# OUREA — local cost evidence ladder (V4)
+# OUREA — local cost evidence ladder (Ourea)
 
 **Status:** local evidence is now strong enough to define intervention typologies and plausible cost scale, but **not yet strong enough to replace planning credits with COP in the optimizer**.
 
@@ -28,7 +28,7 @@ The document explicitly says **130 rainwater tanks/systems must be supplied and 
 Source:  
 `https://www.fundacionudea.com/sitio/img/Documentos%20referencia%202/Segunda_Invitaci%C3%B3n_FUDEA_C1_HOGA.pdf`
 
-**V4 use:** this is now the preferred local *technical intervention archetype* for household RWH.
+**Ourea use:** this is now the preferred local *technical intervention archetype* for household RWH.
 
 **Still missing:** the corresponding awarded/evaluated economic line that isolates the 130-system RWH component.
 
@@ -44,7 +44,7 @@ A separate 2025 evaluation document gives the official budget ceiling for a sust
 Source:  
 `https://www.fundacionudea.com/sitio/img/Documentos%20Referencia/Adendas/Evaluaciones/1.%20evaluacio%CC%81n%20a%20participar_c50-%20hogares.pdf`
 
-**V4 use:** confirms that rainwater systems are budgeted as a distinct local procurement component.
+**Ourea use:** confirms that rainwater systems are budgeted as a distinct local procurement component.
 
 **Critical guardrail:** the document does not state the system quantity in the same evidence record. Do **not** divide COP 75,935,360 by the 130 systems from the Comuna 1 procurement; those are different procurement contexts.
 
@@ -57,7 +57,7 @@ Medellín's SEFFIP portal lists a 2025 Comuna 8 activity for **captación de agu
 Source:  
 `https://ppaunclic.medellin.gov.co/reportes/proyectos/`
 
-**V4 use:** validates that rainwater capture is not an imported intervention idea; it is already present in the target commune's public/community adaptation landscape.
+**Ourea use:** validates that rainwater capture is not an imported intervention idea; it is already present in the target commune's public/community adaptation landscape.
 
 ## 2. Drainage / hydraulic / water-management scale
 
@@ -109,7 +109,7 @@ The project explicitly includes improving stability through bioengineering / min
 Source:  
 `https://www.medellin.gov.co/ndesarrollo/wp-content/uploads/FICHAS/C8/2019/FP/19_FP_PP_C8_DAGRD.pdf`
 
-**V4 use:** local project-scale evidence for the bioengineering/mitigation family.
+**Ourea use:** local project-scale evidence for the bioengineering/mitigation family.
 
 **Do not use as:** COP/m² or COP/cell without installed quantities and scope decomposition.
 
@@ -151,7 +151,7 @@ Highest-value missing item:
 That would allow the first defensible local `COP/system` prior.
 
 
-## V4 addition — first defensible local COP/system ceiling
+## Ourea addition — first defensible local COP/system ceiling
 
 A 2023 Fundación Universidad de Antioquia procurement for **Santa Elena, Medellín** is unusually useful because the technical specification and budget align cleanly:
 
@@ -181,9 +181,9 @@ Reasons:
 - the system is 1,000 L, while another 2025 Medellín procurement archetype uses 250 L systems;
 - the current OUREA intervention is still an intervention family rather than one finalized engineering package.
 
-What V4 can now say defensibly is:
+What Ourea can now say defensibly is:
 
 > Medellín procurement evidence establishes a real local order-of-magnitude anchor for installed household rainwater systems, while OUREA keeps the optimizer in planning credits until capacity, location, logistics and project typology are made comparable.
 
 Machine-readable provenance:
-`data/derived/cost_reference_registry_v4.json`
+`data/derived/cost_reference_registry.json`

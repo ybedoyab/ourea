@@ -1,4 +1,4 @@
-# OUREA Competition V4 — working source register
+# Ourea — working source register
 
 This is the project provenance register, not a formally styled bibliography.
 
@@ -27,6 +27,44 @@ Key project constraints used:
 ### 2026 launch / FloodFact AI
 `https://www.innovate4cities.org/blog/the-2026-ai-x-city-climate-action-hackathon-is-officially-live/`
 
+## Informal settlements / community evidence (learning sources, not model coefficients)
+
+These sources inform safeguards and the pilot protocol. They are **not** converted into optimizer weights.
+
+### Innovate4Cities 2026 informal or marginalized settlements bonus
+`https://www.innovate4cities.org/hackathon/hackathon2026/`
+
+Use:
+city-scale, climate, evidence, AI-driven solutions; bonus for integrating underserved communities through inclusive urban planning and service delivery.
+
+### Smith et al. (2020) — negotiated landslide-risk mitigation in informal settlements, Medellín
+`https://doi.org/10.5751/ES-11337-250119`
+
+Use:
+a technically justified intervention can fail socially if attachment, livelihoods, trust, local risk perception and participation are ignored.
+
+### Vilar and Cartes (2016) — urban design and social capital in Moravia, 2004–2014
+`https://doi.org/10.1016/j.sbspro.2015.12.008`
+
+Use:
+Moravia as a historically marginalized neighborhood where physical upgrading interacts with social capital; not a proving-ground ranking.
+
+### Archivo Vivo de Moravia
+`https://www.ucl.ac.uk/bartlett/research-projects/2024/jan/living-archives-archivo-vivo-weaving-gendered-histories-territorial-reclamation`
+
+`https://archivovivomoravia.org/`
+
+Use:
+territorial reclamation, gendered memory and community archives as evidence of attachment, not as numeric scores.
+
+### Sustainable Neighborhood Plan for Moravia
+`https://ecocitybuilders.org/wp-content/uploads/2018/10/Moravia_Sustainable_Neighborhood_Plan_UNEP_English_10-01-18.pdf`
+
+Use:
+neighborhood-scale participation and livelihoods as design context for safeguards.
+
+See `docs/research/case-studies/moravia.md`.
+
 ## Official Medellín spatial data
 
 ### 2024 terrain
@@ -46,12 +84,12 @@ Key project constraints used:
 ### Population projections 2018–2030
 `https://www.medellin.gov.co/es/wp-content/uploads/2022/08/5.-Proyecciones-poblacionales-a-nivel-Barrios-y-Veredas-Medellin-2018-%E2%80%93-2030.xlsx`
 
-V4 uses 2026 total population for the 249 official urban barrio records.
+Ourea uses 2026 total population for the 249 official urban barrio records.
 
 ### IMCV / AMPI-AMPI 2023
 `https://www.medellin.gov.co/es/wp-content/uploads/2022/08/socializacionIMCV2023.xlsx`
 
-V4 uses official comuna-level AMPI-AMPI as the socioeconomic city-screen component.
+Ourea uses official comuna-level AMPI-AMPI as the socioeconomic city-screen component.
 
 ## Medellín climate / adaptation planning
 
@@ -100,7 +138,7 @@ Invitation/specification:
 Evaluation confirming official budget ceiling:
 `https://www.fundacionudea.com/sitio/img/16.%20evaluaci%C3%B3n%20a%20participar_comuna%2090%20hogares%20y%20sector%20comercio-2023.pdf`
 
-V4 evidence anchor:
+Ourea evidence anchor:
 ~COP 2.119M / installed 1,000 L household system as an official procurement **ceiling**, not a transferable Comuna 8 market/unit price.
 
 ### Comuna 1 2025 — 130 × 250 L technical specification

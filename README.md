@@ -1,29 +1,49 @@
-# OUREA — Competition Build V4
+# Ourea
 
-**OUREA** — Optimized Urban Resilience through Equity & Adaptation
+**Ourea** — Optimized Urban Resilience through Equity & Adaptation
 
 **From climate risk to robust action.**
 
-AI decision intelligence for climate-resilient hillsides. Medellín is the first proving ground.
+Adaptation investment decision intelligence under uncertainty for vulnerable urban hillsides. Medellín is the first proving ground.
 
 Current product flow:
 
-`CITY SCREEN → DETAILED PROVING GROUND → STRESS THE FUTURE → TEST ACTION → COMPARE ROBUST PORTFOLIOS → UNDERSTAND TRADE-OFFS → INSPECT EVIDENCE`
+`CITY SCREEN → DETAILED PROVING GROUND → STRESS THE FUTURE → TEST ACTION → COMPARE ROBUST PORTFOLIOS → UNDERSTAND TRADE-OFFS → INSPECT EVIDENCE → COMMUNITY SAFEGUARDS`
 
-## Why V4 is different
+## Why Ourea is different
 
-Medellín already has strong hazard mapping and early-warning capability. OUREA deliberately does **not** build another warning system.
+Medellín already has strong hazard mapping and early-warning capability. Ourea deliberately does **not** build another warning system.
 
 Instead it asks:
 
 > Given limited budgets and uncertain climate/effectiveness assumptions, which physical adaptation portfolio should a city test first—and how stable is that recommendation?
 
-## V4 city scale
+The differentiator is comparison of physical adaptation portfolios under uncertainty, limited budget, explicit public objectives and auditable evidence.
 
-The city screen now combines:
+Ourea is not:
+- a landslide predictor;
+- an early-warning system;
+- a generic digital twin;
+- a community-acceptance predictor;
+- an automatic resettlement recommender;
+- a substitute for geotechnical studies, authorities or communities.
+
+## Informal and marginalized settlements
+
+Innovate4Cities 2026 awards additional points when solutions integrate underserved communities through inclusive urban planning and service delivery.
+
+Ourea already works at city scale with official hazard, 2026 population projections and 2023 IMCV/AMPI. Those layers are **not** community participation. Socioeconomic indices at comuna scale and stratum-1 building share do not prove that a portfolio is socially acceptable.
+
+Community Evidence & Safeguards therefore records whether a technically robust portfolio has enough community evidence to advance. Missing records mean **not assessed**, never support, opposition or low risk. High livelihood, accessibility or displacement concerns mark the portfolio as **requires deliberation**. They do not change optimizer rankings.
+
+The Moravia neighborhood in Medellín is documented as a learning case for territorial attachment, livelihoods and participation. It is **not** the current proving ground and is not used to alter rankings. See `docs/research/case-studies/moravia.md`.
+
+## City scale
+
+The city screen combines:
 - official mass-movement hazard coverage;
 - official Medellín/DANE **2026 barrio population projections**;
-- official **2023 IMCV/AMPI-AMPI** socioeconomic conditions.
+- official **2023 IMCV/AMPI** socioeconomic conditions.
 
 It provides three transparent planning lenses:
 - **Exposure**;
@@ -31,7 +51,7 @@ It provides three transparent planning lenses:
 - **Equity**.
 
 Current safe population matching:
-- 249 official urban barrio population records;
+- 249 official urban barrio records;
 - 248 safely matched to the current 271-polygon city export;
 - one ambiguous record deliberately left unmatched rather than forced.
 
@@ -41,8 +61,7 @@ Llanaditas No.2 currently ranks:
 - #13 balanced;
 - #22 equity.
 
-See:
-`CITY_SCREEN_METHOD.md`
+See `docs/methodology/city-screen.md`.
 
 ## Detailed proving ground
 
@@ -67,7 +86,7 @@ A user can choose planning cells and place:
 
 ### Four robust policy options
 
-V4 generates four explicit policy lenses under the same budget/data:
+Ourea generates four explicit policy lenses under the same budget/data:
 - **Balanced**;
 - **Equity-first**;
 - **Access-first**;
@@ -79,7 +98,7 @@ After generation it highlights the option with the **highest P10 lower-tail bene
 
 ### Robustness diagnostics
 
-V4 includes:
+Ourea includes:
 - common-random-number Monte Carlo;
 - P10 / median / P90;
 - downside retention;
@@ -89,8 +108,7 @@ V4 includes:
 - project-level “Why here?” explanation;
 - formal binary MILP cross-check with nonlinear 500-future reevaluation.
 
-See:
-`POLICY_PORTFOLIOS_METHOD.md`
+See `docs/methodology/policy-portfolios.md`.
 
 ## SIATA readiness
 
@@ -107,12 +125,11 @@ The raw historical station series is pending, but the integration path is alread
 
 `siata_event_diagnostics.py` summarizes observed rainfall around a **verified** event timestamp without fitting a fake prediction model.
 
-See:
-`SIATA_CALIBRATION_PLAN.md`
+See `docs/methodology/siata-calibration.md`.
 
 ## Evidence and cost discipline
 
-V4 labels major inputs as:
+Ourea labels major inputs as:
 - official/observed;
 - official projection;
 - planning proxy;
@@ -124,10 +141,9 @@ The optimizer still uses **planning credits, not COP**.
 
 Local cost evidence is strong enough to establish implementation precedent and scale, but not yet homogeneous enough for fair cross-intervention optimization.
 
-V4 now includes an official Medellín 2023 procurement budget ceiling equivalent to approximately **COP 2.119 million per installed 1,000 L household rainwater system** in Santa Elena. It remains an evidence anchor—not a Comuna 8 unit price.
+Ourea includes an official Medellín 2023 procurement budget ceiling equivalent to approximately **COP 2.119 million per installed 1,000 L household rainwater system** in Santa Elena. It remains an evidence anchor—not a Comuna 8 unit price.
 
-See:
-`COST_EVIDENCE.md`
+See `docs/methodology/cost-evidence.md`.
 
 ## Scientific boundary
 
@@ -145,21 +161,27 @@ Do **not** call current outputs:
 - current exact household population;
 - drainage capacity;
 - a COP investment recommendation;
-- an exhaustive Pareto frontier.
+- an exhaustive Pareto frontier;
+- community acceptance.
 
 ## Architecture
 
-V4 follows practical SOLID / KISS / DRY constraints:
+Ourea follows practical SOLID / KISS / DRY constraints:
 
 - `frontend/src/components/` — focused presentation / interaction;
+- `frontend/src/hooks/` — data loading, map lifecycle and portfolio workspace;
 - `frontend/src/domain/` — decision/scenario logic;
 - `frontend/src/services/` — data and map lifecycle;
-- `frontend/src/config/` — **single numerical source of truth**;
+- `frontend/src/config/` — **single numerical, copy, path and guardrail source of truth**;
 - `frontend/src/utils/` — deterministic utilities.
 
 All development numbers, sample counts and reproducibility seeds live in:
 
 `frontend/src/config/modelParameters.json`
+
+Scientific guardrails live in:
+
+`frontend/src/config/scientificGuardrails.json`
 
 ## Run locally
 
@@ -204,20 +226,9 @@ or:
 
 The user should run final browser QA locally after `npm install`.
 
-## Competition documents
+## Documentation
 
-- `SUBMISSION_DRAFT_V4.md`
-- `DECK_OUTLINE_V4.md`
-- `DEMO_SCRIPT_V4.md`
-- `PILOT_6_MONTHS.md`
-- `JUDGE_QA.md`
-- `OFFICE_HOURS_BRIEF.md`
-- `COMPETITIVE_LANDSCAPE.md`
-- `MODEL_CARD.md`
-- `DATA_PROVENANCE.md`
-- `CITY_SCREEN_METHOD.md`
-- `POLICY_PORTFOLIOS_METHOD.md`
-- `SIATA_CALIBRATION_PLAN.md`
+Start at [`docs/README.md`](docs/README.md).
 
 ## Highest-value remaining scientific gate
 

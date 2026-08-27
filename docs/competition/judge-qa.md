@@ -1,4 +1,4 @@
-# OUREA Competition V4 — likely judge Q&A
+# Ourea — likely judge Q&A
 
 ## “Is this just another digital twin?”
 
@@ -27,7 +27,7 @@ The decision problem is combinatorial and uncertain:
 - equity/access priorities;
 - diminishing returns from overlapping interventions.
 
-V4 performs uncertainty-aware portfolio search, stability analysis and multi-objective trade-off exploration.
+Ourea performs uncertainty-aware portfolio search, stability analysis and multi-objective trade-off exploration.
 
 Important mentor question remains: what judges specifically regard as sufficiently **AI-driven** versus conventional optimization/decision science.
 
@@ -42,7 +42,7 @@ OUREA asks:
 
 ## “How is this city-scale if the detailed model is one neighborhood?”
 
-V4 has a two-stage architecture:
+Ourea has a two-stage architecture:
 1. all-Medellín barrio screening;
 2. high-resolution intervention analysis in a selected proving ground.
 
@@ -52,7 +52,7 @@ The method is city-scale; high-resolution engineering/detail is intentionally lo
 
 Not because it ranks #1 everywhere.
 
-Current V4:
+Current Ourea:
 - #9 hazard-only;
 - #7 exposure;
 - #13 balanced;
@@ -77,7 +77,7 @@ At city scale it uses relative comuna-level socioeconomic conditions from offici
 
 At detailed scale it currently uses stratum-1 exposure share.
 
-Both are planning proxies and both have limitations. V4 states them instead of describing them as household income or a complete vulnerability model.
+Both are planning proxies and both have limitations. Ourea states them instead of describing them as household income or a complete vulnerability model.
 
 ## “Why four AI plans?”
 
@@ -111,7 +111,7 @@ It is not probability of true optimality.
 
 ## “Is that a Pareto frontier?”
 
-V4 calls it a **sampled non-dominated set**.
+Ourea calls it a **sampled non-dominated set**.
 
 It samples explicit equity/access policy weights and removes dominated portfolios.
 
@@ -137,7 +137,7 @@ Planning credits remain more defensible until comparable cost distributions are 
 
 Yes.
 
-V4 includes:
+Ourea includes:
 - Medellín RWH specifications;
 - isolated RWH budget components;
 - an official 2023 Santa Elena procurement ceiling equivalent to ~COP 2.119M per installed 1,000 L household RWH system;

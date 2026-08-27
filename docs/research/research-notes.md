@@ -1,4 +1,4 @@
-# OUREA Competition V4 — research checkpoint
+# Ourea — research checkpoint
 
 ## Most important strategic conclusion
 
@@ -21,16 +21,24 @@ Medellín already has:
 
 A generic “AI + GIS risk map” would be weakly differentiated.
 
-## City-scale upgrade in V4
+## City-scale upgrade in Ourea
 
 V3 hazard-only screening was no longer enough.
 
-V4 now uses:
+Ourea now uses:
 - official hazard coverage;
 - official 2026 barrio population projection;
 - 2023 IMCV/AMPI socioeconomic conditions.
 
 This substantially improves the city-scale relevance story while staying honest about static/uniform-distribution assumptions.
+
+## Informal settlements without fake social scores
+
+IMCV/AMPI and stratum-1 exposure are not community participation.
+
+Moravia is a documented lesson about attachment, livelihoods and the limits of purely technical works. It is not the current proving ground and does not alter Llanaditas rankings.
+
+Ourea therefore adds Community Evidence & Safeguards: categorical records, visible incomplete status, and a “requires deliberation” flag. Those records do not enter the optimizer.
 
 ## Why Llanaditas remains a good proving ground
 
@@ -45,11 +53,11 @@ That actually strengthens the narrative because selection is based on the combin
 - local adaptation context;
 - historical validation opportunity.
 
-## Decision design upgrade in V4
+## Decision design upgrade in Ourea
 
 One “optimal” plan is not appropriate for public adaptation decisions.
 
-V4 therefore separates:
+Ourea therefore separates:
 - Balanced;
 - Equity-first;
 - Access-first;
@@ -70,13 +78,13 @@ For a city decision-maker, the useful explanation is:
 - stability under uncertainty;
 - which assumption would change the recommendation.
 
-V4 implements that directly.
+Ourea implements that directly.
 
 ## City equity limitation
 
 The detailed proving ground is overwhelmingly stratum 1.
 
-Therefore the detailed equity profile naturally has limited discriminatory power. V4 does not fabricate a stronger socioeconomic gradient.
+Therefore the detailed equity profile naturally has limited discriminatory power. Ourea does not fabricate a stronger socioeconomic gradient.
 
 A pilot should incorporate more granular vulnerability/community criteria if stakeholders identify them.
 
@@ -84,7 +92,7 @@ A pilot should incorporate more granular vulnerability/community criteria if sta
 
 Planning credits remain appropriate for cross-intervention optimization today.
 
-However V4 now has a useful local RWH anchor:
+However Ourea now has a useful local RWH anchor:
 - 2023 Santa Elena;
 - 50 household systems;
 - 1,000 L each;
@@ -114,7 +122,7 @@ What cannot be claimed before data:
 
 Official Innovate4Cities language requires an **AI-driven** solution but allows methodology to be demonstrated through an AI application, geospatial tools, dashboards or other data-science applications.
 
-V4's strongest technical framing is:
+Ourea's strongest technical framing is:
 - uncertainty-aware combinatorial decision search;
 - robust portfolio generation;
 - multiobjective policy trade-offs;

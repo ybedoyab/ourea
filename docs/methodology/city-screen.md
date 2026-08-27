@@ -1,4 +1,4 @@
-# OUREA Competition V4 — city screening method
+# Ourea — city screening method
 
 ## Purpose
 
@@ -18,7 +18,7 @@ The detailed adaptation sandbox remains the second stage of the workflow.
 
 The working Medellín polygon export contains **271 barrio/special polygons**.
 
-The official 2018–2030 population-projection workbook contains **249 urban barrio records** for the 16 urban comunas. V4 safely matches **248/249** records to the current polygon export.
+The official 2018–2030 population-projection workbook contains **249 urban barrio records** for the 16 urban comunas. Ourea safely matches **248/249** records to the current polygon export.
 
 The one deliberately unmatched record is:
 - `0725 — Nueva Villa de La Iguaná` — projected 2026 population 2,374.
@@ -34,22 +34,22 @@ Special/institutional polygons with no safely matched resident projection remain
 Official Medellín/DANE workbook:
 `https://www.medellin.gov.co/es/wp-content/uploads/2022/08/5.-Proyecciones-poblacionales-a-nivel-Barrios-y-Veredas-Medellin-2018-%E2%80%93-2030.xlsx`
 
-The official Medellín data page states the projections were updated by DANE on 30 July 2025. V4 uses the **2026 total population** field.
+The official Medellín data page states the projections were updated by DANE on 30 July 2025. Ourea uses the **2026 total population** field.
 
 ### Official socioeconomic quality-of-life measure
 
 Official Medellín 2023 IMCV workbook:
 `https://www.medellin.gov.co/es/wp-content/uploads/2022/08/socializacionIMCV2023.xlsx`
 
-V4 uses the official **AMPI-AMPI 2023** value at comuna/corregimiento level. Lower values are treated as relatively worse socioeconomic conditions.
+Ourea uses the official **AMPI-AMPI 2023** value at comuna/corregimiento level. Lower values are treated as relatively worse socioeconomic conditions.
 
 ### Official mass-movement hazard
 
-The existing official Medellín mass-movement hazard polygons are intersected with official barrio polygons. V4 retains the previously derived high/medium hazard area shares.
+The existing official Medellín mass-movement hazard polygons are intersected with official barrio polygons. Ourea retains the previously derived high/medium hazard area shares.
 
 ## Matching policy
 
-V4 uses:
+Ourea uses:
 1. exact normalized names;
 2. a small explicit alias table for known official naming variants;
 3. high-confidence fuzzy matching only for obvious spelling/prefix variants;
@@ -103,7 +103,7 @@ This is **coarse within a comuna**. It is not a barrio-specific deprivation inde
 
 ## Three transparent planning lenses
 
-V4 intentionally does not hide policy choices inside one ranking.
+Ourea intentionally does not hide policy choices inside one ranking.
 
 ### Exposure lens
 
@@ -128,7 +128,7 @@ These weights are **transparent development policy settings**, not empirically c
 
 ## Llanaditas No. 2 result
 
-Current V4 result:
+Current Ourea result:
 - projected 2026 population: **10,416**;
 - hazard-only rank: **#9**;
 - exposure rank: **#7**;
@@ -152,6 +152,6 @@ Without inventing precision, the next citywide enrichments would be:
 - citywide critical-access / essential-facility connectivity;
 - calibrated climate-driver information when suitable citywide data are available.
 
-Until then, the V4 screen should be presented as:
+Until then, the Ourea screen should be presented as:
 
 > **A transparent city-scale shortlist for deeper adaptation analysis, not a climate-risk prediction.**

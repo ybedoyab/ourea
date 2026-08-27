@@ -1,4 +1,4 @@
-# OUREA Competition V4 — optimizer cross-check
+# Ourea — optimizer cross-check
 
 This is a **software/model consistency artifact**, not real-world validation of intervention effectiveness.
 
@@ -11,7 +11,7 @@ This is a **software/model consistency artifact**, not real-world validation of 
 
 ## Interactive robust policy options
 
-All named options use the same 220 comparison futures in the current V4 configuration.
+All named options use the same 220 comparison futures in the current Ourea configuration.
 
 | Policy | Credits | Projects | P10 | Median | Equity proxy | Access proxy |
 |---|---:|---:|---:|---:|---:|---:|
@@ -73,11 +73,11 @@ The browser and MILP need not select identical plans:
 | access | 10 | 4 | 63.75 | 79.90 | 96.88 |
 | low_regret | 10 | 4 | 64.45 | 80.71 | 96.60 |
 
-Some formal profiles collapse to the same plan under current linearized coefficients. V4 preserves that result rather than manufacturing differentiation.
+Some formal profiles collapse to the same plan under current linearized coefficients. Ourea preserves that result rather than manufacturing differentiation.
 
 ## Sampled multi-objective trade-offs
 
-V4 samples **9** equity/access weight combinations, producing **4** unique portfolios and **4** non-dominated portfolios in the current checkpoint.
+Ourea samples **9** equity/access weight combinations, producing **4** unique portfolios and **4** non-dominated portfolios in the current checkpoint.
 
 This is a **sampled non-dominated set**, not an exhaustive mathematical Pareto frontier.
 

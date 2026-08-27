@@ -1,4 +1,4 @@
-# OUREA — competition deck V4
+# Ourea — competition deck
 
 Target: **14 slides**, below the official 20-slide maximum.
 
@@ -45,7 +45,7 @@ Headline:
 
 ## Slide 5 — City scale first
 
-Show V4 city screen with three tabs:
+Show Ourea city screen with three tabs:
 - Exposure;
 - Balanced;
 - Equity.
@@ -113,7 +113,7 @@ ensemble → marginal robust ranking → update residual exposure → repeat.
 
 ## Slide 10 — One “optimal” plan is the wrong answer
 
-Show four V4 options:
+Show four Ourea options:
 - Balanced;
 - Equity-first;
 - Access-first;
@@ -154,15 +154,16 @@ Show:
 ## Slide 13 — Evidence → pilot
 
 Left:
-evidence/provenance labels.
+evidence/provenance labels and community safeguards.
 
 Right:
-6-month pilot timeline.
+6-month pilot timeline with co-design, without invented partners.
 
 Mention:
 - SIATA hindcast;
 - intervention/cost calibration;
 - stakeholder policy-weight co-design;
+- Moravia as a participation lesson, not a second proving ground;
 - structured decision-workflow testing.
 
 ## Slide 14 — Close

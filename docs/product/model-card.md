@@ -1,4 +1,4 @@
-# OUREA Competition V4 — model card
+# Ourea — model card
 
 ## Intended purpose
 
@@ -10,13 +10,15 @@ It is designed to help ask:
 
 ## Not intended for
 
-OUREA is not:
+Ourea is not:
 - a landslide early-warning system;
 - a replacement for SIATA;
 - a geotechnical design package;
 - a building-level failure-probability model;
 - an autonomous investment authority;
-- an evacuation-routing simulator.
+- an evacuation-routing simulator;
+- a community-acceptance predictor;
+- an automatic resettlement recommender.
 
 ## Model status
 
@@ -28,7 +30,7 @@ The dynamic climate term, intervention-effect ranges, planning-credit costs and 
 
 ## City screening
 
-V4 city screening combines:
+Ourea city screening combines:
 - official hazard coverage;
 - official 2026 population projections;
 - official 2023 comuna-level IMCV/AMPI.
@@ -38,7 +40,9 @@ Limitations:
 - IMCV is comuna-level, not barrio-level;
 - screen is static, not dynamically SIATA-driven.
 
-See `CITY_SCREEN_METHOD.md`.
+See `docs/methodology/city-screen.md`.
+
+IMCV/AMPI and stratum-1 share are planning proxies. They are not community participation. Moravia is a learning case for safeguards, not a proving-ground target. See `docs/research/case-studies/moravia.md`.
 
 ## Detailed exposure
 
@@ -79,7 +83,7 @@ It is not instant deterministic stabilization.
 
 ## Uncertainty
 
-V4 separates:
+Ourea separates:
 1. climate uncertainty;
 2. intervention-effect uncertainty.
 
@@ -105,7 +109,7 @@ These profiles are not moral/scientific truths. They exist to make policy prefer
 
 ## Sampled trade-offs
 
-V4 samples equity/access weights and returns non-dominated portfolios among those samples.
+Ourea samples equity/access weights and returns non-dominated portfolios among those samples.
 
 This is not an exhaustive mathematical Pareto frontier.
 
@@ -115,7 +119,7 @@ An independent binary MILP uses linearized robust coefficients and exact budget/
 
 ## Prohibited interpretations
 
-Do not describe V4 outputs as:
+Do not describe Ourea outputs as:
 - landslide probability;
 - expected casualties;
 - people saved/protected;
@@ -144,4 +148,5 @@ Final decisions remain with:
 5. local intervention-effect distributions;
 6. comparable cost distributions;
 7. stakeholder policy-weight co-design;
-8. structured pilot user testing.
+8. structured pilot user testing;
+9. community co-design of safeguards without inventing social scores.

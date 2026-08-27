@@ -1,4 +1,4 @@
-# OUREA Competition V4 — data provenance
+# Ourea — data provenance
 
 ## Purpose
 
@@ -17,7 +17,7 @@ The purpose is to prevent accidental over-claiming in the demo/deck.
 Source workbook:
 `https://www.medellin.gov.co/es/wp-content/uploads/2022/08/5.-Proyecciones-poblacionales-a-nivel-Barrios-y-Veredas-Medellin-2018-%E2%80%93-2030.xlsx`
 
-V4 uses 2026 total population by urban barrio.
+Ourea uses 2026 total population by urban barrio.
 
 Parsed:
 - 249 official urban barrio records;
@@ -33,7 +33,7 @@ Audit:
 Source:
 `https://www.medellin.gov.co/es/wp-content/uploads/2022/08/socializacionIMCV2023.xlsx`
 
-V4 uses comuna/corregimiento-level AMPI-AMPI as a relative socioeconomic quality-of-life measure.
+Ourea uses comuna/corregimiento-level AMPI-AMPI as a relative socioeconomic quality-of-life measure.
 
 Important:
 - it is **not barrio-level**;
@@ -43,7 +43,7 @@ Important:
 
 The working city polygons and official mass-movement hazard export were assembled during the Medellín GIS research workflow.
 
-V4 calculates high/medium hazard coverage by barrio and combines that static coverage with the official projected population.
+Ourea calculates high/medium hazard coverage by barrio and combines that static coverage with the official projected population.
 
 ### Derived city-screen fields
 
@@ -58,7 +58,7 @@ V4 calculates high/medium hazard coverage by barrio and combines that static cov
 - corresponding ranks.
 
 Method:
-`CITY_SCREEN_METHOD.md`
+`docs/methodology/city-screen.md`
 
 ## 2. Detailed terrain
 
@@ -147,7 +147,7 @@ not current household-level population.
 
 ## 8. Planning cells
 
-V4 uses ~80 m derived planning cells in the detailed sandbox.
+Ourea uses ~80 m derived planning cells in the detailed sandbox.
 
 They are a decision discretization, not:
 - administrative boundaries;
@@ -186,14 +186,14 @@ When received, the pipeline will preserve missing data and calculate:
 - 15 d accumulations;
 - coverage fields.
 
-See `SIATA_CALIBRATION_PLAN.md`.
+See `docs/methodology/siata-calibration.md`.
 
 ## 11. Cost evidence
 
 Current optimizer unit:
 **planning credits, not COP**.
 
-V4 cost evidence includes:
+Ourea cost evidence includes:
 - local RWH technical specifications;
 - local RWH budget components;
 - 2023 Santa Elena official procurement ceiling equivalent to ~COP 2.119M / installed 1,000 L system;
@@ -207,8 +207,8 @@ The evidence is intentionally not collapsed into one false cross-intervention CO
 Key audit files:
 - `data/derived/city_population_2026_barrio_match.csv`
 - `data/derived/city_screening_source_metadata.json`
-- `data/derived/city_priority_screen_v4.csv`
-- `data/derived/cost_reference_registry_v4.json`
+- `data/derived/city_priority_screen.csv`
+- `data/derived/cost_reference_registry.json`
 - `frontend/src/config/modelParameters.json`
 - `MANIFEST.json`
 - `SHA256SUMS.txt`

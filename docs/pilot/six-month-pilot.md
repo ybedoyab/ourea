@@ -1,4 +1,4 @@
-# OUREA Competition V4 — 6-month pilot plan
+# Ourea — 6-month pilot plan
 
 ## Pilot objective
 
@@ -13,9 +13,13 @@ The pilot is not designed to prove that software can replace:
 ## Month 1 — Decision co-design and governance
 
 Activities:
+- identify community organizations and legitimate representatives for the pilot area; do not invent partners;
+- agree data governance: who may record, review, contest and approve community evidence;
+- map concerns, priorities and veto criteria without converting them into optimizer weights;
+- validate the language used to explain uncertainty;
 - confirm the real planning/approval workflow with city/community/technical stakeholders;
-- define the decision questions OUREA should and should not answer;
-- review the four V4 policy profiles;
+- define the decision questions Ourea should and should not answer;
+- review the four policy profiles;
 - confirm data ownership/provenance expectations;
 - agree on pilot success metrics;
 - verify the June 2022 event timestamp and relevant SIATA stations.
@@ -37,10 +41,11 @@ Activities:
 Deliverable:
 **historical hindcast report + calibrated dynamic-driver candidate**.
 
-## Month 3 — Intervention and cost calibration
+## Months 3 and 4 — Intervention, cost, policy and co-design
 
-Activities:
-- finalize local intervention typologies;
+Month 3 activities:
+- finalize local intervention typologies with residents and technical experts;
+- evaluate possible impacts on everyday mobility, work, care and maintenance;
 - separate RWH capacities/specifications;
 - define drainage/water-management project classes;
 - define locally appropriate restoration/bioengineering classes;
@@ -48,21 +53,17 @@ Activities:
 - convert comparable procurement/project evidence into cost distributions;
 - separate direct cost, supervision, logistics, maintenance and contingency.
 
-Deliverable:
-**versioned intervention/effect/cost registry**.
-
-## Month 4 — Policy and robustness calibration
-
-Activities:
+Month 4 activities:
 - run calibrated uncertainty ensembles;
 - review equity/access/low-regret objective definitions with stakeholders;
+- convert **only agreed** criteria into transparent constraints; keep disagreements and alternatives visible instead of averaging incompatible positions;
 - compare browser marginal optimizer and formal MILP alternatives;
 - produce budget robustness curves;
 - identify stable/unstable project decisions;
 - surface near-performing alternatives rather than only a winner.
 
-Deliverable:
-**calibrated robust decision-engine beta**.
+Deliverables:
+**versioned intervention/effect/cost registry** and **calibrated robust decision-engine beta**.
 
 ## Month 5 — Structured user testing
 
@@ -72,14 +73,21 @@ Participants:
 - community representatives;
 - academic/research partner if available.
 
-Compare baseline planning workflow vs OUREA on:
+No organizations are named as confirmed partners.
+
+Compare baseline planning workflow vs Ourea on:
 - time required to compare alternatives;
 - ability to understand uncertainty;
 - ability to identify evidence gaps;
 - ability to explain why a project is selected;
 - confidence in distinguishing proxy/model output from engineering evidence;
 - agreement/disagreement with policy weights;
-- usability of city → hotspot → portfolio workflow.
+- usability of city → hotspot → portfolio workflow;
+- percentage of projects reviewed with community evidence;
+- open livelihood, accessibility or displacement concerns;
+- portfolio changes after deliberation;
+- confidence in data provenance;
+- difference between the initial technical recommendation and the deliberated result.
 
 Deliverable:
 **user-testing report + product revisions**.
@@ -109,7 +117,9 @@ Use decision-quality metrics rather than exaggerated hazard claims:
 - user decision time;
 - stakeholder ability to explain trade-offs;
 - number of recommendations explicitly requiring engineering/geotechnical follow-up;
-- reproducibility of exported decision packages.
+- reproducibility of exported decision packages;
+- share of selected projects with community review;
+- number of safeguards still open after deliberation.
 
 ## Pilot team structure
 

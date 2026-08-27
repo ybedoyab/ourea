@@ -1,4 +1,4 @@
-# OUREA Competition V4 — final local QA checklist
+# Ourea — final local QA checklist
 
 The automated tests cover model/data consistency. This checklist covers browser/build behavior that the container cannot fully verify.
 
@@ -149,7 +149,7 @@ If actual replay data are later added:
 Click **Export decision package**.
 
 Open JSON and verify:
-- [ ] schema = `ourea-decision-package/v2`;
+- [ ] schema = `ourea-decision-package`;
 - [ ] city lens included;
 - [ ] selected AI policy included;
 - [ ] active portfolio included;
@@ -170,7 +170,7 @@ At minimum:
 
 ## 14. Demo rehearsal
 
-Run `DEMO_SCRIPT_V4.md` with a timer.
+Run `docs/competition/demo-script.md` with a timer.
 
 - [ ] ≤3 minutes;
 - [ ] city-scale value clear in first 30 sec;
