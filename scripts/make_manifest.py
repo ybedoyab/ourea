@@ -26,6 +26,9 @@ def include(path: Path) -> bool:
             ".idea",
             ".vscode",
             ".pytest_cache",
+            "playwright-report",
+            "test-results",
+            "blob-report",
         }
         for part in relative.parts
     ):
@@ -98,7 +101,7 @@ def main() -> None:
         "model_status": model["status"],
         "production_build_status": (
             "local npm ci, npm test and npm run build succeeded; "
-            "MapLibre dominates the JavaScript bundle (~1.24 MB minified)"
+            "initial application JS is ~297 kB minified; MapLibre is a deferred ~947 kB chunk"
         ),
         "data_counts": {
             "detailed_buildings": len(buildings["features"]),
