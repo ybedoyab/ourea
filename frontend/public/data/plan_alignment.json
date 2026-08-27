@@ -1,0 +1,65 @@
+{
+  "schema": "ourea-plan-alignment",
+  "schema_version": 1,
+  "status": "documentary-alignment-not-community-support",
+  "geographic_scope": "Comuna 8 / Villa Hermosa, Medellín. Current proving ground remains Llanaditas / upper Comuna 8. Moravia is not a target of this registry.",
+  "guardrail": "This layer traces published local planning and research. It is not community endorsement, not a numeric local calibration, and not a substitute for co-design.",
+  "entries": [
+    {
+      "id": "rwh-household-capture",
+      "intervention_type": "rwh",
+      "plan_action": "Household and neighborhood rainwater capture as a water-management / hillside-load reduction measure already present in Comuna 8 adaptation practice.",
+      "source": "https://www.hw.ac.uk/news/2026/how-one-medellin-neighbourhood-changed-how-a-whole-city-plans-for-climate-change",
+      "geographic_scope": "Comuna 8 / Villa Hermosa",
+      "evidence_status": "documentary",
+      "prerequisites": [
+        "Roof access and storage specification agreed with residents",
+        "Maintenance and training arrangements before treating capture as durable"
+      ],
+      "maintenance_responsible": null,
+      "evidence_gap": "No transferable Comuna 8 unit cost or locally calibrated slope-benefit coefficient is encoded in the optimizer."
+    },
+    {
+      "id": "drainage-water-management",
+      "intervention_type": "drainage",
+      "plan_action": "Surface-water management and drainage works as part of neighborhood climate-risk reduction, not as a standalone early-warning product.",
+      "source": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/la-comuna-villa-hermosa-es-ejemplo-en-medellin-en-gestion-frente-al-cambio-climatico/",
+      "geographic_scope": "Comuna 8 / Villa Hermosa",
+      "evidence_status": "documentary",
+      "prerequisites": [
+        "Corridor and outlet conditions confirmed in the field",
+        "Everyday access and care routes reviewed before construction"
+      ],
+      "maintenance_responsible": null,
+      "evidence_gap": "Mapped drainage-corridor proxy is not drainage capacity. Hydraulic design remains an engineering follow-up."
+    },
+    {
+      "id": "nbs-restoration",
+      "intervention_type": "restoration",
+      "plan_action": "Nature-based / bioengineering slope work aligned with published informal-area climate-resilience guidance.",
+      "source": "https://unhabitat.org/strategy-paper-on-nature-based-solutions-to-build-climate-resilience-in-informal-areas",
+      "geographic_scope": "Informal and marginalized hillside settlements, applied here only as documentary typology alignment",
+      "evidence_status": "documentary",
+      "prerequisites": [
+        "Species, tenure and maintenance capacity agreed locally",
+        "Maturity delay acknowledged; year-1 effect is not full prior effect"
+      ],
+      "maintenance_responsible": null,
+      "evidence_gap": "UN-Habitat guidance is not a Medellín species list or a calibrated restoration effect range."
+    },
+    {
+      "id": "community-organization-evolution",
+      "intervention_type": null,
+      "plan_action": "Community organization in Comuna 8 has a documented path from protest to proposal; Ourea treats that as a participation-design lesson, not as a completed consultation record.",
+      "source": "https://researchportal.hw.ac.uk/en/publications/from-protesting-to-proposing-the-evolution-of-community-organizat/",
+      "geographic_scope": "Comuna 8",
+      "evidence_status": "research",
+      "prerequisites": [
+        "Legitimate representatives identified in the pilot",
+        "Veto criteria recorded without converting them into hidden optimizer weights"
+      ],
+      "maintenance_responsible": null,
+      "evidence_gap": "No organization is named as a confirmed Ourea partner. Absence of community_evidence.json means not assessed."
+    }
+  ]
+}

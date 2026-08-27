@@ -1,5 +1,6 @@
 import { RWH_ASSUMPTIONS } from '../config/modelConfig.js';
 import { frontierTakeaway } from '../config/uiCopy.js';
+import { BenchmarkPanel } from './BenchmarkPanel.jsx';
 import { Metric, MetricGroup } from './Metric.jsx';
 import { ParetoPanel } from './ParetoPanel.jsx';
 import { SectionHeading } from './SectionHeading.jsx';
@@ -28,6 +29,11 @@ export function DecisionAnalysis({
   paretoError,
   onAnalyzePareto,
   activePolicyLabel,
+  benchmark,
+  breakage,
+  benchmarkBusy,
+  benchmarkError,
+  onAnalyzeBenchmark,
 }) {
   const takeaway = frontierTakeaway(frontier);
 
@@ -100,7 +106,7 @@ export function DecisionAnalysis({
           <b>Budget robustness frontier</b>
           <span>How the active policy lens changes as the planning-credit budget grows.</span>
         </div>
-        <button type="button" onClick={onAnalyzeFrontier} disabled={frontierBusy}>
+        <button type="button" data-testid="analyze-frontier" onClick={onAnalyzeFrontier} disabled={frontierBusy}>
           {frontierBusy ? 'Analyzing…' : frontier?.length ? 'Recompute' : 'Analyze frontier'}
         </button>
       </div>
@@ -149,8 +155,16 @@ export function DecisionAnalysis({
         onAnalyze={onAnalyzePareto}
       />
 
+      <BenchmarkPanel
+        benchmark={benchmark}
+        breakage={breakage}
+        busy={benchmarkBusy}
+        error={benchmarkError}
+        onAnalyze={onAnalyzeBenchmark}
+      />
+
       <div className="export-row">
-        <button type="button" className="primary" onClick={onExport} disabled={!canExport}>
+        <button type="button" className="primary" data-testid="export-package" onClick={onExport} disabled={!canExport}>
           Export decision package
         </button>
         <small>

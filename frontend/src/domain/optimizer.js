@@ -201,17 +201,20 @@ export function optimizeRobustPortfolio({
   scenarioSamples = MODEL_LIMITS.optimizerSamples,
   scenarioSeed = MODEL_PARAMETERS.scenarioUncertainty.baseSeed,
   projectSeedBase = MODEL_PARAMETERS.scenarioUncertainty.baseSeed,
+  freezeScenario = false,
 }) {
   const policy = objectiveProfile(profile);
   const budget = Math.max(0, Number(budgetCredits));
   const sampleCount = Math.max(1, Math.floor(Number(scenarioSamples)));
-  const exposureSamples = exposureEnsembleByCell(
-    context,
-    scenario,
-    stressModel,
-    sampleCount,
-    scenarioSeed,
-  );
+  const exposureSamples = freezeScenario
+    ? [exposureByCell(context, scenario, stressModel)]
+    : exposureEnsembleByCell(
+        context,
+        scenario,
+        stressModel,
+        sampleCount,
+        scenarioSeed,
+      );
 
   if (!exposureSamples.length || budget <= 0) {
     return {

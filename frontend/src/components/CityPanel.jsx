@@ -207,7 +207,7 @@ export function CityPanel({
             {BRAND.provingGroundRole} — 1,588 buildings, real terrain, hazard, social exposure
             and access. Not chosen because it ranks first under every lens.
           </p>
-          <button type="button" className="primary citycta" onClick={onOpenSandbox}>
+          <button type="button" className="primary citycta" data-testid="open-sandbox" onClick={onOpenSandbox}>
             Open the Llanaditas proving ground
           </button>
         </div>

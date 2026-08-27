@@ -26,6 +26,7 @@ export function TopBar({
       <nav className="scope" aria-label="Product scale">
         <button
           type="button"
+          data-testid="scope-city"
           className={scope === 'city' ? 'active' : ''}
           aria-pressed={scope === 'city'}
           onClick={() => onScopeChange('city')}
@@ -34,6 +35,7 @@ export function TopBar({
         </button>
         <button
           type="button"
+          data-testid="scope-sandbox"
           className={scope === 'sandbox' ? 'active' : ''}
           aria-pressed={scope === 'sandbox'}
           onClick={() => onScopeChange('sandbox')}
@@ -46,6 +48,7 @@ export function TopBar({
         <div className="seg" role="group" aria-label="Active portfolio comparison">
           <button
             type="button"
+            data-testid="view-none"
             className={view === 'none' ? 'active' : ''}
             aria-pressed={view === 'none'}
             onClick={() => onViewChange('none')}
@@ -54,6 +57,7 @@ export function TopBar({
           </button>
           <button
             type="button"
+            data-testid="view-user"
             className={view === 'user' ? 'active' : ''}
             aria-pressed={view === 'user'}
             onClick={() => onViewChange('user')}
@@ -63,6 +67,7 @@ export function TopBar({
           </button>
           <button
             type="button"
+            data-testid="view-ai"
             className={view === 'ai' ? 'active' : ''}
             aria-pressed={view === 'ai'}
             onClick={() => onViewChange('ai')}

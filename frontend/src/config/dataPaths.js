@@ -7,6 +7,7 @@ export const REQUIRED_DATA_FILES = Object.freeze({
   screening: '/data/medellin_city_priority_screen.geojson',
   evidence: '/data/evidence_status.json',
   replayContract: '/data/replay_contract.json',
+  planAlignment: '/data/plan_alignment.json',
 });
 
 export const OPTIONAL_DATA_FILES = Object.freeze({

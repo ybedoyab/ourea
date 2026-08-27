@@ -17,7 +17,9 @@ import {
   monteCarloPortfolio,
 } from '../domain/scenarioEngine.js';
 import { assessCommunitySafeguards } from '../domain/communitySafeguards.js';
-import { normalizeCommunityRecord } from '../config/communityEvidence.js';
+import { compareSelectionStrategies } from '../domain/benchmark.js';
+import { diagnosePortfolioBreaks } from '../domain/sensitivity.js';
+import { INTERVENTION_TYPES, normalizeCommunityRecord } from '../config/communityEvidence.js';
 
 const EMPTY_PLAN = Object.freeze([]);
 const DEFAULT_AI_PROFILE = 'balanced';
@@ -47,6 +49,10 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
   const [paretoBusy, setParetoBusy] = useState(false);
   const [paretoError, setParetoError] = useState(null);
   const [sessionCommunityRecords, setSessionCommunityRecords] = useState([]);
+  const [benchmark, setBenchmark] = useState(null);
+  const [breakage, setBreakage] = useState(null);
+  const [benchmarkBusy, setBenchmarkBusy] = useState(false);
+  const [benchmarkError, setBenchmarkError] = useState(null);
 
   const context = useMemo(
     () => (data ? createScenarioContext(data.buildings, data.cells) : null),
@@ -107,14 +113,25 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     );
   }, [selectedCellId, selectedType, userPlan, userCost, budgetCredits]);
 
+  const communityCatalog = useMemo(
+    () => ({
+      cellIds: new Set(
+        (data?.cells?.features ?? []).map((feature) => Number(feature.properties.cell_id)),
+      ),
+      interventionTypes: INTERVENTION_TYPES,
+    }),
+    [data],
+  );
+
   const communityAssessment = useMemo(
     () =>
       assessCommunitySafeguards({
         projects: activePlan,
         communityFile: data?.communityEvidence ?? null,
         sessionRecords: sessionCommunityRecords,
+        catalog: communityCatalog,
       }),
-    [activePlan, data, sessionCommunityRecords],
+    [activePlan, data, sessionCommunityRecords, communityCatalog],
   );
 
   function clearDerivedDecisionProducts() {
@@ -128,6 +145,9 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     setStabilityError(null);
     setPareto(null);
     setParetoError(null);
+    setBenchmark(null);
+    setBreakage(null);
+    setBenchmarkError(null);
     setView((current) => (current === 'ai' ? 'none' : current));
   }
 
@@ -279,6 +299,40 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     }, 0);
   }
 
+  function analyzeBenchmark() {
+    if (!context || !data || benchmarkBusy) return;
+    setBenchmarkBusy(true);
+    setBenchmarkError(null);
+    window.setTimeout(() => {
+      try {
+        const comparison = compareSelectionStrategies({
+          context,
+          cellsGeoJson: data.cells,
+          scenario,
+          budgetCredits,
+          profile: selectedAiProfileId,
+        });
+        setBenchmark(comparison);
+        const robust = comparison.strategies.find((item) => item.id === 'ourea_robust');
+        setBreakage(
+          diagnosePortfolioBreaks({
+            context,
+            cellsGeoJson: data.cells,
+            plan: activePlan.length ? activePlan : robust?.plan ?? [],
+            alternativePlan: comparison.strategies.find((item) => item.id === 'hazard_only')?.plan,
+            scenario,
+            budgetCredits,
+            profile: selectedAiProfileId,
+          }),
+        );
+      } catch (error) {
+        setBenchmarkError(error instanceof Error ? error.message : String(error));
+      } finally {
+        setBenchmarkBusy(false);
+      }
+    }, 0);
+  }
+
   function changeView(nextView) {
     if (nextView === 'ai' && !aiPlan.length) return;
     if (nextView === 'user' && !userPlan.length) return;
@@ -338,7 +392,6 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     capturedVolumeM3,
     canAddSelected,
     communityAssessment,
-    sessionCommunityRecords,
     addSelectedIntervention,
     removeUserProject,
     clearUserPlan,
@@ -347,6 +400,11 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     analyzeFrontier,
     analyzeStability,
     analyzePareto,
+    analyzeBenchmark,
+    benchmark,
+    breakage,
+    benchmarkBusy,
+    benchmarkError,
     upsertSessionCommunityRecord,
   };
 }

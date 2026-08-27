@@ -18,7 +18,7 @@ export function StabilityPanel({
             Which decisions keep coming back when climate and effect uncertainty is resampled?
           </span>
         </div>
-        <button type="button" onClick={onAnalyze} disabled={busy}>
+        <button type="button" data-testid="analyze-stability" onClick={onAnalyze} disabled={busy}>
           {busy ? 'Analyzing…' : stability ? 'Recompute' : 'Analyze stability'}
         </button>
       </div>

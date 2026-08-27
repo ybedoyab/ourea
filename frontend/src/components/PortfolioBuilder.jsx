@@ -42,6 +42,7 @@ function InterventionTools({ selectedType, onSelect, selectedCell }) {
             className={selectedType === type ? `tool active tool-${type}` : `tool tool-${type}`}
             onClick={() => onSelect(type)}
             aria-pressed={selectedType === type}
+            data-testid={`select-type-${type}`}
           >
             <span className="tool-icon"><InterventionIcon type={type} /></span>
             <b>{config.label}</b>
@@ -84,7 +85,7 @@ function CellCard({ cell, selectedType, canAdd, onAdd }) {
         <i>Drain {Math.round(Number(cell.drainage_corridor_proxy ?? 0) * 100)}%</i>
         <i>Restore {Math.round(Number(cell.restoration_opportunity ?? 0) * 100)}%</i>
       </div>
-      <button type="button" className="primary" onClick={onAdd} disabled={!canAdd}>
+      <button type="button" className="primary" data-testid="add-intervention" onClick={onAdd} disabled={!canAdd}>
         Add {config.label} · {config.costCredits} credit{config.costCredits > 1 ? 's' : ''}
       </button>
     </div>
@@ -97,6 +98,9 @@ export function PortfolioBuilder({
   selectedType,
   onSelectType,
   selectedCell,
+  cells,
+  selectedCellId,
+  onSelectCell,
   userPlan,
   userCost,
   canAddSelected,
@@ -138,6 +142,26 @@ export function PortfolioBuilder({
           Relative budget units until local cost distributions are comparable. Your plan:
           {' '}{userCost}/{budgetCredits}.
         </small>
+
+        <label htmlFor="planning-cell">
+          Planning cell
+        </label>
+        <select
+          id="planning-cell"
+          data-testid="select-cell"
+          aria-label="Planning cell"
+          value={selectedCellId ?? ''}
+          onChange={(event) =>
+            onSelectCell?.(event.target.value === '' ? null : Number(event.target.value))
+          }
+        >
+          <option value="">Choose a planning cell</option>
+          {(cells?.features ?? []).map((feature) => (
+            <option key={feature.properties.cell_id} value={feature.properties.cell_id}>
+              Cell {feature.properties.cell_id}
+            </option>
+          ))}
+        </select>
 
         <InterventionTools
           selectedType={selectedType}

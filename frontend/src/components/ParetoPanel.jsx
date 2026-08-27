@@ -40,7 +40,7 @@ export function ParetoPanel({
           <b>Sampled multi-objective trade-offs</b>
           <span>Non-dominated portfolios among sampled policy weights.</span>
         </div>
-        <button type="button" onClick={onAnalyze} disabled={busy}>
+        <button type="button" data-testid="analyze-pareto" onClick={onAnalyze} disabled={busy}>
           {busy ? 'Analyzing…' : pareto ? 'Recompute' : 'Analyze trade-offs'}
         </button>
       </div>

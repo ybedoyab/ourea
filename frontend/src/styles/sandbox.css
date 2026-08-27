@@ -742,6 +742,10 @@
   border-color: var(--accent);
 }
 
+.community-banner.status-invalid {
+  border-color: #c45c5c;
+}
+
 .community-banner b {
   font-size: 13px;
 }
@@ -787,4 +791,35 @@
   border-radius: 8px;
   background: var(--surface);
   color: var(--text-primary);
+}
+
+.alignment-list,
+.benchmark-box,
+.breakage-box {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.alignment-card,
+.breakage-box {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.alignment-card span,
+.alignment-card small,
+.breakage-box span,
+.breakage-box small {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.benchmark-box .frontier-row {
+  grid-template-columns: 1fr 1fr 1fr;
 }

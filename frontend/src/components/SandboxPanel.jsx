@@ -3,6 +3,7 @@ import { CommunitySafeguardsPanel } from './CommunitySafeguardsPanel.jsx';
 import { DecisionAnalysis } from './DecisionAnalysis.jsx';
 import { EvidencePanel } from './EvidencePanel.jsx';
 import { LayerControls } from './LayerControls.jsx';
+import { PlanAlignmentPanel } from './PlanAlignmentPanel.jsx';
 import { PortfolioBuilder } from './PortfolioBuilder.jsx';
 import { ReplayPanel } from './ReplayPanel.jsx';
 import { ScenarioControls } from './ScenarioControls.jsx';
@@ -21,6 +22,9 @@ export function SandboxPanel({
   selectedType,
   onSelectType,
   selectedCell,
+  cells,
+  selectedCellId,
+  onSelectCell,
   userPlan,
   userCost,
   canAddSelected,
@@ -54,6 +58,12 @@ export function SandboxPanel({
   communityAssessment,
   activePlan,
   onRecordCommunityEvidence,
+  planAlignment,
+  benchmark,
+  breakage,
+  benchmarkBusy,
+  benchmarkError,
+  onAnalyzeBenchmark,
   layerState,
   onToggleLayer,
 }) {
@@ -91,6 +101,9 @@ export function SandboxPanel({
         selectedType={selectedType}
         onSelectType={onSelectType}
         selectedCell={selectedCell}
+        cells={cells}
+        selectedCellId={selectedCellId}
+        onSelectCell={onSelectCell}
         userPlan={userPlan}
         userCost={userCost}
         canAddSelected={canAddSelected}
@@ -129,15 +142,21 @@ export function SandboxPanel({
         paretoError={paretoError}
         onAnalyzePareto={onAnalyzePareto}
         activePolicyLabel={aiDiagnostics?.profile?.label}
+        benchmark={benchmark}
+        breakage={breakage}
+        benchmarkBusy={benchmarkBusy}
+        benchmarkError={benchmarkError}
+        onAnalyzeBenchmark={onAnalyzeBenchmark}
       />
 
+      <EvidencePanel evidence={evidence} />
       <CommunitySafeguardsPanel
         assessment={communityAssessment}
         activePlan={activePlan}
         onRecord={onRecordCommunityEvidence}
       />
+      <PlanAlignmentPanel alignment={planAlignment} />
       <ReplayPanel replay={replay} contract={replayContract} />
-      <EvidencePanel evidence={evidence} />
       <LayerControls layerState={layerState} onToggleLayer={onToggleLayer} />
     </>
   );

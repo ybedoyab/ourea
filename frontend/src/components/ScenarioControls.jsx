@@ -81,7 +81,7 @@ export function ScenarioControls({ scenario, onScenarioChange, summary, metrics 
       <small>How wet the hillside is before the storm.</small>
 
       <label htmlFor="planning-year">
-        Planning horizon / maturity <b>Year {scenario.planningYear}</b>
+        Restoration maturity <b>Year {scenario.planningYear}</b>
       </label>
       <input
         id="planning-year"
@@ -93,7 +93,10 @@ export function ScenarioControls({ scenario, onScenarioChange, summary, metrics 
         onChange={(event) => update('planningYear', Number(event.target.value))}
         aria-valuetext={`Year ${scenario.planningYear}`}
       />
-      <small>Restoration only reaches full prior effect after its maturity window.</small>
+      <small>
+        Restoration reaches its full development-prior effect only after the maturity window.
+        This control is not a temporal investment pathway or sequencing optimizer.
+      </small>
 
       <div className="metrics">
         <Metric label="Buildings" value={summary?.buildings?.toLocaleString() ?? '—'} />

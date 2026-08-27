@@ -381,6 +381,18 @@ assert.ok(
   `terrain tile pyramid unexpectedly small: ${terrainCount}`,
 );
 
+const alignment = JSON.parse(
+  await readFile(join(root, 'public', 'data', 'plan_alignment.json'), 'utf8'),
+);
+assert.equal(alignment.schema, 'ourea-plan-alignment');
+assert.equal(alignment.schema_version, 1);
+assert.equal(alignment.status, 'documentary-alignment-not-community-support');
+assert.ok(Array.isArray(alignment.entries) && alignment.entries.length >= 4);
+assert.match(String(alignment.guardrail), /not community endorsement/i);
+assert.ok(
+  alignment.entries.every((entry) => entry.plan_action && entry.source && entry.evidence_gap),
+);
+
 console.log(
   `Ourea data validation passed: ${buildings.features.length} buildings, ` +
   `${cells.features.length} cells, ${screening.features.length} city polygons, ` +

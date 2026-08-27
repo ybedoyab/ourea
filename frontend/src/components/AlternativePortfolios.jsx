@@ -32,7 +32,7 @@ export function AlternativePortfolios({
             Four transparent policy lenses. Same data and budget — different public-policy weights.
           </span>
         </div>
-        <button type="button" onClick={onGenerate} className="primary" disabled={busy}>
+        <button type="button" onClick={onGenerate} className="primary" disabled={busy} data-testid="generate-alternatives">
           {busy
             ? 'Generating…'
             : alternatives?.length
@@ -64,6 +64,7 @@ export function AlternativePortfolios({
                 key={option.profileId}
                 type="button"
                 className={active ? 'alternative-card active' : 'alternative-card'}
+                data-testid={`select-profile-${option.profileId}`}
                 onClick={() => onSelect(option.profileId)}
                 aria-pressed={active}
               >

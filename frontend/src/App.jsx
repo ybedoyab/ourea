@@ -83,6 +83,9 @@ export default function App() {
         summary: data.summary,
         evidence: data.evidence,
         community: workspace.communityAssessment,
+        benchmark: workspace.benchmark,
+        breakage: workspace.breakage,
+        planAlignment: data.planAlignment,
       }),
     );
   }
@@ -142,6 +145,9 @@ export default function App() {
             selectedType={selectedType}
             onSelectType={setSelectedType}
             selectedCell={selectedCell}
+            cells={data?.cells}
+            selectedCellId={selectedCellId}
+            onSelectCell={setSelectedCellId}
             userPlan={workspace.userPlan}
             userCost={workspace.userCost}
             canAddSelected={workspace.canAddSelected}
@@ -175,6 +181,12 @@ export default function App() {
             communityAssessment={workspace.communityAssessment}
             activePlan={workspace.activePlan}
             onRecordCommunityEvidence={workspace.upsertSessionCommunityRecord}
+            planAlignment={data?.planAlignment}
+            benchmark={workspace.benchmark}
+            breakage={workspace.breakage}
+            benchmarkBusy={workspace.benchmarkBusy}
+            benchmarkError={workspace.benchmarkError}
+            onAnalyzeBenchmark={workspace.analyzeBenchmark}
             layerState={layerState}
             onToggleLayer={(key) =>
               setLayerState((state) => ({
