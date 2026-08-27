@@ -1,13 +1,22 @@
-# OUREA changelog
+# Ourea changelog
+
+## Identity, community safeguards and documentation — 2026-08-27
+
+- The product is named **Ourea** throughout the repository. Retired marketing labels and former product names were removed from UI, docs, data contracts, scripts and artifacts.
+- Decision export uses `schema: ourea-decision-package` with `schema_version: 1`.
+- Documentation moved under `docs/` with a navigable index.
+- Added Community Evidence & Safeguards as a visible, non-scoring layer. Missing records mean not assessed.
+- Documented Moravia as a learning case for participation and in-situ adaptation, not as a proving ground or optimizer target.
+- Split App responsibilities into data, map and portfolio hooks; split styles into focused sheets; centralized guardrails and data paths.
+- Scientific counts, seeds, rankings and optimizer results were not intentionally changed.
 
 ## Brand / judge-ready UI — 2026-08-18
 
-- Rebranded the product from LaderaLab to **OUREA** (Optimized Urban Resilience through Equity & Adaptation).
+- Established the Ourea product identity (Optimized Urban Resilience through Equity & Adaptation).
 - Added inline SVG mark, design tokens, numbered journey, intervention cards, P10–P90 interval, grouped evidence and SIATA “calibration bridge” framing.
-- Decision export schema is now `ourea-decision-package/v2` (`ourea_decision_package_v4.json`).
 - Numerical model, optimizer, uncertainty and evidence meanings were not changed.
 
-## Competition V4 — 2026-08-18
+## City-scale screening and named policy profiles — 2026-08-18
 
 ### City scale
 - Replaced V3 hazard-only city screen with official hazard + official 2026 projected population + official 2023 IMCV/AMPI.
@@ -47,7 +56,7 @@
 - Low-regret policy strengthened to create a genuinely risk-averse lower-tail portfolio rather than duplicate another policy lens.
 
 ### Formal optimization
-- Updated Python MILP to consume the V4 Balanced objective profile.
+- Updated Python MILP to consume the Ourea Balanced objective profile.
 - Added formal all-policy structural cross-checks.
 - Each formal selected plan receives nonlinear 500-future reevaluation.
 
@@ -63,18 +72,18 @@
 
 ### Evidence / governance
 - Added city population projection, official IMCV and derived city-screen statuses to the evidence registry.
-- Expanded decision export to schema v2 with city lens, policy alternatives, sampled trade-offs and guardrails.
+- Expanded decision export with city lens, policy alternatives, sampled trade-offs and guardrails.
 
 ### QA
 - Expanded Node domain/service test suite to 30 tests.
 - Expanded SIATA Python regression suite to 8 tests (ingestion + event diagnostics).
-- V4 city data validation covers 248 population-matched barrios.
+- Ourea city data validation covers 248 population-matched barrios.
 - Source validation prevents stale V3 city-screen asset use and duplicated policy-weight constants.
-- Formal V4 Python validation covers city screen, alternatives, trade-offs, browser checkpoints and MILP.
+- Formal Ourea Python validation covers city screen, alternatives, trade-offs, browser checkpoints and MILP.
 
-## V3 — 2026-08-18
+## Earlier modular architecture — 2026-08-18
 
-V3 introduced:
+That snapshot introduced:
 - modular frontend/domain/services architecture;
 - true 3D terrain;
 - common-random-number Monte Carlo;
