@@ -16,10 +16,12 @@ from __future__ import annotations
 from pathlib import Path
 import json
 
-import geopandas as gpd
 import numpy as np
 import pandas as pd
 from scipy.optimize import Bounds, LinearConstraint, milp
+
+from geojson_io import read_local_geojson
+from geopandas import GeoDataFrame
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "frontend" / "public" / "data"
@@ -142,7 +144,7 @@ def _scenario_draws(
 
 def _cell_exposure_ensemble(
     model: dict,
-    buildings: gpd.GeoDataFrame,
+    buildings: GeoDataFrame,
     rain: float = 95,
     wet: float = 0.45,
     samples: int | None = None,
@@ -293,8 +295,8 @@ def build_project_table(
     policy = optimizer["objectiveProfiles"][profile_name]
     interventions = model["interventions"]
 
-    cells = gpd.read_file(DATA / "planning_cells.geojson")
-    buildings = gpd.read_file(DATA / "buildings.geojson")
+    cells = read_local_geojson(DATA / "planning_cells.geojson")
+    buildings = read_local_geojson(DATA / "buildings.geojson")
     exposure_ensemble = _cell_exposure_ensemble(
         model,
         buildings,
@@ -434,7 +436,7 @@ def optimize(
 
 def reevaluate_nonlinear(
     selected: pd.DataFrame,
-    cells: gpd.GeoDataFrame,
+    cells: GeoDataFrame,
     rain: float = 95,
     wet: float = 0.45,
     year: float = 1,
@@ -453,7 +455,7 @@ def reevaluate_nonlinear(
     model = load_model()
     optimizer = model["optimizer"]
     interventions = model["interventions"]
-    buildings = gpd.read_file(DATA / "buildings.geojson")
+    buildings = read_local_geojson(DATA / "buildings.geojson")
     exposure = _cell_exposure_ensemble(
         model,
         buildings,

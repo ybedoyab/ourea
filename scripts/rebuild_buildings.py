@@ -1,21 +1,12 @@
-"""
-Rebuild only the detailed building frontend asset from an original enriched source.
-
-This script is intentionally narrow. The complete v2 artifact is runnable without
-raw source files. City screening, terrain tiles, planning cells and other derived
-assets require their original municipal/DANE inputs.
-
-Usage:
-  python scripts/rebuild_buildings.py /path/to/buildings_population_proxy.geojson
-"""
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
-import geopandas as gpd
 import pandas as pd
 from shapely.geometry import box
+
+from geojson_io import read_local_geojson
 
 BBOX = (-75.541116, 6.250378, -75.536620, 6.254920)
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,7 +14,7 @@ OUTPUT = ROOT / "frontend" / "public" / "data" / "buildings.geojson"
 
 
 def rebuild(source_path: Path) -> int:
-    buildings = gpd.read_file(source_path)
+    buildings = read_local_geojson(source_path)
     sandbox = box(*BBOX)
     buildings = buildings[
         buildings.geometry.representative_point().within(sandbox)
@@ -41,7 +32,7 @@ def rebuild(source_path: Path) -> int:
     missing = sorted(required.difference(buildings.columns))
     if missing:
         raise ValueError(
-            "Source is not the fully enriched v2 building dataset. "
+            "Source is not the fully enriched building dataset. "
             f"Missing columns: {', '.join(missing)}"
         )
 
@@ -51,7 +42,7 @@ def rebuild(source_path: Path) -> int:
         .clip(lower=1, upper=20)
         * 3
     )
-    buildings.to_file(OUTPUT, driver="GeoJSON")
+    OUTPUT.write_text(buildings.to_json(), encoding="utf-8")
     return len(buildings)
 
 

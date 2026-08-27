@@ -1,5 +1,13 @@
 # Ourea — scripts
 
+## `geojson_io.py`
+
+Shared loader for versioned local GeoJSON. It parses JSON and builds a `GeoDataFrame` with `from_features()`, so QA does not need Fiona/pyogrio native readers. CRS defaults to EPSG:4326 / CRS84.
+
+## `test_geojson_io.py`
+
+Regression tests for valid FeatureCollections, empty geometry, malformed JSON and missing properties.
+
 ## `validate_project.py`
 
 Full artifact validator:
@@ -64,6 +72,8 @@ Creates:
 - `SHA256SUMS.txt`
 
 The Ourea manifest records city-screen, policy-alternative, sampled trade-off and formal cross-check metadata.
+
+On macOS/Linux the entry scripts `run_mac_linux.sh` and `qa_mac_linux.sh` must keep the Git executable bit so they can be invoked as documented in the root README.
 
 ## `build_city_screen.py`
 

@@ -22,9 +22,10 @@ import unicodedata
 import xml.etree.ElementTree as ET
 import zipfile
 
-import geopandas as gpd
 import numpy as np
 import pandas as pd
+
+from geojson_io import read_local_geojson
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BASELINE = ROOT / "data" / "derived" / "city_screen_hazard_baseline.geojson"
@@ -171,7 +172,7 @@ def minmax(series: pd.Series) -> pd.Series:
 
 
 def build(baseline_path: Path, population_path: Path, imcv_path: Path, output_path: Path):
-    baseline = gpd.read_file(baseline_path)
+    baseline = read_local_geojson(baseline_path)
     baseline["_norm"] = baseline["BARRIO"].map(normalize)
     index = {value: idx for idx, value in enumerate(baseline["_norm"])}
     aliases = {normalize(source): normalize(target) for source, target in ALIASES.items()}
@@ -273,7 +274,10 @@ def build(baseline_path: Path, population_path: Path, imcv_path: Path, output_pa
         baseline["rank_hazard_only"] = baseline["screening_rank"]
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    baseline.drop(columns=["_norm"]).to_file(output_path, driver="GeoJSON")
+    output_path.write_text(
+        baseline.drop(columns=["_norm"]).to_json(),
+        encoding="utf-8",
+    )
 
     DERIVED.mkdir(parents=True, exist_ok=True)
     match.drop(columns=["polygon_index"]).to_csv(

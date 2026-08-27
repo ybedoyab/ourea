@@ -31,7 +31,7 @@ if errorlevel 1 exit /b 1
 
 echo == SIATA ingestion + event diagnostic regression tests ==
 cd scripts
-python -m unittest -v test_siata_ingest.py test_siata_event_diagnostics.py
+python -m unittest -v test_siata_ingest.py test_siata_event_diagnostics.py test_geojson_io.py
 if errorlevel 1 exit /b 1
 cd ..
 

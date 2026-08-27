@@ -4,9 +4,10 @@ from __future__ import annotations
 from pathlib import Path
 import json
 
-import geopandas as gpd
 import numpy as np
 import pandas as pd
+
+from geojson_io import read_local_geojson
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "frontend" / "public" / "data"
@@ -27,11 +28,11 @@ def finite_series(series: pd.Series) -> pd.Series:
     return pd.to_numeric(series, errors="coerce")
 
 
-buildings = gpd.read_file(DATA / "buildings.geojson")
-cells = gpd.read_file(DATA / "planning_cells.geojson")
-hazard = gpd.read_file(DATA / "hazard.geojson")
-roads = gpd.read_file(DATA / "roads.geojson")
-screening = gpd.read_file(DATA / "medellin_city_priority_screen.geojson")
+buildings = read_local_geojson(DATA / "buildings.geojson")
+cells = read_local_geojson(DATA / "planning_cells.geojson")
+hazard = read_local_geojson(DATA / "hazard.geojson")
+roads = read_local_geojson(DATA / "roads.geojson")
+screening = read_local_geojson(DATA / "medellin_city_priority_screen.geojson")
 summary = json.loads((DATA / "summary.json").read_text(encoding="utf-8"))
 registry = json.loads(
     (DATA / "intervention_registry.json").read_text(encoding="utf-8")
@@ -510,5 +511,12 @@ require(
     "Observed community_evidence.json must not ship invented social data",
 )
 ok("Community evidence template is present and no fabricated community file is shipped")
+
+alignment = json.loads((DATA / "plan_alignment.json").read_text(encoding="utf-8"))
+require(alignment["schema"] == "ourea-plan-alignment", "Plan alignment schema changed")
+require(int(alignment["schema_version"]) == 1, "Plan alignment schema_version changed")
+require("documentary" in alignment["status"], "Plan alignment must remain documentary")
+require(len(alignment["entries"]) >= 3, "Plan alignment registry is unexpectedly empty")
+ok("Comuna 8 documentary plan alignment is present and not treated as community support")
 
 print("\nAll Ourea validation checks passed.")

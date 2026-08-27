@@ -26,7 +26,7 @@ python -m compileall -q scripts
 
 echo "== SIATA ingestion + event diagnostic regression tests =="
 cd "$ROOT/scripts"
-python -m unittest -v test_siata_ingest.py test_siata_event_diagnostics.py
+python -m unittest -v test_siata_ingest.py test_siata_event_diagnostics.py test_geojson_io.py
 cd "$ROOT"
 
 echo "== Browser checkpoints =="
