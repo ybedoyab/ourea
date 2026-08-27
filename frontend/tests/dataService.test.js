@@ -93,3 +93,38 @@ test('optional community evidence file may be absent without failing required da
     globalThis.fetch = originalFetch;
   }
 });
+
+test('SPA HTML fallback for community evidence is absent rather than invalid', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('community_evidence.json')) {
+      return response({ body: '<!doctype html><html></html>' });
+    }
+    return response({ body: '{}' });
+  };
+
+  try {
+    const data = await loadOureaData();
+    assert.equal(data.communityEvidence, null);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('malformed optional community evidence is invalid rather than absent', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('community_evidence.json')) {
+      return response({ body: '{not-json' });
+    }
+    return response({ body: '{}' });
+  };
+
+  try {
+    const data = await loadOureaData();
+    assert.equal(data.communityEvidence.__invalid, true);
+    assert.notEqual(data.communityEvidence, null);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});

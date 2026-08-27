@@ -30,10 +30,37 @@ Allowed fields per cell or project:
 | `accessibility_concern` | `unknown`, `none`, `possible`, `confirmed` |
 | `evidence_type` | `none`, `participatory_input`, `official_record`, `field_observation`, `research` |
 | `source` | text or null |
-| `as_of` | date or null |
+| `as_of` | ISO date `YYYY-MM-DD` or null |
+| `process_reference` | optional process or source reference; not personal data |
 | `notes` | text or null |
 
-Invalid categories fall back to `not_assessed` / `unknown` / `none`. There is no composite social score.
+Invalid categories in a session draft fall back to `not_assessed` / `unknown` / `none`. A **file** with the wrong schema, unknown `cell_id`, unknown intervention type, or a non-ISO `as_of` is **invalid**, not absent.
+
+Do not record names, phone numbers, identity documents, exact addresses or other personal data.
+
+There is no composite social score.
+
+## Status transitions
+
+| Condition | Portfolio status |
+|---|---|
+| File missing | `not_assessed` |
+| File malformed or schema-invalid | `invalid` |
+| Any selected project has an unresolved safeguard | `requires_deliberation` |
+| Every selected project is a documented `validated` review | `community_reviewed` |
+| Any selected project is `planned`, `in_progress`, or `validated` without required fields | `incomplete` |
+| Otherwise | `not_assessed` |
+
+`planned` and `in_progress` never count as a completed community review.
+
+Only `consultation_status: validated` can become “Community review recorded”, and only when:
+
+- `evidence_type` is not `none`;
+- `source` is present;
+- `as_of` is a valid ISO date;
+- every substantive field is other than `unknown`.
+
+Absence of data is never treated as support, low risk or acceptance.
 
 ## Safeguards
 
@@ -67,6 +94,6 @@ Export schema:
 }
 ```
 
-The package includes community validation status, participatory records, unassessed projects, activated safeguards, unresolved concerns, provenance dates, and the guardrail that community evidence is not a prediction of acceptance.
+The package includes community validation status, file errors, participatory records for the **active portfolio only**, separate `session_history`, a privacy warning, unassessed projects, activated safeguards, unresolved concerns, provenance dates, and the guardrail that community evidence is not a prediction of acceptance.
 
 Canonical scientific guardrails live in `frontend/src/config/scientificGuardrails.json`.

@@ -56,6 +56,9 @@ export function buildDecisionPackage({
   summary,
   evidence,
   community,
+  benchmark,
+  breakage,
+  planAlignment,
 }) {
   const packageProjects = projects.map((project) => ({
     cell_id: Number(project.cell_id),
@@ -82,6 +85,7 @@ export function buildDecisionPackage({
       rain_mm: Number(scenario.rainMm),
       antecedent_wetness: Number(scenario.antecedentWetness),
       planning_year: Number(scenario.planningYear),
+      role: 'restoration-maturity-and-effect-timing-not-temporal-pathway-optimization',
       status: 'hypothetical-development-scenario-not-SIATA-calibrated',
     },
     budget: {
@@ -180,12 +184,17 @@ export function buildDecisionPackage({
       validation_status: communityAssessment.validation_status,
       validation_label: communityAssessment.validation_label,
       file_status: communityAssessment.file_status,
+      file_errors: communityAssessment.file_errors ?? [],
       not_assessed_count: communityAssessment.not_assessed_count,
+      incomplete_count: communityAssessment.incomplete_count,
+      documented_count: communityAssessment.documented_count,
       not_assessed_projects: communityAssessment.not_assessed_projects,
       safeguards_activated: communityAssessment.safeguards_activated,
       unresolved_concerns: communityAssessment.unresolved_concerns,
-      participatory_records: communityAssessment.participatory_records,
       records: communityAssessment.records,
+      participatory_records: communityAssessment.participatory_records,
+      session_history: communityAssessment.session_history ?? [],
+      privacy_warning: communityAssessment.privacy_warning,
       provenance: {
         as_of: new Date().toISOString().slice(0, 10),
         file_status: communityAssessment.file_status,
@@ -193,6 +202,16 @@ export function buildDecisionPackage({
       },
       guardrail: communityAssessment.guardrail,
     },
+    plan_alignment: planAlignment
+      ? {
+          status: planAlignment.status,
+          geographic_scope: planAlignment.geographic_scope,
+          guardrail: planAlignment.guardrail,
+          entries: planAlignment.entries,
+        }
+      : null,
+    selection_benchmark: benchmark ?? null,
+    portfolio_breakage: breakage ?? null,
     guardrails: SCIENTIFIC_GUARDRAILS,
   };
 }

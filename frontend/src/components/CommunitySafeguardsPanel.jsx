@@ -12,6 +12,7 @@ const FIELD_LABELS = {
   maintenance_capacity: 'Maintenance capacity',
   displacement_risk: 'Displacement risk',
   accessibility_concern: 'Accessibility concern',
+  evidence_type: 'Evidence type',
 };
 
 function labelize(value) {
@@ -33,6 +34,10 @@ export function CommunitySafeguardsPanel({
     maintenance_capacity: 'unknown',
     displacement_risk: 'unknown',
     accessibility_concern: 'unknown',
+    evidence_type: 'participatory_input',
+    source: COMMUNITY_COPY.participatoryLabel,
+    as_of: new Date().toISOString().slice(0, 10),
+    process_reference: '',
     notes: '',
   });
 
@@ -53,19 +58,14 @@ export function CommunitySafeguardsPanel({
     onRecord?.({
       ...draft,
       cell_id: Number(draft.cell_id),
-      as_of: new Date().toISOString().slice(0, 10),
-      source: COMMUNITY_COPY.participatoryLabel,
+      process_reference: draft.process_reference || null,
     });
   }
 
   if (!assessment) return null;
 
-  const technicallyOnly =
-    assessment.validation_status === 'not_assessed'
-    || assessment.validation_status === 'incomplete';
-
   return (
-    <section className="community-panel">
+    <section className="community-panel" data-testid="community-panel">
       <SectionHeading step={8} title={COMMUNITY_COPY.title}>
         {COMMUNITY_COPY.heading}
       </SectionHeading>
@@ -73,6 +73,8 @@ export function CommunitySafeguardsPanel({
       <div
         className={`community-banner status-${assessment.validation_status}`}
         role="status"
+        data-testid="community-status"
+        data-status={assessment.validation_status}
       >
         <b>{assessment.validation_label}</b>
         <span>
@@ -81,7 +83,21 @@ export function CommunitySafeguardsPanel({
         </span>
       </div>
 
-      {technicallyOnly && (
+      {assessment.validation_status === 'invalid' && (
+        <p className="warning" role="alert" data-testid="community-invalid">
+          {COMMUNITY_COPY.invalidFile}
+        </p>
+      )}
+      {assessment.file_errors?.length > 0 && (
+        <ul data-testid="community-file-errors">
+          {assessment.file_errors.map((error) => (
+            <li key={error}>{error}</li>
+          ))}
+        </ul>
+      )}
+
+      {(assessment.validation_status === 'not_assessed'
+        || assessment.validation_status === 'incomplete') && (
         <p className="warning" role="note">
           {COMMUNITY_COPY.incomplete}
         </p>
@@ -103,8 +119,9 @@ export function CommunitySafeguardsPanel({
       )}
 
       <p className="hint">{COMMUNITY_COPY.notAPrediction}</p>
+      <p className="hint" role="note">{COMMUNITY_COPY.privacy}</p>
 
-      <form className="community-form" onSubmit={submitRecord}>
+      <form className="community-form" onSubmit={submitRecord} data-testid="community-form">
         <div className="community-form-label">{COMMUNITY_COPY.participatoryLabel}</div>
         <p className="hint">{COMMUNITY_COPY.participatoryHint}</p>
 
@@ -112,6 +129,7 @@ export function CommunitySafeguardsPanel({
           Selected project
           <select
             aria-label="Project for community evidence"
+            data-testid="community-project"
             value={draft.cell_id === '' ? '' : `${draft.cell_id}:${draft.intervention_type}`}
             onChange={(event) => {
               const [cellId, type] = event.target.value.split(':');
@@ -137,6 +155,7 @@ export function CommunitySafeguardsPanel({
             {label}
             <select
               aria-label={label}
+              data-testid={`community-${field}`}
               value={draft[field]}
               onChange={(event) =>
                 setDraft((current) => ({
@@ -155,6 +174,44 @@ export function CommunitySafeguardsPanel({
         ))}
 
         <label>
+          Source
+          <input
+            type="text"
+            aria-label="Community evidence source"
+            data-testid="community-source"
+            value={draft.source}
+            onChange={(event) =>
+              setDraft((current) => ({ ...current, source: event.target.value }))
+            }
+          />
+        </label>
+
+        <label>
+          As of
+          <input
+            type="date"
+            aria-label="Community evidence as-of date"
+            data-testid="community-as-of"
+            value={draft.as_of}
+            onChange={(event) =>
+              setDraft((current) => ({ ...current, as_of: event.target.value }))
+            }
+          />
+        </label>
+
+        <label>
+          Process or source reference
+          <input
+            type="text"
+            aria-label="Process or source reference"
+            value={draft.process_reference}
+            onChange={(event) =>
+              setDraft((current) => ({ ...current, process_reference: event.target.value }))
+            }
+          />
+        </label>
+
+        <label>
           Notes
           <input
             type="text"
@@ -166,7 +223,11 @@ export function CommunitySafeguardsPanel({
           />
         </label>
 
-        <button type="submit" disabled={!selectedOptions.length || draft.cell_id === ''}>
+        <button
+          type="submit"
+          data-testid="community-submit"
+          disabled={!selectedOptions.length || draft.cell_id === ''}
+        >
           Record participatory input
         </button>
       </form>
