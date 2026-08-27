@@ -37,13 +37,6 @@ export const INTERVENTION_COPY = Object.freeze({
   },
 });
 
-export const POLICY_COPY = Object.freeze({
-  balanced: 'Balances robust exposure reduction with modest equity and access weighting.',
-  equity: 'Places substantially more decision weight on cells with high stratum-1 exposure.',
-  access: 'Places substantially more decision weight on cells supporting mapped hillside access.',
-  low_regret: 'Favors fewer projects whose marginal benefit remains defensible in adverse development draws.',
-});
-
 export const STABILITY_BANDS = Object.freeze({
   high: { min: 10 / 12, label: 'High stability' },
   moderate: { min: 6 / 12, label: 'Moderate stability' },

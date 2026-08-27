@@ -56,15 +56,3 @@ export function budgetRobustnessFrontier({
     };
   });
 }
-
-export function frontierPointForBudget(frontier, budgetCredits) {
-  if (!frontier?.length) return null;
-  const budget = Number(budgetCredits);
-  return frontier.reduce((best, point) => {
-    if (!best) return point;
-    return Math.abs(point.budgetCredits - budget) <
-      Math.abs(best.budgetCredits - budget)
-      ? point
-      : best;
-  }, null);
-}
