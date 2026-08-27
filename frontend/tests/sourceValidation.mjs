@@ -57,7 +57,10 @@ for (const file of domainFiles) {
 const packageJson = JSON.parse(
   await readFile(join(frontendRoot, 'package.json'), 'utf8'),
 );
-for (const [name, version] of Object.entries(packageJson.dependencies)) {
+for (const [name, version] of Object.entries({
+  ...packageJson.dependencies,
+  ...(packageJson.devDependencies ?? {}),
+})) {
   assert.notEqual(
     version,
     'latest',

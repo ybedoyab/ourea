@@ -15,12 +15,16 @@
     "test:model": "node --test tests/*.test.js",
     "test:data": "node tests/dataValidation.mjs",
     "test": "npm run test:model && npm run test:data && npm run test:source",
-    "test:source": "node tests/sourceValidation.mjs"
+    "test:source": "node tests/sourceValidation.mjs",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "maplibre-gl": "6.4.1",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "vite": "8.2.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.55.1"
   }
 }
