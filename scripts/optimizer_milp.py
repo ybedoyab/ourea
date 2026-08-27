@@ -523,8 +523,6 @@ def generate_outputs(budgets=range(4, 21)):
     cells_for_10 = None
     result_for_10 = None
 
-    # Candidate coefficients do not depend on budget. Build them once, then
-    # solve only the small binary selection problem for each frontier point.
     model = load_model()
     max_projects_per_cell = int(
         model["optimizer"]["maxProjectsPerCell"]
@@ -640,12 +638,7 @@ def generate_policy_crosschecks(
     wet: float = 0.45,
     year: float = 1,
 ):
-    """Solve every named V4 policy lens with the formal binary model.
-
-    The formal objective still uses linearized robust coefficients, so every
-    selected plan is re-evaluated through the nonlinear multiplicative scenario
-    engine before reporting combined benefit proxies.
-    """
+    """Solve every named policy lens with the formal binary model."""
     model = load_model()
     optimizer = model["optimizer"]
     output = []
@@ -697,7 +690,7 @@ def generate_policy_crosschecks(
         )
 
     destination = (
-        ROOT / "data" / "derived" / "milp_policy_alternatives_v4.json"
+        ROOT / "data" / "derived" / "milp_policy_alternatives.json"
     )
     destination.write_text(
         json.dumps(output, indent=2) + "\n",

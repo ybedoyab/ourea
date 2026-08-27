@@ -32,8 +32,6 @@ export function portfolioSelectionStability({
   const plans = [];
 
   for (let index = 0; index < runCount; index += 1) {
-    // Each run resamples both the climate ensemble and intervention-effect
-    // ensemble while keeping the scenario definition and budget fixed.
     const scenarioSeed = runSeed(index, 2654435761);
     const projectSeedBase = runSeed(index, 2246822519);
 

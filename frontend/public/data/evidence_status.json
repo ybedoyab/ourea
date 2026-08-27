@@ -1,5 +1,7 @@
 {
-  "version": "v4",
+  "schema": "ourea-evidence-registry",
+  "schema_version": 1,
+  "guardrail_source": "frontend/src/config/scientificGuardrails.json",
   "generated_date": "2026-08-18",
   "layers": [
     {
@@ -23,7 +25,7 @@
       "label": "City population projection",
       "status": "official-projection",
       "confidence": "high-at-barrio-total-level",
-      "basis": "Official Medellín/DANE barrio projections, 2018–2030; V4 uses 2026 totals",
+      "basis": "Official Medellín/DANE barrio projections, 2018–2030; Ourea uses 2026 totals",
       "use": "City-scale exposure screening; not within-barrio spatial distribution"
     },
     {
@@ -98,16 +100,6 @@
       "basis": "Local evidence ladder exists, but heterogeneous project scopes are not yet comparable unit costs",
       "use": "Budget constraint without false COP precision"
     }
-  ],
-  "global_guardrails": [
-    "Climate Stress is not landslide probability.",
-    "The V4 city screen is a prioritization proxy, not a dynamic climate forecast or investment recommendation.",
-    "The city hazard-exposure proxy assumes projected population is uniformly distributed inside each barrio.",
-    "The 2023 IMCV/AMPI socioeconomic component is comuna-level and therefore coarse within individual barrios.",
-    "Detailed-sandbox population is a census-based planning proxy, not a current household count.",
-    "Planning credits are not COP.",
-    "Benefit, equity and access metrics are planning proxies, not people saved/protected or avoided losses.",
-    "Policy-objective weights are transparent development settings and require stakeholder co-design.",
-    "The sampled non-dominated set is not an exhaustive mathematical Pareto frontier."
   ]
 }
+

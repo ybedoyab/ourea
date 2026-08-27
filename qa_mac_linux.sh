@@ -6,7 +6,7 @@ cd "$ROOT/frontend"
 echo "== Node model/service/domain tests =="
 node --test tests/*.test.js
 
-echo "== Frontend V4 data validation =="
+echo "== Frontend data validation =="
 node tests/dataValidation.mjs
 
 echo "== Frontend source/DRY validation =="
@@ -29,16 +29,16 @@ cd "$ROOT/scripts"
 python -m unittest -v test_siata_ingest.py test_siata_event_diagnostics.py
 cd "$ROOT"
 
-echo "== Browser V4 checkpoints =="
+echo "== Browser checkpoints =="
 node frontend/scripts/generateCheckpoint.mjs >/dev/null
 
 echo "== Formal MILP + policy cross-checks =="
 python scripts/optimizer_milp.py >/dev/null
 
-echo "== Full V4 geospatial/model/checkpoint validation =="
+echo "== Full geospatial/model/checkpoint validation =="
 python scripts/validate_project.py
 
 echo "== Reproducibility manifest =="
 python scripts/make_manifest.py
 
-echo "Competition V4 QA completed."
+echo "Ourea QA completed."

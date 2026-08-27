@@ -1,0 +1,352 @@
+import { useEffect, useMemo, useState } from 'react';
+import {
+  DEFAULT_SCENARIO,
+  INTERVENTIONS,
+  MODEL_LIMITS,
+  MODEL_PARAMETERS,
+} from '../config/modelConfig.js';
+import { alternativeById, generateAlternativePortfolios } from '../domain/alternatives.js';
+import { budgetRobustnessFrontier } from '../domain/frontier.js';
+import { capturedRainwaterVolumeM3 } from '../domain/interventionModel.js';
+import { fitPlanToBudget, planCostCredits } from '../domain/optimizer.js';
+import { sampledParetoSet } from '../domain/pareto.js';
+import { portfolioSelectionStability } from '../domain/stability.js';
+import {
+  createScenarioContext,
+  evaluatePortfolio,
+  monteCarloPortfolio,
+} from '../domain/scenarioEngine.js';
+import { assessCommunitySafeguards } from '../domain/communitySafeguards.js';
+import { normalizeCommunityRecord } from '../config/communityEvidence.js';
+
+const EMPTY_PLAN = Object.freeze([]);
+const DEFAULT_AI_PROFILE = 'balanced';
+
+export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
+  const [scenario, setScenario] = useState({
+    rainMm: DEFAULT_SCENARIO.rainMm,
+    antecedentWetness: DEFAULT_SCENARIO.antecedentWetness,
+    planningYear: DEFAULT_SCENARIO.planningYear,
+  });
+  const [budgetCredits, setBudgetCredits] = useState(DEFAULT_SCENARIO.budgetCredits);
+  const [userPlan, setUserPlan] = useState([]);
+  const [alternatives, setAlternatives] = useState([]);
+  const [alternativeBusy, setAlternativeBusy] = useState(false);
+  const [alternativeError, setAlternativeError] = useState(null);
+  const [selectedAiProfileId, setSelectedAiProfileId] = useState(DEFAULT_AI_PROFILE);
+  const [aiPlan, setAiPlan] = useState([]);
+  const [aiDiagnostics, setAiDiagnostics] = useState(null);
+  const [view, setView] = useState('none');
+  const [frontier, setFrontier] = useState(null);
+  const [frontierBusy, setFrontierBusy] = useState(false);
+  const [frontierError, setFrontierError] = useState(null);
+  const [stability, setStability] = useState(null);
+  const [stabilityBusy, setStabilityBusy] = useState(false);
+  const [stabilityError, setStabilityError] = useState(null);
+  const [pareto, setPareto] = useState(null);
+  const [paretoBusy, setParetoBusy] = useState(false);
+  const [paretoError, setParetoError] = useState(null);
+  const [sessionCommunityRecords, setSessionCommunityRecords] = useState([]);
+
+  const context = useMemo(
+    () => (data ? createScenarioContext(data.buildings, data.cells) : null),
+    [data],
+  );
+
+  const activePlan = useMemo(
+    () => (view === 'user' ? userPlan : view === 'ai' ? aiPlan : EMPTY_PLAN),
+    [view, userPlan, aiPlan],
+  );
+
+  const userCost = planCostCredits(userPlan);
+  const aiCost = planCostCredits(aiPlan);
+
+  const baseline = useMemo(
+    () => (context ? evaluatePortfolio({ context, projects: EMPTY_PLAN, scenario }) : null),
+    [context, scenario],
+  );
+
+  const metrics = useMemo(() => {
+    if (!context) return null;
+    if (!activePlan.length) return baseline;
+    return evaluatePortfolio({ context, projects: activePlan, scenario });
+  }, [context, activePlan, scenario, baseline]);
+
+  const monteCarlo = useMemo(
+    () =>
+      context && activePlan.length
+        ? monteCarloPortfolio({
+            context,
+            projects: activePlan,
+            scenario,
+            seed: MODEL_PARAMETERS.scenarioUncertainty.comparisonSeed,
+          })
+        : null,
+    [context, activePlan, scenario],
+  );
+
+  const capturedVolumeM3 = useMemo(
+    () => (data ? capturedRainwaterVolumeM3(data.cells, activePlan, scenario.rainMm) : 0),
+    [data, activePlan, scenario.rainMm],
+  );
+
+  const canAddSelected = useMemo(() => {
+    if (selectedCellId == null) return false;
+    const cost = INTERVENTIONS[selectedType].costCredits;
+    const duplicate = userPlan.some(
+      (project) =>
+        Number(project.cell_id) === Number(selectedCellId) && project.type === selectedType,
+    );
+    const cellProjectCount = userPlan.filter(
+      (project) => Number(project.cell_id) === Number(selectedCellId),
+    ).length;
+    return (
+      !duplicate
+      && cellProjectCount < MODEL_LIMITS.maxProjectsPerCell
+      && userCost + cost <= budgetCredits
+    );
+  }, [selectedCellId, selectedType, userPlan, userCost, budgetCredits]);
+
+  const communityAssessment = useMemo(
+    () =>
+      assessCommunitySafeguards({
+        projects: activePlan,
+        communityFile: data?.communityEvidence ?? null,
+        sessionRecords: sessionCommunityRecords,
+      }),
+    [activePlan, data, sessionCommunityRecords],
+  );
+
+  function clearDerivedDecisionProducts() {
+    setAlternatives([]);
+    setAlternativeError(null);
+    setAiPlan([]);
+    setAiDiagnostics(null);
+    setFrontier(null);
+    setFrontierError(null);
+    setStability(null);
+    setStabilityError(null);
+    setPareto(null);
+    setParetoError(null);
+    setView((current) => (current === 'ai' ? 'none' : current));
+  }
+
+  useEffect(() => {
+    setUserPlan((plan) => fitPlanToBudget(plan, budgetCredits));
+    clearDerivedDecisionProducts();
+  }, [budgetCredits]);
+
+  useEffect(() => {
+    clearDerivedDecisionProducts();
+  }, [scenario.rainMm, scenario.antecedentWetness, scenario.planningYear]);
+
+  useEffect(() => {
+    if (view === 'user' && !userPlan.length) setView('none');
+    if (view === 'ai' && !aiPlan.length) setView('none');
+  }, [view, userPlan.length, aiPlan.length]);
+
+  function addSelectedIntervention() {
+    if (!canAddSelected) return;
+    setUserPlan((plan) => [...plan, { cell_id: Number(selectedCellId), type: selectedType }]);
+    setView('user');
+  }
+
+  function removeUserProject(projectToRemove) {
+    setUserPlan((plan) =>
+      plan.filter(
+        (project) =>
+          !(
+            Number(project.cell_id) === Number(projectToRemove.cell_id)
+            && project.type === projectToRemove.type
+          ),
+      ),
+    );
+  }
+
+  function clearUserPlan() {
+    setUserPlan([]);
+    if (view === 'user') setView('none');
+  }
+
+  function selectAlternative(profileId, options = alternatives) {
+    const selected = alternativeById(options, profileId);
+    if (!selected) return;
+    setSelectedAiProfileId(profileId);
+    setAiPlan(selected.plan);
+    setAiDiagnostics(selected.diagnostics);
+    setView(selected.plan.length ? 'ai' : 'none');
+    setFrontier(null);
+    setFrontierError(null);
+    setStability(null);
+    setStabilityError(null);
+  }
+
+  function generateAlternatives() {
+    if (!context || !data || alternativeBusy) return;
+    setAlternativeBusy(true);
+    setAlternativeError(null);
+    window.setTimeout(() => {
+      try {
+        const options = generateAlternativePortfolios({
+          context,
+          cellsGeoJson: data.cells,
+          scenario,
+          budgetCredits,
+        });
+        setAlternatives(options);
+        const recommended = [...options].sort(
+          (a, b) =>
+            b.uncertainty.p10 - a.uncertainty.p10 || b.downsideRetention - a.downsideRetention,
+        )[0];
+        const profileId =
+          recommended?.profileId
+          ?? (alternativeById(options, selectedAiProfileId)
+            ? selectedAiProfileId
+            : DEFAULT_AI_PROFILE);
+        selectAlternative(profileId, options);
+      } catch (error) {
+        setAlternativeError(error instanceof Error ? error.message : String(error));
+      } finally {
+        setAlternativeBusy(false);
+      }
+    }, 0);
+  }
+
+  function analyzeFrontier() {
+    if (!context || !data || frontierBusy) return;
+    setFrontierBusy(true);
+    setFrontierError(null);
+    window.setTimeout(() => {
+      try {
+        setFrontier(
+          budgetRobustnessFrontier({
+            context,
+            cellsGeoJson: data.cells,
+            scenario,
+            profile: selectedAiProfileId,
+          }),
+        );
+      } catch (error) {
+        setFrontierError(error instanceof Error ? error.message : String(error));
+      } finally {
+        setFrontierBusy(false);
+      }
+    }, 0);
+  }
+
+  function analyzeStability() {
+    if (!context || !data || stabilityBusy) return;
+    setStabilityBusy(true);
+    setStabilityError(null);
+    window.setTimeout(() => {
+      try {
+        setStability(
+          portfolioSelectionStability({
+            context,
+            cellsGeoJson: data.cells,
+            scenario,
+            budgetCredits,
+            profile: selectedAiProfileId,
+          }),
+        );
+      } catch (error) {
+        setStabilityError(error instanceof Error ? error.message : String(error));
+      } finally {
+        setStabilityBusy(false);
+      }
+    }, 0);
+  }
+
+  function analyzePareto() {
+    if (!context || !data || paretoBusy) return;
+    setParetoBusy(true);
+    setParetoError(null);
+    window.setTimeout(() => {
+      try {
+        setPareto(
+          sampledParetoSet({
+            context,
+            cellsGeoJson: data.cells,
+            scenario,
+            budgetCredits,
+          }),
+        );
+      } catch (error) {
+        setParetoError(error instanceof Error ? error.message : String(error));
+      } finally {
+        setParetoBusy(false);
+      }
+    }, 0);
+  }
+
+  function changeView(nextView) {
+    if (nextView === 'ai' && !aiPlan.length) return;
+    if (nextView === 'user' && !userPlan.length) return;
+    setView(nextView);
+  }
+
+  function upsertSessionCommunityRecord(partial) {
+    const record = normalizeCommunityRecord(
+      {
+        ...partial,
+        origin: 'participatory_session',
+        evidence_type: 'participatory_input',
+      },
+      { fallbackOrigin: 'participatory_session' },
+    );
+    if (!record) return;
+    setSessionCommunityRecords((current) => {
+      const key = `${record.cell_id}:${record.intervention_type ?? ''}`;
+      const next = current.filter(
+        (item) => `${item.cell_id}:${item.intervention_type ?? ''}` !== key,
+      );
+      next.push(record);
+      return next;
+    });
+  }
+
+  return {
+    context,
+    scenario,
+    setScenario,
+    budgetCredits,
+    setBudgetCredits,
+    userPlan,
+    aiPlan,
+    aiDiagnostics,
+    alternatives,
+    alternativeBusy,
+    alternativeError,
+    selectedAiProfileId,
+    view,
+    changeView,
+    frontier,
+    frontierBusy,
+    frontierError,
+    stability,
+    stabilityBusy,
+    stabilityError,
+    pareto,
+    paretoBusy,
+    paretoError,
+    userCost,
+    aiCost,
+    activePlan,
+    baseline,
+    metrics,
+    monteCarlo,
+    capturedVolumeM3,
+    canAddSelected,
+    communityAssessment,
+    sessionCommunityRecords,
+    addSelectedIntervention,
+    removeUserProject,
+    clearUserPlan,
+    generateAlternatives,
+    selectAlternative,
+    analyzeFrontier,
+    analyzeStability,
+    analyzePareto,
+    upsertSessionCommunityRecord,
+  };
+}

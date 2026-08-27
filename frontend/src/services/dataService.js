@@ -1,17 +1,5 @@
-const REQUIRED_DATA_FILES = Object.freeze({
-  buildings: '/data/buildings.geojson',
-  roads: '/data/roads.geojson',
-  hazard: '/data/hazard.geojson',
-  cells: '/data/planning_cells.geojson',
-  summary: '/data/summary.json',
-  screening: '/data/medellin_city_priority_screen_v4.geojson',
-  evidence: '/data/evidence_status.json',
-  replayContract: '/data/replay_contract.json',
-});
-
-const OPTIONAL_DATA_FILES = Object.freeze({
-  replay: '/data/replay_timeline.json',
-});
+import scientificGuardrails from '../config/scientificGuardrails.json' with { type: 'json' };
+import { OPTIONAL_DATA_FILES, REQUIRED_DATA_FILES } from '../config/dataPaths.js';
 
 async function fetchJson(url, signal, { optional = false } = {}) {
   const response = await fetch(url, { signal });
@@ -20,9 +8,6 @@ async function fetchJson(url, signal, { optional = false } = {}) {
     throw new Error(`Failed to load ${url}: HTTP ${response.status}`);
   }
 
-  // Vite/static SPA servers can return index.html with HTTP 200 for an unknown
-  // optional asset. Parse text explicitly so an absent replay file remains
-  // optional instead of crashing the whole application with JSON.parse().
   const body = await response.text();
   try {
     return JSON.parse(body);
@@ -44,10 +29,17 @@ async function loadEntries(files, signal, optional) {
   return Object.fromEntries(entries);
 }
 
-export async function loadLaderaData(signal) {
+export async function loadOureaData(signal) {
   const [required, optional] = await Promise.all([
     loadEntries(REQUIRED_DATA_FILES, signal, false),
     loadEntries(OPTIONAL_DATA_FILES, signal, true),
   ]);
-  return { ...required, ...optional };
+  return {
+    ...required,
+    ...optional,
+    evidence: {
+      ...required.evidence,
+      global_guardrails: scientificGuardrails.items,
+    },
+  };
 }

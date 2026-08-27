@@ -1,0 +1,87 @@
+@media (max-width: 1366px) {
+  :root {
+    --panel-width: 400px;
+  }
+
+  .panel h1 {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 1040px) {
+  .sub {
+    display: none;
+  }
+
+  .seg button {
+    padding: 7px 8px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 920px) {
+  .panel {
+    top: auto;
+    bottom: 0;
+    width: 100%;
+    height: 50vh;
+    border-top: 1px solid var(--border);
+    border-left: 0;
+  }
+
+  .map {
+    inset: 0 0 50vh;
+  }
+
+  .topbar {
+    right: 16px;
+  }
+
+  .map-legend {
+    bottom: calc(50vh + 12px);
+  }
+
+  .map-inspect {
+    bottom: 12px;
+    max-width: calc(100% - 24px);
+  }
+}
+
+@media (max-width: 620px) {
+  .topbar {
+    left: 8px;
+    right: 8px;
+    flex-wrap: wrap;
+  }
+
+  .brand-group {
+    width: 100%;
+  }
+
+  .scope {
+    margin-left: 0 !important;
+  }
+
+  .metrics,
+  .compare,
+  .metric-group-grid,
+  .alternative-grid,
+  .city-detail-grid,
+  .fact-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .frontier-row,
+  .pareto-row {
+    grid-template-columns: 48px 1fr 1fr;
+  }
+
+  .frontier-row span:last-child,
+  .pareto-row span:last-child {
+    display: none;
+  }
+
+  .map-legend {
+    display: none;
+  }
+}

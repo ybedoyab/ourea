@@ -35,7 +35,6 @@ export function generateAlternativePortfolios({
       projects: optimized.plan,
       scenario,
       runs: MODEL_LIMITS.monteCarloRuns,
-      // Same climate futures across policy lenses.
       seed: MODEL_PARAMETERS.scenarioUncertainty.comparisonSeed,
     });
 

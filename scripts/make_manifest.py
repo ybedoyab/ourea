@@ -1,4 +1,4 @@
-"""Create the OUREA Competition V4 reproducibility manifest."""
+"""Create the Ourea reproducibility manifest."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -14,7 +14,21 @@ def include(path: Path) -> bool:
     if not path.is_file():
         return False
     relative = path.relative_to(ROOT)
-    if any(part in {"__pycache__", "node_modules", "dist", ".git"} for part in relative.parts):
+    if any(
+        part in {
+            "__pycache__",
+            "node_modules",
+            "dist",
+            ".git",
+            ".venv",
+            "venv",
+            ".cursor",
+            ".idea",
+            ".vscode",
+            ".pytest_cache",
+        }
+        for part in relative.parts
+    ):
         return False
     return path not in {MANIFEST, CHECKSUMS}
 
@@ -49,20 +63,21 @@ def main() -> None:
     model = load_json("frontend/src/config/modelParameters.json")
     buildings = load_json("frontend/public/data/buildings.geojson")
     cells = load_json("frontend/public/data/planning_cells.geojson")
-    city = load_json("frontend/public/data/medellin_city_priority_screen_v4.geojson")
+    city = load_json("frontend/public/data/medellin_city_priority_screen.geojson")
     summary = load_json("frontend/public/data/summary.json")
     evidence = load_json("frontend/public/data/evidence_status.json")
     replay = load_json("frontend/public/data/replay_contract.json")
     browser = load_json("frontend/public/data/optimizer_checkpoint.json")
     frontier = load_json("data/derived/browser_budget_frontier.json")
     stability = load_json("data/derived/browser_selection_stability.json")
-    alternatives = load_json("data/derived/robust_policy_alternatives_v4.json")
-    consensus = load_json("data/derived/policy_consensus_v4.json")
-    pareto = load_json("data/derived/sampled_pareto_v4.json")
+    alternatives = load_json("data/derived/robust_policy_alternatives.json")
+    consensus = load_json("data/derived/policy_consensus.json")
+    pareto = load_json("data/derived/sampled_pareto.json")
     milp = load_json("data/derived/milp_checkpoint.json")
-    milp_policies = load_json("data/derived/milp_policy_alternatives_v4.json")
+    milp_policies = load_json("data/derived/milp_policy_alternatives.json")
     city_meta = load_json("data/derived/city_screening_source_metadata.json")
-    costs = load_json("data/derived/cost_reference_registry_v4.json")
+    costs = load_json("data/derived/cost_reference_registry.json")
+    guardrails = load_json("frontend/src/config/scientificGuardrails.json")
 
     population_matched = sum(
         1
@@ -77,15 +92,13 @@ def main() -> None:
     terrain_tiles = len(list((ROOT / "frontend/public/terrain").rglob("*.png")))
 
     manifest = {
-        "project": "OUREA",
-        "artifact": "Competition Build V4",
-        "artifact_version": "v4",
+        "project": "Ourea",
         "package_version": package["version"],
-        "manifest_date": "2026-08-18",
+        "manifest_date": "2026-08-27",
         "model_status": model["status"],
         "production_build_status": (
-            "not executed in this container because registry.npmjs.org is unreachable; "
-            "final local npm install/test/build is mandatory"
+            "local npm ci, npm test and npm run build succeeded; "
+            "MapLibre dominates the JavaScript bundle (~1.24 MB minified)"
         ),
         "data_counts": {
             "detailed_buildings": len(buildings["features"]),
@@ -105,9 +118,10 @@ def main() -> None:
             "rank_equity": llanaditas["rank_equity"],
         },
         "evidence_registry": {
-            "version": evidence["version"],
+            "schema": evidence.get("schema"),
+            "schema_version": evidence.get("schema_version"),
             "entries": len(evidence["layers"]),
-            "global_guardrails": len(evidence["global_guardrails"]),
+            "global_guardrails": len(guardrails["items"]),
         },
         "historical_replay": {
             "status": replay["historical_replay"]["status"],
@@ -168,7 +182,8 @@ def main() -> None:
             ],
         },
         "cost_evidence": {
-            "registry_version": costs["version"],
+            "schema": costs.get("schema"),
+            "schema_version": costs.get("schema_version"),
             "references": len(costs["references"]),
         },
         "file_count_excluding_manifest": len(hashes),
@@ -180,7 +195,7 @@ def main() -> None:
         "".join(f'{item["sha256"]}  {item["path"]}\n' for item in hashes),
         encoding="utf-8",
     )
-    print(f"Wrote V4 manifest/checksums for {len(hashes)} files.")
+    print(f"Wrote Ourea manifest/checksums for {len(hashes)} files.")
 
 
 if __name__ == "__main__":

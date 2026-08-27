@@ -1,11 +1,11 @@
-# OUREA Competition V4 — scripts
+# Ourea — scripts
 
 ## `validate_project.py`
 
 Full artifact validator:
 - 1,588 detailed buildings / 49 cells;
 - intervention opportunity bounds;
-- V4 city screen and 249→248 population-match provenance;
+- Ourea city screen and 249→248 population-match provenance;
 - evidence/model guardrails;
 - browser checkpoint/frontier/stability;
 - four named robust alternatives;
@@ -22,7 +22,7 @@ Outputs:
 - `data/derived/milp_checkpoint.json`
 - `data/derived/portfolio_frontier_milp.csv`
 - `data/derived/milp_plan_10credits.geojson`
-- `data/derived/milp_policy_alternatives_v4.json`
+- `data/derived/milp_policy_alternatives.json`
 
 Every selected plan receives nonlinear post-selection reevaluation.
 
@@ -63,9 +63,9 @@ Creates:
 - `MANIFEST.json`
 - `SHA256SUMS.txt`
 
-The V4 manifest records city-screen, policy-alternative, sampled trade-off and formal cross-check metadata.
+The Ourea manifest records city-screen, policy-alternative, sampled trade-off and formal cross-check metadata.
 
-## `build_city_screen_v4.py`
+## `build_city_screen.py`
 
 Deterministically rebuilds the enriched city screen from:
 - the preserved hazard-only barrio baseline;

@@ -1,5 +1,6 @@
 {
-  "version": "v4",
+  "schema": "ourea-cost-reference-registry",
+  "schema_version": 1,
   "status": "evidence registry only; optimizer remains on planning credits",
   "references": [
     {

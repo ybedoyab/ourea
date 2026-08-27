@@ -88,7 +88,7 @@ const model = JSON.parse(await readFile(parameterFile, 'utf8'));
 assert.deepEqual(
   Object.keys(model.optimizer.objectiveProfiles).sort(),
   ['access', 'balanced', 'equity', 'low_regret'].sort(),
-  'V4 objective-profile set changed unexpectedly',
+  'Named objective-profile set changed unexpectedly',
 );
 
 for (const file of domainFiles) {
@@ -97,7 +97,19 @@ for (const file of domainFiles) {
     !source.includes('equityWeight: 0.25') &&
       !source.includes('accessWeight: 0.1') &&
       !source.includes('downsidePenalty: 0.55'),
-    `${file} duplicates V4 numerical policy weights instead of reading modelParameters.json`,
+    `${file} duplicates numerical policy weights instead of reading modelParameters.json`,
+  );
+}
+
+for (const file of sourceFiles) {
+  const source = await readFile(file, 'utf8');
+  const retiredIdentity = new RegExp(
+    String.raw`\bV` + `4\\b|_v` + `4|load` + `LaderaData|create` + `LaderaMap|Ladera` + `Lab`,
+    'i',
+  );
+  assert.ok(
+    !retiredIdentity.test(source),
+    `${file} still contains a retired product identity`,
   );
 }
 

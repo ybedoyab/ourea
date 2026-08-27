@@ -34,7 +34,7 @@ function finite(value) {
 
 const buildings = await json('buildings.geojson');
 const cells = await json('planning_cells.geojson');
-const screening = await json('medellin_city_priority_screen_v4.geojson');
+const screening = await json('medellin_city_priority_screen.geojson');
 const summary = await json('summary.json');
 const registry = await json('intervention_registry.json');
 const evidence = await json('evidence_status.json');
@@ -68,7 +68,6 @@ assert.equal(
 );
 assert.equal(model.status, 'development-priors-not-calibrated');
 
-// Detailed building integrity.
 const buildingIds = new Set();
 for (const feature of buildings.features) {
   const p = feature.properties;
@@ -92,7 +91,6 @@ for (const feature of buildings.features) {
   );
 }
 
-// Planning-cell integrity and V1 regression protection.
 const cellIds = new Set();
 const opportunityFields = [
   'rwh_opportunity',
@@ -146,7 +144,6 @@ for (const feature of buildings.features) {
   );
 }
 
-// Detailed exposure aggregate reconciliation.
 assert.equal(
   sumBy(cells.features, 'buildings'),
   summary.buildings,
@@ -172,14 +169,13 @@ approxEqual(
   'cell household proxy does not reconcile',
 );
 
-// V4 city-screen integrity.
 const populationMatched = screening.features.filter(
   (feature) => finite(feature.properties.population_2026),
 );
 assert.equal(
   populationMatched.length,
   248,
-  'V4 should safely match 248 of the 249 official urban population records to the current polygon export',
+  'City screen should safely match 248 of the 249 official urban population records to the current polygon export',
 );
 
 const lensSpecs = [
@@ -252,11 +248,12 @@ assert.equal(Number(ll.rank_exposure), 7);
 assert.equal(Number(ll.rank_balanced), 13);
 assert.equal(Number(ll.rank_equity), 22);
 
-// Evidence/replay guardrails.
 assert.ok(
   Array.isArray(evidence.layers) &&
   evidence.layers.length >= 8,
 );
+assert.equal(evidence.schema, 'ourea-evidence-registry');
+assert.equal(evidence.schema_version, 1);
 const evidenceIds = new Set(
   evidence.layers.map((item) => item.id),
 );
@@ -275,15 +272,21 @@ for (const required of [
     `missing evidence status for ${required}`,
   );
 }
-assert.ok(
-  evidence.global_guardrails.some(
-    (item) => item.includes('not landslide probability'),
+
+const guardrails = JSON.parse(
+  await readFile(
+    join(root, 'src', 'config', 'scientificGuardrails.json'),
+    'utf8',
   ),
 );
 assert.ok(
-  evidence.global_guardrails.some(
-    (item) => item.includes('not COP'),
-  ),
+  guardrails.items.some((item) => item.includes('not landslide probability')),
+);
+assert.ok(
+  guardrails.items.some((item) => item.includes('not COP')),
+);
+assert.ok(
+  guardrails.items.some((item) => item.includes('not a prediction of social acceptance')),
 );
 
 const replay = replayContract.historical_replay;
@@ -303,7 +306,6 @@ for (const required of [
   assert.ok(replay.required_features.includes(required));
 }
 
-// DRY evidence registry.
 assert.ok(
   !(
     'development_parameters' in
@@ -315,7 +317,6 @@ assert.equal(
   'frontend/src/config/modelParameters.json',
 );
 
-// V4 decision-policy configuration.
 const frontierBudgets = model.optimizer.frontierBudgets;
 assert.deepEqual(
   [...frontierBudgets].sort((a, b) => a - b),
@@ -381,7 +382,7 @@ assert.ok(
 );
 
 console.log(
-  `V4 data validation passed: ${buildings.features.length} buildings, ` +
+  `Ourea data validation passed: ${buildings.features.length} buildings, ` +
   `${cells.features.length} cells, ${screening.features.length} city polygons, ` +
   `${populationMatched.length} population-matched barrios, ${terrainCount} terrain tiles.`,
 );

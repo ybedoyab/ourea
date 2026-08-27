@@ -1,0 +1,359 @@
+.ourea-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  line-height: 0;
+}
+
+.ourea-ridge {
+  stroke: var(--text-primary);
+}
+
+.ourea-contour {
+  stroke: var(--accent);
+}
+
+.ourea-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+.ourea-o-glyph,
+.ourea-a-glyph {
+  display: block;
+  height: 18px;
+}
+
+.ourea-o-glyph {
+  width: 18px;
+}
+
+.ourea-a-glyph {
+  width: 14px;
+}
+
+.ourea-logo.compact .ourea-word {
+  font-size: 14px;
+}
+
+.ourea-logo.compact .ourea-o-glyph,
+.ourea-logo.compact .ourea-a-glyph {
+  height: 16px;
+}
+
+.ourea-logo.compact .ourea-o-glyph {
+  width: 16px;
+}
+
+.ourea-logo.compact .ourea-a-glyph {
+  width: 12px;
+}
+
+.topbar {
+  position: absolute;
+  z-index: 3;
+  top: 14px;
+  right: calc(var(--panel-width) + 16px);
+  left: 16px;
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px 7px 12px;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 12px;
+  background: rgb(22 28 31 / 88%);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+}
+
+.brand-group {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.sub {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scope,
+.seg {
+  display: flex;
+  gap: 4px;
+}
+
+.topbar > .scope {
+  margin-left: auto;
+}
+
+.scope button,
+.seg button,
+.toggles button,
+.actions button,
+.frontier-header button,
+.export-row button,
+.alternative-head button {
+  padding: 8px 11px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.scope button.active,
+.seg button.active,
+.toggles button.on,
+.tool.active {
+  border-color: var(--text-primary);
+  background: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.seg button.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
+.primary {
+  border-color: var(--accent) !important;
+  background: var(--accent) !important;
+  color: var(--bg-primary) !important;
+}
+
+.eyebrow {
+  margin-bottom: 10px;
+  color: var(--text-muted);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.panel h1 {
+  max-width: 380px;
+  margin: 0 0 10px;
+  font-size: 30px;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.lede {
+  margin: 0 0 14px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.guardrail,
+.warning {
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.guardrail summary {
+  cursor: pointer;
+  color: var(--accent-soft);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.guardrail p {
+  margin: 8px 0 0;
+}
+
+section {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+.section-heading {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+  margin: 0 0 12px;
+}
+
+.section-step {
+  color: var(--accent);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+}
+
+.section-heading h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+
+.section-heading p {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+h2 {
+  margin: 0 0 12px;
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+label {
+  display: flex;
+  justify-content: space-between;
+  margin: 14px 0 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.hint,
+small {
+  display: block;
+  color: var(--text-faint);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.empty-note {
+  margin: 10px 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.takeaway {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border-left: 2px solid var(--accent);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.preset-kicker,
+.feature-kicker,
+.why-kicker,
+.metric-group-label,
+.evidence-group-label {
+  margin: 12px 0 8px;
+  color: var(--text-muted);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.scenario-presets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.scenario-presets button,
+.city-lenses button {
+  padding: 9px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-muted);
+  text-align: left;
+}
+
+.scenario-presets button b,
+.city-lenses button b {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.scenario-presets button span,
+.city-lenses button span {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.scenario-presets button.active,
+.city-lenses button.active {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--text-secondary);
+}
+
+.scenario-presets button.active b,
+.city-lenses button.active b {
+  color: var(--accent-soft);
+}
+
+.lens-description {
+  margin: 8px 0 12px;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.metrics,
+.compare,
+.metric-group-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.metric-group {
+  margin-top: 14px;
+}
+
+.metric {
+  min-height: 68px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.metric span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.metric strong {
+  display: block;
+  margin-top: 7px;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}

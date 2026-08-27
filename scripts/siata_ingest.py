@@ -1,19 +1,8 @@
-"""SIATA rainfall ingestion adapter for OUREA Competition V4.
+"""SIATA rainfall ingestion adapter for Ourea.
 
-Scientific guardrails:
-- Missing observations are **not** filled with zero rainfall.
-- Rolling accumulations are emitted only when window coverage meets the configured
-  threshold.
-- Cumulative-gauge conversion is never guessed; it must be requested explicitly.
-- Raw rainfall features remain separate from the climate-stress calibration.
-
-Example:
-    python scripts/siata_ingest.py data/raw/siata.csv \
-        --timestamp fecha_hora \
-        --rain precipitacion_mm \
-        --station estacion
-
-The script can auto-detect common column names when mappings are omitted.
+Missing rainfall stays missing. Cumulative-gauge conversion is explicit. Rolling
+accumulations require coverage. Feature extraction stays separate from climate-stress
+calibration.
 """
 from __future__ import annotations
 
@@ -111,7 +100,6 @@ def resolve_column(
 
 
 def read_source(path: Path) -> pd.DataFrame:
-    # sep=None + python engine safely handles comma/semicolon/tab CSV exports.
     return pd.read_csv(path, sep=None, engine="python")
 
 
@@ -214,8 +202,6 @@ def ingest(
         raise ValueError("rain_mode must be 'increment' or 'cumulative'.")
 
     negative_rows = int((frame["_rain_increment"] < 0).sum())
-    # Negative precipitation increments are physically invalid. Preserve the row
-    # count in QA, but remove those values from feature calculation.
     frame.loc[frame["_rain_increment"] < 0, "_rain_increment"] = np.nan
 
     outputs = []

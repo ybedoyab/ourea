@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { loadLaderaData } from '../src/services/dataService.js';
+import { loadOureaData } from '../src/services/dataService.js';
 
 function response({ status = 200, body = '{}' } = {}) {
   return {
@@ -22,10 +22,13 @@ test('optional replay tolerates SPA HTML fallback without failing required data'
   };
 
   try {
-    const data = await loadLaderaData();
+    const data = await loadOureaData();
     assert.equal(data.replay, null);
     assert.deepEqual(data.buildings, {});
-    assert.deepEqual(data.evidence, {});
+    assert.ok(Array.isArray(data.evidence.global_guardrails));
+    assert.ok(
+      data.evidence.global_guardrails.some((item) => item.includes('not landslide probability')),
+    );
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -42,7 +45,7 @@ test('malformed required JSON fails visibly', async () => {
 
   try {
     await assert.rejects(
-      () => loadLaderaData(),
+      () => loadOureaData(),
       /Failed to parse \/data\/buildings\.geojson as JSON/,
     );
   } finally {
@@ -61,9 +64,31 @@ test('required HTTP errors propagate with the source path', async () => {
 
   try {
     await assert.rejects(
-      () => loadLaderaData(),
+      () => loadOureaData(),
       /Failed to load \/data\/hazard\.geojson: HTTP 503/,
     );
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('optional community evidence file may be absent without failing required data', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('community_evidence.json')) {
+      return { status: 404, ok: false, async text() { return 'Not found'; } };
+    }
+    if (String(url).includes('replay_timeline.json')) {
+      return { status: 404, ok: false, async text() { return 'Not found'; } };
+    }
+    return response({ body: '{}' });
+  };
+
+  try {
+    const data = await loadOureaData();
+    assert.equal(data.communityEvidence, null);
+    assert.equal(data.replay, null);
+    assert.ok(Array.isArray(data.evidence.global_guardrails));
   } finally {
     globalThis.fetch = originalFetch;
   }

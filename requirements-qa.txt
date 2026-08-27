@@ -1,4 +1,4 @@
-# Versions used for the Competition V4 geospatial/MILP QA environment.
+# Versions used for the Ourea geospatial/MILP QA environment.
 numpy==2.3.5
 pandas==2.2.3
 scipy==1.17.0

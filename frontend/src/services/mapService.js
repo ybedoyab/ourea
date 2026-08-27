@@ -268,7 +268,7 @@ function projectPointFeature(project, cellsGeoJson, index) {
   };
 }
 
-export function createLaderaMap({ container, data, onSelectCell, onSelectBarrio, onReady }) {
+export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, onReady }) {
   let cameraGeneration = 0;
   let settleTimer = 0;
 

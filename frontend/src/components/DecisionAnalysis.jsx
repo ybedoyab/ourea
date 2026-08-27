@@ -155,7 +155,7 @@ export function DecisionAnalysis({
         </button>
         <small>
           Includes scenario, active policy, portfolio, alternatives, uncertainty, stability,
-          sampled trade-offs and evidence/guardrails when available.
+      sampled trade-offs, community safeguards and evidence/guardrails when available.
         </small>
       </div>
     </section>

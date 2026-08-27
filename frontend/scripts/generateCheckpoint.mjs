@@ -153,7 +153,7 @@ const alternativeCheckpoint = alternatives.map((option) => ({
   },
 }));
 await writeFile(
-  join(derivedDir, 'robust_policy_alternatives_v4.json'),
+  join(derivedDir, 'robust_policy_alternatives.json'),
   `${JSON.stringify(alternativeCheckpoint, null, 2)}\n`,
 );
 
@@ -165,7 +165,7 @@ const consensusCheckpoint = policyConsensus(alternatives).map((item) => ({
   consensusAllNamedPolicies: item.consensus,
 }));
 await writeFile(
-  join(derivedDir, 'policy_consensus_v4.json'),
+  join(derivedDir, 'policy_consensus.json'),
   `${JSON.stringify(consensusCheckpoint, null, 2)}\n`,
 );
 
@@ -193,7 +193,7 @@ const paretoCheckpoint = {
   })),
 };
 await writeFile(
-  join(derivedDir, 'sampled_pareto_v4.json'),
+  join(derivedDir, 'sampled_pareto.json'),
   `${JSON.stringify(paretoCheckpoint, null, 2)}\n`,
 );
 

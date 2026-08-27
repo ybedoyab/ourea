@@ -104,10 +104,6 @@ export function monteCarloPortfolio({
   const scenarios = scenarioEnsemble(scenario, runs, seed);
 
   for (let index = 0; index < scenarios.length; index += 1) {
-    // Common-random-number design:
-    // - the climate future at index i is identical across portfolio comparisons;
-    // - each project gets an effect draw keyed by project + future index, independent
-    //   of project order or portfolio size.
     const sampledEffects = sampleProjectEffectsForFuture(
       projects,
       index,

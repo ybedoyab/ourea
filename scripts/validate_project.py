@@ -1,17 +1,4 @@
-"""OUREA Competition V4 validation.
-
-Run:
-    python scripts/validate_project.py
-
-This validator checks:
-- detailed sandbox geometry/data consistency;
-- enriched city-scale screening;
-- model/evidence guardrails;
-- browser optimizer/frontier/stability/alternatives/Pareto checkpoints;
-- formal MILP checkpoint;
-- reproducibility configuration;
-- absence of synthetic SIATA replay data.
-"""
+"""Ourea geospatial, checkpoint and model validation."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -44,7 +31,7 @@ buildings = gpd.read_file(DATA / "buildings.geojson")
 cells = gpd.read_file(DATA / "planning_cells.geojson")
 hazard = gpd.read_file(DATA / "hazard.geojson")
 roads = gpd.read_file(DATA / "roads.geojson")
-screening = gpd.read_file(DATA / "medellin_city_priority_screen_v4.geojson")
+screening = gpd.read_file(DATA / "medellin_city_priority_screen.geojson")
 summary = json.loads((DATA / "summary.json").read_text(encoding="utf-8"))
 registry = json.loads(
     (DATA / "intervention_registry.json").read_text(encoding="utf-8")
@@ -54,7 +41,6 @@ evidence = json.loads(
 )
 model = json.loads(MODEL_FILE.read_text(encoding="utf-8"))
 
-# Detailed sandbox geometry/data.
 require(
     len(buildings) == 1588,
     f"Expected 1588 detailed buildings, got {len(buildings)}",
@@ -72,7 +58,7 @@ require(
     set(buildings["cell_id"].astype(int)).issubset(known_cells),
     "A building references an unknown planning cell",
 )
-ok("49 unique planning cells and valid building→cell references")
+ok("49 unique planning cells and valid building-to-cell references")
 
 for field in [
     "rwh_opportunity",
@@ -136,7 +122,6 @@ require(hazard.geometry.notna().all(), "Hazard geometry missing")
 require(roads.geometry.notna().all(), "Road geometry missing")
 ok("Hazard and access layers are present")
 
-# V4 city-scale screening.
 require(len(screening) == 271, f"Expected 271 city polygons, got {len(screening)}")
 population_2026 = finite_series(screening["population_2026"])
 matched = screening[population_2026.notna()].copy()
@@ -182,7 +167,7 @@ require(int(ll.rank_hazard_only) == 9, "Unexpected Llanaditas hazard-only rank")
 require(int(ll.rank_exposure) == 7, "Unexpected Llanaditas exposure rank")
 require(int(ll.rank_balanced) == 13, "Unexpected Llanaditas balanced rank")
 require(int(ll.rank_equity) == 22, "Unexpected Llanaditas equity rank")
-ok("V4 city screen: 248 population-matched barrios; Llanaditas ranks and projection are stable")
+ok("City screen: 248 population-matched barrios; Llanaditas ranks and projection are stable")
 
 source_meta = json.loads(
     (DERIVED / "city_screening_source_metadata.json").read_text(encoding="utf-8")
@@ -195,9 +180,8 @@ require(
     source_meta["population_projection"]["matched_to_current_polygon_export"] == 248,
     "Population/polygon safe-match count changed",
 )
-ok("City-screening source metadata records official 249→248 safe-match provenance")
+ok("City-screening source metadata records official 249-to-248 safe-match provenance")
 
-# Evidence/DRY guardrails.
 require(
     registry["optimizer"]["budget_unit"] == "planning credit, NOT COP",
     "Planning-credit guardrail missing",
@@ -213,7 +197,11 @@ require(
     "Evidence registry duplicates numerical parameters",
 )
 
-require(evidence["version"] == "v4", "Evidence registry is not V4")
+require(evidence["schema"] == "ourea-evidence-registry", "Evidence registry schema changed")
+require(int(evidence["schema_version"]) == 1, "Evidence registry schema_version changed")
+guardrails = json.loads(
+    (ROOT / "frontend" / "src" / "config" / "scientificGuardrails.json").read_text(encoding="utf-8")
+)["items"]
 evidence_ids = {item["id"] for item in evidence["layers"]}
 for required_id in {
     "terrain",
@@ -233,16 +221,19 @@ for required_id in {
         f"Missing evidence-status entry: {required_id}",
     )
 require(
-    any("not landslide probability" in item for item in evidence["global_guardrails"]),
+    any("not landslide probability" in item for item in guardrails),
     "Landslide-probability guardrail missing",
 )
 require(
-    any("not COP" in item for item in evidence["global_guardrails"]),
+    any("not COP" in item for item in guardrails),
     "Planning-credit/COP guardrail missing",
 )
-ok("V4 evidence/provenance and DRY guardrails pass")
+require(
+    any("not a prediction of social acceptance" in item for item in guardrails),
+    "Community-evidence guardrail missing",
+)
+ok("Evidence/provenance and DRY guardrails pass")
 
-# Core model invariants.
 stress = model["stress"]
 require(
     np.isclose(
@@ -269,7 +260,7 @@ for name, config in model["interventions"].items():
 profiles = model["optimizer"]["objectiveProfiles"]
 require(
     set(profiles) == {"balanced", "equity", "access", "low_regret"},
-    "Unexpected V4 objective profile set",
+    "Unexpected objective profile set",
 )
 for name, profile in profiles.items():
     require(float(profile["equityWeight"]) >= 0, f"Negative equity weight: {name}")
@@ -281,9 +272,8 @@ require(len(pareto_grid["equityWeights"]) >= 2, "Pareto equity grid too small")
 require(len(pareto_grid["accessWeights"]) >= 2, "Pareto access grid too small")
 require(int(pareto_grid["optimizerScenarioSamples"]) > 0, "Pareto optimizer samples invalid")
 require(int(pareto_grid["monteCarloRuns"]) > 0, "Pareto MC runs invalid")
-ok("V4 stress/intervention/profile/Pareto configuration invariants pass")
+ok("Stress/intervention/profile/Pareto configuration invariants pass")
 
-# Cross-language RNG fixture.
 state = int(model["scenarioUncertainty"]["baseSeed"])
 uint32_mask = 0xFFFFFFFF
 draws = []
@@ -314,7 +304,6 @@ require(
 )
 ok("Cross-language seeded uncertainty fixture is stable")
 
-# Replay contract.
 replay_contract = json.loads(
     (DATA / "replay_contract.json").read_text(encoding="utf-8")
 )["historical_replay"]
@@ -339,7 +328,6 @@ require(
 )
 ok("SIATA replay contract ready; no synthetic timeline shipped")
 
-# Browser checkpoint.
 browser = json.loads(
     (DATA / "optimizer_checkpoint.json").read_text(encoding="utf-8")
 )
@@ -364,7 +352,6 @@ bp = browser["benefitProxyMonteCarlo"]
 require(bp["p10"] <= bp["median"] <= bp["p90"], "Browser checkpoint quantiles unordered")
 ok("Default Balanced browser checkpoint passes")
 
-# Budget frontier.
 frontier = json.loads(
     (DERIVED / "browser_budget_frontier.json").read_text(encoding="utf-8")
 )
@@ -380,7 +367,6 @@ for item in frontier:
     require(0 <= item["downsideRetention"] <= 1, "Frontier downside retention invalid")
 ok("Balanced budget robustness frontier passes")
 
-# Selection stability.
 stability = json.loads(
     (DERIVED / "browser_selection_stability.json").read_text(encoding="utf-8")
 )
@@ -403,9 +389,8 @@ for item in stability["projects"]:
     require(0 < item["frequency"] <= 1, "Invalid stability frequency")
 ok("Balanced selection-stability checkpoint passes")
 
-# V4 robust alternatives.
 alternatives = json.loads(
-    (DERIVED / "robust_policy_alternatives_v4.json").read_text(encoding="utf-8")
+    (DERIVED / "robust_policy_alternatives.json").read_text(encoding="utf-8")
 )
 require(len(alternatives) == 4, "Expected four robust policy alternatives")
 require(
@@ -429,10 +414,10 @@ require(
     plan_keys["low_regret"] != plan_keys["balanced"],
     "Low-regret policy collapsed to the Balanced plan; expected materially distinct risk-averse selection",
 )
-ok("Four V4 policy alternatives are feasible and materially differentiated")
+ok("Four policy alternatives are feasible and materially differentiated")
 
 consensus = json.loads(
-    (DERIVED / "policy_consensus_v4.json").read_text(encoding="utf-8")
+    (DERIVED / "policy_consensus.json").read_text(encoding="utf-8")
 )
 require(len(consensus) > 0, "Policy-consensus artifact is empty")
 for item in consensus:
@@ -448,13 +433,12 @@ for item in consensus:
     )
 require(
     sum(1 for item in consensus if item["consensusAllNamedPolicies"]) >= 1,
-    "Expected at least one project shared by all named V4 policies",
+    "Expected at least one project shared by all named policies",
 )
 ok("Named-policy consensus artifact passes")
 
-# V4 sampled non-dominated set.
 pareto = json.loads(
-    (DERIVED / "sampled_pareto_v4.json").read_text(encoding="utf-8")
+    (DERIVED / "sampled_pareto.json").read_text(encoding="utf-8")
 )
 expected_samples = (
     len(pareto_grid["equityWeights"])
@@ -476,9 +460,8 @@ for item in pareto["frontier"]:
     )
     require(item["equityBenefit"] >= 0, "Negative Pareto equity proxy")
     require(item["accessBenefit"] >= 0, "Negative Pareto access proxy")
-ok("Sampled non-dominated V4 trade-off artifact passes")
+ok("Sampled non-dominated trade-off artifact passes")
 
-# Formal MILP.
 milp = json.loads(
     (DERIVED / "milp_checkpoint.json").read_text(encoding="utf-8")
 )
@@ -494,7 +477,7 @@ require(mp["p10"] <= mp["median"] <= mp["p90"], "MILP quantiles unordered")
 ok("Formal Balanced MILP + nonlinear reevaluation pass")
 
 formal_policies = json.loads(
-    (DERIVED / "milp_policy_alternatives_v4.json").read_text(encoding="utf-8")
+    (DERIVED / "milp_policy_alternatives.json").read_text(encoding="utf-8")
 )
 require(
     {item["profile_id"] for item in formal_policies}
@@ -518,4 +501,14 @@ for item in formal_policies:
     )
 ok("All four named policy profiles receive a formal MILP structural cross-check")
 
-print("\nAll OUREA Competition V4 validation checks passed.")
+community_template = json.loads(
+    (DATA / "community_evidence.template.json").read_text(encoding="utf-8")
+)
+require(community_template["template"] is True, "Community template must be marked template=true")
+require(
+    not (DATA / "community_evidence.json").exists(),
+    "Observed community_evidence.json must not ship invented social data",
+)
+ok("Community evidence template is present and no fabricated community file is shipped")
+
+print("\nAll Ourea validation checks passed.")

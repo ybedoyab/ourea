@@ -1,17 +1,11 @@
-"""Rebuild the OUREA V4 Medellín city-priority screen from official workbooks.
+"""Rebuild the Ourea Medellín city-priority screen from official workbooks.
 
 This script is intentionally deterministic. Naming variants are resolved through
 an explicit audited alias map; ambiguous records are left unmatched rather than
 assigned with unconstrained fuzzy matching.
 
-Inputs:
-- hazard-only barrio baseline GeoJSON derived from official Medellín barrio +
-  mass-movement hazard polygons;
-- official Medellín/DANE barrio population projections 2018-2030 XLSX;
-- official 2023 IMCV/AMPI-AMPI XLSX.
-
 Example:
-    python scripts/build_city_screen_v4.py \
+    python scripts/build_city_screen.py \
       --baseline data/derived/city_screen_hazard_baseline.geojson \
       --population-xlsx /path/to/population.xlsx \
       --imcv-xlsx /path/to/imcv.xlsx
@@ -34,7 +28,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BASELINE = ROOT / "data" / "derived" / "city_screen_hazard_baseline.geojson"
-DEFAULT_OUTPUT = ROOT / "frontend" / "public" / "data" / "medellin_city_priority_screen_v4.geojson"
+DEFAULT_OUTPUT = ROOT / "frontend" / "public" / "data" / "medellin_city_priority_screen.geojson"
 DERIVED = ROOT / "data" / "derived"
 XML_NS = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
 
@@ -44,8 +38,6 @@ CITY_POLICY = {
     "equity": {"exposure": 0.55, "vulnerability": 0.45},
 }
 
-# Population workbook names -> current polygon-export names.
-# These are audited official naming variants, not semantic/fuzzy guesses.
 ALIASES = {
     "Barrio Caicedo": "CAYCEDO",
     "Trece de Noviembre": "15 DE NOVIEMBRE",
@@ -77,7 +69,6 @@ ALIASES = {
     "Nueva Villa del Aburrá": "NUEVA VILLA DE ABURRA",
 }
 
-# This record remains intentionally unresolved in the current 271-polygon export.
 INTENTIONALLY_UNMATCHED_CODES = {"0725"}
 
 
@@ -299,7 +290,7 @@ def build(baseline_path: Path, population_path: Path, imcv_path: Path, output_pa
         "priority_equity", "rank_equity", "rank_hazard_only",
     ]
     baseline.loc[valid, ranking_cols].sort_values("rank_balanced").to_csv(
-        DERIVED / "city_priority_screen_v4.csv", index=False
+        DERIVED / "city_priority_screen.csv", index=False
     )
 
     metadata = {
