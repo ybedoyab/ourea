@@ -71,6 +71,8 @@ Creates:
 - `MANIFEST.json`
 - `SHA256SUMS.txt`
 
+Checksums are SHA-256 of the Git canonical form (LF text, raw binary). Working-tree CRLF checkouts on Windows therefore match Linux CI.
+
 The Ourea manifest records city-screen, policy-alternative, sampled trade-off and formal cross-check metadata.
 
 On macOS/Linux the entry scripts `run_mac_linux.sh` and `qa_mac_linux.sh` must keep the Git executable bit so they can be invoked as documented in the root README.

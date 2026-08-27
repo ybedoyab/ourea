@@ -36,12 +36,18 @@ def include(path: Path) -> bool:
     return path not in {MANIFEST, CHECKSUMS}
 
 
+BINARY_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
+
+
+def canonical_bytes(path: Path) -> bytes:
+    data = path.read_bytes()
+    if path.suffix.lower() in BINARY_SUFFIXES or b"\0" in data:
+        return data
+    return data.replace(b"\r\n", b"\n")
+
+
 def sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    return hashlib.sha256(canonical_bytes(path)).hexdigest()
 
 
 def load_json(relative: str):
@@ -56,7 +62,7 @@ def main() -> None:
     hashes = [
         {
             "path": str(path.relative_to(ROOT)).replace("\\", "/"),
-            "bytes": path.stat().st_size,
+            "bytes": len(canonical_bytes(path)),
             "sha256": sha256(path),
         }
         for path in files

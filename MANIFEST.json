@@ -138,13 +138,13 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 5819,
-      "sha256": "c925e8fce5f635692bb08626eaa1a8eab044fb4193becd4e0c8db4a5d9d13945"
+      "bytes": 5716,
+      "sha256": "b55c6f80a5db6231120db2503ff376bb9591d2a9ce25ac9f55dc235f7a08cb4c"
     },
     {
       "path": "README.md",
-      "bytes": 8279,
-      "sha256": "3b1412cd3cc07119f2564d47a419bbb3ffe097c12efbb448cd824d1efef6970b"
+      "bytes": 8036,
+      "sha256": "7b2c9e74369de6c06692bce6ae6bda2349e5b7763c5db885384aee81e5ab64c1"
     },
     {
       "path": "data/derived/browser_budget_frontier.json",
@@ -198,8 +198,8 @@
     },
     {
       "path": "data/derived/milp_checkpoint.json",
-      "bytes": 1351,
-      "sha256": "9e134a34a9a0567b0243ba7b8a68aa1a4ab6297f70b62730c863bcf95161eee9"
+      "bytes": 1302,
+      "sha256": "2e13f55207b999119826ba0a74dfefca3fab79bf63181ee1ca79da8b12a75d5e"
     },
     {
       "path": "data/derived/milp_plan_10credits.geojson",
@@ -208,8 +208,8 @@
     },
     {
       "path": "data/derived/milp_policy_alternatives.json",
-      "bytes": 4953,
-      "sha256": "7a5d5f2d537ef13431a5fdeb096dc1462a14fad15c92becf3b08c87c33beb743"
+      "bytes": 4759,
+      "sha256": "f59ed7b8baef73e24a4be9c8eca37edcec4c4012be1b4f8c961dee6ddd4000f0"
     },
     {
       "path": "data/derived/policy_consensus.json",
@@ -218,8 +218,8 @@
     },
     {
       "path": "data/derived/portfolio_frontier_milp.csv",
-      "bytes": 1293,
-      "sha256": "990d7fea549e4ea5174980edc804c423c3e5438eb2e80fcf301c1f5a4e3cfc41"
+      "bytes": 1275,
+      "sha256": "9b29390f0b836de6148ffaf13e1d6de38c82f16b02d407caf3023611b5598270"
     },
     {
       "path": "data/derived/robust_policy_alternatives.json",
@@ -243,38 +243,38 @@
     },
     {
       "path": "docs/competition/deck-outline.md",
-      "bytes": 4603,
-      "sha256": "949695e707b6f841314396795035788509f3e7ac6c07f9fa67b522db3f1e7cf8"
+      "bytes": 4413,
+      "sha256": "92a87af9018619e8be905012c49a995ca11ffca718c7bc928e1838b5982300ba"
     },
     {
       "path": "docs/competition/demo-script.md",
-      "bytes": 2781,
-      "sha256": "210e0dc40f0c5f05fe913d0ea6d1faa109d4a16519c46617bec344929b69371e"
+      "bytes": 2712,
+      "sha256": "3c576467a394eff55a43ab709d8da403e0445462e310768f0eda00605fbd59eb"
     },
     {
       "path": "docs/competition/final-submission-checklist.md",
-      "bytes": 3675,
-      "sha256": "28cb1aaa63d59eafe1fdae84d3e61214bd3a331bc3ded226d4830eee142f928b"
+      "bytes": 3565,
+      "sha256": "2dc0190dcd331a6fcad61ed3fa0b83444fdeed9eac4ef43f876253a4ae49b6c4"
     },
     {
       "path": "docs/competition/judge-qa.md",
-      "bytes": 6577,
-      "sha256": "e7451854fa10dfd6976591396cb1f3782bc1250149e49785ebc4d6a7325aef96"
+      "bytes": 6387,
+      "sha256": "1ffaba2f7d209a43a47e598ba7fe85847daa66a3f4cade32eae19d714d338e6f"
     },
     {
       "path": "docs/competition/office-hours-brief.md",
-      "bytes": 3953,
-      "sha256": "324d94cad8e0e61a66a075bf7049bfefa1f3944ecb94514043ec294cc17556ad"
+      "bytes": 3872,
+      "sha256": "2329bb3c4f780e3dd5ee2a76862b16d2a61da3328afc2d5b77c401d24fcd0382"
     },
     {
       "path": "docs/competition/submission-draft.md",
-      "bytes": 7968,
-      "sha256": "d3c8e1828b9006ebd5a1cdbc46aec65e980081dfefffee266da2008d775c8815"
+      "bytes": 7718,
+      "sha256": "1a1085502995f5369ac93b05ac9f6a6e83a42f9461c57e8b17f0b98abb694d4e"
     },
     {
       "path": "docs/methodology/city-screen.md",
-      "bytes": 5807,
-      "sha256": "045ddb336af2d57b75b7963c5fc5a95a1e33854db0a3728bc08942d5e1248b64"
+      "bytes": 5650,
+      "sha256": "5d9ccecb732cd2d62711cd2c60d1e1d9d77969a5e3cec5b43e6a2003d9406dda"
     },
     {
       "path": "docs/methodology/community-safeguards.md",
@@ -283,13 +283,13 @@
     },
     {
       "path": "docs/methodology/cost-evidence.md",
-      "bytes": 8751,
-      "sha256": "4c443a38c06c9fcdd34647d3748aa639a19fe8bebcded03b68810a911a19ec23"
+      "bytes": 8562,
+      "sha256": "285bad38d246d541e8cc0986f6db019a7f1a464b59317fd00cc7504408a654f4"
     },
     {
       "path": "docs/methodology/data-provenance.md",
-      "bytes": 5994,
-      "sha256": "b56e54ea7c2b1cb081436552c4e553754225555781623985feaf721efbe65cb2"
+      "bytes": 5780,
+      "sha256": "a1c9dc21b02720c62ace8811fd5b7e81c49f10daad9303d0f72f3efeba3a28f7"
     },
     {
       "path": "docs/methodology/plan-alignment.md",
@@ -298,8 +298,8 @@
     },
     {
       "path": "docs/methodology/policy-portfolios.md",
-      "bytes": 6585,
-      "sha256": "048a7e0c77c683987a112aa1a9e6c6e108db94cd8ccb1dbdfc567fefca5bcb16"
+      "bytes": 6375,
+      "sha256": "acd376689fe51a1800954d5ce30cb80b208b19970eea45f71a203ae4708c24e4"
     },
     {
       "path": "docs/methodology/selection-benchmark.md",
@@ -308,8 +308,8 @@
     },
     {
       "path": "docs/methodology/siata-calibration.md",
-      "bytes": 4805,
-      "sha256": "91b8c2c463829d03405fc151cdfcc85dcfcbee1d95910c0c869e3389ce592a9f"
+      "bytes": 4658,
+      "sha256": "bfdbdcbfe1fc82316c8bedec9573cb294a2ff976a2309e889729ed4789109339"
     },
     {
       "path": "docs/pilot/community-codesign-protocol.md",
@@ -318,23 +318,23 @@
     },
     {
       "path": "docs/pilot/six-month-pilot.md",
-      "bytes": 5731,
-      "sha256": "b18cb2b974d98b8e90f1f3d2049337b2dc8523df68da91b26e6485d2957ce996"
+      "bytes": 5591,
+      "sha256": "3ecd6d961d57afc7edac48ddec7d1656b9decf4b59c944595b5e98ea62ff5dfb"
     },
     {
       "path": "docs/product/architecture.md",
-      "bytes": 8987,
-      "sha256": "cd7d9b418814443ad5ad875f4c265f82e896d8b519ea3dbc4d8ca01b7aca678f"
+      "bytes": 8714,
+      "sha256": "eb254f7ef73a53569526da216dd5b50bee9af817699337b9a8a11d4f09314985"
     },
     {
       "path": "docs/product/competitive-landscape.md",
-      "bytes": 3615,
-      "sha256": "ab22600292fddc55eb9c08bf56e3c11c41909f27f5fb9cbe9d6600f93259c507"
+      "bytes": 3512,
+      "sha256": "c628d67578edd63794951eb6f0a88a0c8dba597febd21a4b3fd77eb3ed519018"
     },
     {
       "path": "docs/product/model-card.md",
-      "bytes": 4530,
-      "sha256": "a17a98b8f6114cdf76460f802974b40ab07f1e63bd8d78b779531beed4780c9e"
+      "bytes": 4378,
+      "sha256": "9e38b02a798371b213fa115ed9ee1345a51320d6e8bddf622150a40401e3e431"
     },
     {
       "path": "docs/research/case-studies/moravia.md",
@@ -343,28 +343,28 @@
     },
     {
       "path": "docs/research/research-notes.md",
-      "bytes": 4157,
-      "sha256": "e2594431062437d45b6df73514eadc7083bf7f8d0f2b2e5820c87ebf7e8599f2"
+      "bytes": 4026,
+      "sha256": "cd9735f98905609ceb0fbfe6f6394e085916f2eed9b2182ac35021df23653a52"
     },
     {
       "path": "docs/research/sources.md",
-      "bytes": 8757,
-      "sha256": "438deea5c4af9ae8902b916748fa72033069736846261e595fd50de9b112c296"
+      "bytes": 8549,
+      "sha256": "21819079080b83aed8a72712d6813ff506951e35ecd9f72cb6d2fb08a43b2b41"
     },
     {
       "path": "docs/validation/final-user-checklist.md",
-      "bytes": 4951,
-      "sha256": "feffd67c79573ae2db1e6bde6d4a05990c40192a523f21b51fb8e32342727938"
+      "bytes": 4772,
+      "sha256": "40aadaa535642c3b2f36811616538262988bddda9ccb5dd5ad0563e439471611"
     },
     {
       "path": "docs/validation/optimizer-crosscheck.md",
-      "bytes": 3190,
-      "sha256": "9dab846001fbb8acb82fab846bf7919c1f8e8c42ff32ff9c6b439e4c49456ce9"
+      "bytes": 3093,
+      "sha256": "8a9825606dc9665c7f9a869d0ae993ebcee97ab25e3624543481d04b85c23117"
     },
     {
       "path": "docs/validation/qa-report.md",
-      "bytes": 7743,
-      "sha256": "6266470db1711ea9ce8cf51c7ab52e505a7291b429885928ca92377338bd3225"
+      "bytes": 7496,
+      "sha256": "fa638da6af7fd00a4d98cc78c6ecf59390e8a16ba571655dcace78b4f44886e6"
     },
     {
       "path": "frontend/e2e/ourea-smoke.spec.js",
@@ -423,8 +423,8 @@
     },
     {
       "path": "frontend/public/data/medellin_city_priority_screen.geojson",
-      "bytes": 962632,
-      "sha256": "61721190add87dc957ccff65248d8b50d5faf5c312d0b60a33285a11a5aa2b45"
+      "bytes": 962354,
+      "sha256": "540280ca368feafb5bd3e470abc81c8b014afde27e6fec7479f0861ca86e8b29"
     },
     {
       "path": "frontend/public/data/optimizer_checkpoint.json",
@@ -993,43 +993,43 @@
     },
     {
       "path": "frontend/src/styles/base.css",
-      "bytes": 1681,
-      "sha256": "b9f8e8f927650895ed11a54a639932ceff69dbf4524f2c72847626c0838c415f"
+      "bytes": 1580,
+      "sha256": "5b9935ed679f9610207ae676c7d70bebd32ea351cc5de27d518ae925a2de3b4c"
     },
     {
       "path": "frontend/src/styles/city.css",
-      "bytes": 3095,
-      "sha256": "48608aefe3c122cf9b0248db00a36b559675d671111479cd1f4c84bf90d849b2"
+      "bytes": 2918,
+      "sha256": "2b1af9a81f30f3bdcdee9989ce62a10f9e74ee1f11ced155817cd131548d6a3c"
     },
     {
       "path": "frontend/src/styles/index.css",
-      "bytes": 173,
-      "sha256": "a5e70d078150b73029733f201b1cae8c5466e3a4dac115821c59b7457fb07403"
+      "bytes": 166,
+      "sha256": "9550e015c84433bc3069baddb7a9a91ccf7746595496bc664480a42acef8d2a9"
     },
     {
       "path": "frontend/src/styles/layout.css",
-      "bytes": 6288,
-      "sha256": "200ede18a786f5cea6d51b03370ad087cb0b44d382175587e562468165e326bb"
+      "bytes": 5929,
+      "sha256": "587feb96e3dedccd20aac04ab545cc68f1e569bee0d2793b5ecc7c9bec777444"
     },
     {
       "path": "frontend/src/styles/map.css",
-      "bytes": 6521,
-      "sha256": "112371d12a0a02a4d208045207b938b28b1831b6ff8ad48d29114054e681a6b0"
+      "bytes": 6166,
+      "sha256": "4c632d3616b1f04cf028f4f8c5e97f9956990ea1565673398eb895a827acd53d"
     },
     {
       "path": "frontend/src/styles/responsive.css",
-      "bytes": 1227,
-      "sha256": "e82f57b65926bf2129161be9096e9e18b9325f02955297b0c71af69854cb39fc"
+      "bytes": 1140,
+      "sha256": "24ab7e056d6ab19fb0be1b81e1bde785ef9be5a853dea731fc903894ddca0bc7"
     },
     {
       "path": "frontend/src/styles/sandbox.css",
-      "bytes": 13542,
-      "sha256": "5d0cadda140a41bc88df8f81d4acd9c4ef8f131de4e0291eb6900c35c278ee8c"
+      "bytes": 12717,
+      "sha256": "9015d06cc017c51f395ffd920685da92879f3cdbba08e44fceeb913218214bef"
     },
     {
       "path": "frontend/src/styles/tokens.css",
-      "bytes": 893,
-      "sha256": "c84b85a08d24f259b557bfc9905efe3bcea7043b2737d48464156ccb05e23ac5"
+      "bytes": 858,
+      "sha256": "ed80aefff7d0fb86fbf4ca8ae9a19d7c9753dd470e9c346e76a19cbbbc51b961"
     },
     {
       "path": "frontend/src/utils/math.js",
@@ -1068,8 +1068,8 @@
     },
     {
       "path": "frontend/tests/uiCopy.test.js",
-      "bytes": 929,
-      "sha256": "e85d72a85f96940256dba6448c792fe3a75bfe01bfd6fdd0273239fd1cc36d0e"
+      "bytes": 901,
+      "sha256": "859d023b7c0e7be4d9d943bb3aac858163929eb88bb4efe1e3c1a8855ecdb91d"
     },
     {
       "path": "frontend/vite.config.js",
@@ -1103,13 +1103,13 @@
     },
     {
       "path": "scripts/README.md",
-      "bytes": 2718,
-      "sha256": "e952a13cb84e9c2cc388cffb42e0f0ba6c65c50514d46c2f04d2ed4c65e463a6"
+      "bytes": 2770,
+      "sha256": "ba55921aa3b3393bfa0299b0fdf935ff487c207c1f5b42f35018079fac368c87"
     },
     {
       "path": "scripts/build_city_screen.py",
-      "bytes": 14042,
-      "sha256": "43649fc8c97aa4aaadea8374ab1d9cfcaae5a53d7eea00269d0e2725e71e54a9"
+      "bytes": 13694,
+      "sha256": "399b748a086cbc0ac4f968d742fd8db46ceb6e6b36f463704895453371bc9fb0"
     },
     {
       "path": "scripts/geojson_io.py",
@@ -1118,13 +1118,13 @@
     },
     {
       "path": "scripts/make_manifest.py",
-      "bytes": 8459,
-      "sha256": "4cedc496a8b1d1234bf2bb71d4f6c0c09620857b002c6981fc9c5437beafa1b8"
+      "bytes": 8387,
+      "sha256": "8ff02293413078dac3b6ce853067d916f5612661543b134a5d771cd257ddbd8e"
     },
     {
       "path": "scripts/optimizer_milp.py",
-      "bytes": 22354,
-      "sha256": "b8a1519d9327ecc91a28c6abaa7d9911f8add7117872f7bf9cec33e1a75933b4"
+      "bytes": 21637,
+      "sha256": "35967f2b5ee3617522596e8ce3871914ef1e53d7bd7f30a031f9f0764e686a2e"
     },
     {
       "path": "scripts/rebuild_buildings.py",
@@ -1133,13 +1133,13 @@
     },
     {
       "path": "scripts/siata_event_diagnostics.py",
-      "bytes": 6177,
-      "sha256": "931e47cc936a79cf6c73c36ec49b4854df08e733b7709e5f4e10486bc1646bee"
+      "bytes": 6003,
+      "sha256": "00f81c8bf099be3b24995dbc9de3c438afbbcd06114ef6e1d97d73268c0dd4c0"
     },
     {
       "path": "scripts/siata_ingest.py",
-      "bytes": 11073,
-      "sha256": "00391282e6b983f8cf0e7b15b2602dba8f4bcb08e2f49fc2359741af926bb01f"
+      "bytes": 10721,
+      "sha256": "9b6a6e9a24cd4f0bc62dfefe4f66d314a9ff05da7048cd446e6f621ebb4062ee"
     },
     {
       "path": "scripts/test_geojson_io.py",
@@ -1158,8 +1158,8 @@
     },
     {
       "path": "scripts/validate_project.py",
-      "bytes": 19165,
-      "sha256": "1bddf6ab9a1ed52d7bb5c16d4401ae76ef435eb8bc6d7fb366335056218f56dd"
+      "bytes": 18643,
+      "sha256": "9c0999662ed678a9bb6c591fdea740442b58885f64c3478731fd3665cfdf7798"
     }
   ]
 }
