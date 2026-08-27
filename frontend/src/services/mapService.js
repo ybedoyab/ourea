@@ -1,5 +1,6 @@
 import * as maplibregl from 'maplibre-gl';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { CITY_MAX_BOUNDS, MAP_VIEWS, SANDBOX_BBOX } from '../config/modelConfig.js';
 
 maplibregl.setWorkerUrl(maplibreWorkerUrl);

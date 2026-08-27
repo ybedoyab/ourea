@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { createOureaMap } from '../services/mapService.js';
 import { buildingStressGeoJson } from '../domain/scenarioEngine.js';
 
 export function useOureaMap({
@@ -23,19 +22,24 @@ export function useOureaMap({
 
   useEffect(() => {
     if (!data || !mapNode.current) return undefined;
+    let cancelled = false;
 
-    const api = createOureaMap({
-      container: mapNode.current,
-      data,
-      onSelectCell,
-      onSelectBarrio,
-      onReady: () => setMapReady(true),
+    import('../services/mapService.js').then(({ createOureaMap }) => {
+      if (cancelled || !mapNode.current) return;
+      const api = createOureaMap({
+        container: mapNode.current,
+        data,
+        onSelectCell,
+        onSelectBarrio,
+        onReady: () => setMapReady(true),
+      });
+      mapApiRef.current = api;
     });
-    mapApiRef.current = api;
 
     return () => {
+      cancelled = true;
       setMapReady(false);
-      api.destroy();
+      mapApiRef.current?.destroy();
       mapApiRef.current = null;
     };
   }, [data, onSelectCell, onSelectBarrio]);
@@ -70,7 +74,6 @@ export function useOureaMap({
 
   useEffect(() => {
     if (!mapReady || !context || !data || scope !== 'sandbox') return;
-
     mapApiRef.current?.updateBuildingStress(
       buildingStressGeoJson({
         context,
@@ -82,5 +85,5 @@ export function useOureaMap({
     mapApiRef.current?.updateProjects(activePlan, data.cells);
   }, [mapReady, context, data, activePlan, scenario, scope]);
 
-  return { mapNode, mapReady };
+  return { mapNode };
 }

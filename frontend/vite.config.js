@@ -37,5 +37,14 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['maplibre-gl'],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/maplibre-gl')) return 'maplibre';
+        },
+      },
+    },
+  },
   plugins: [missingTerrainTile404()],
 });
