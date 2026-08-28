@@ -47,6 +47,10 @@ echo == Full geospatial/model/checkpoint validation ==
 python scripts\validate_project.py
 if errorlevel 1 exit /b 1
 
+echo == Decision-brief PDF inspection ==
+python scripts\inspect_brief_pdfs.py
+if errorlevel 1 exit /b 1
+
 echo == Reproducibility manifest ==
 python scripts\make_manifest.py
 if errorlevel 1 exit /b 1

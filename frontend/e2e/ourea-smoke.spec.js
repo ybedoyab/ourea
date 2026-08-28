@@ -426,7 +426,9 @@ test('cell hash from the briefing opens that square on the map', async ({ page }
   await expect(page.getByTestId('step-safeguards')).toBeVisible({ timeout: 60000 });
   await expect(page.getByTestId('flow-announcer')).toContainText(/planning cell/i);
   await expect(page.getByTestId('package-ready')).toBeVisible();
-  await expect(page.getByTestId('hillside-fall-animation')).toBeVisible();
+  await expect(page.getByTestId('early-action-diagram')).toBeVisible();
+  await expect(page.getByText(/Why early action matters/i)).toBeVisible();
+  await expect(page.getByText(/houses fall/i)).toHaveCount(0);
   await expect(page.getByTestId('cell-place-list')).toBeVisible();
   await expect(page.getByTestId('open-google-maps').first()).toBeVisible();
   await expect(page.getByTestId('open-google-earth').first()).toBeVisible();

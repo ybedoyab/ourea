@@ -68,6 +68,12 @@ jobs:
       - name: Project validation
         run: python scripts/validate_project.py
 
+      - name: Install poppler for PDF inspection
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - name: Inspect decision-brief PDFs
+        run: python scripts/inspect_brief_pdfs.py
+
       - name: Manifest and checksums
         run: |
           python scripts/make_manifest.py

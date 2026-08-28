@@ -37,6 +37,9 @@ python scripts/optimizer_milp.py >/dev/null
 echo "== Full geospatial/model/checkpoint validation =="
 python scripts/validate_project.py
 
+echo "== Decision-brief PDF inspection =="
+python scripts/inspect_brief_pdfs.py
+
 echo "== Reproducibility manifest =="
 python scripts/make_manifest.py
 
