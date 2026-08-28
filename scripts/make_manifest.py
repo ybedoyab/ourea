@@ -88,6 +88,7 @@ def main() -> None:
     milp_policies = load_json("data/derived/milp_policy_alternatives.json")
     city_meta = load_json("data/derived/city_screening_source_metadata.json")
     costs = load_json("data/derived/cost_reference_registry.json")
+    cost_context = load_json("frontend/public/data/cost_context.json")
     guardrails = load_json("frontend/src/config/scientificGuardrails.json")
 
     population_matched = sum(
@@ -109,7 +110,7 @@ def main() -> None:
         "model_status": model["status"],
         "production_build_status": (
             "local npm ci, npm test and npm run build succeeded; "
-            "initial application JS is ~306 kB minified; MapLibre is a deferred ~947 kB chunk"
+            "initial application JS is ~397 kB minified; MapLibre is a deferred ~947 kB chunk"
         ),
         "data_counts": {
             "detailed_buildings": len(buildings["features"]),
@@ -202,6 +203,9 @@ def main() -> None:
             "schema": costs.get("schema"),
             "schema_version": costs.get("schema_version"),
             "references": len(costs["references"]),
+            "public_context_schema": cost_context.get("schema"),
+            "fx_date": cost_context.get("fx", {}).get("date"),
+            "cop_per_usd": cost_context.get("fx", {}).get("cop_per_usd"),
         },
         "file_count_excluding_manifest": len(hashes),
         "files": hashes,
