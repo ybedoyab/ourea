@@ -222,10 +222,12 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     setStabilityError(null);
   }
 
-  function generateAlternatives() {
+  function generateAlternatives(preferredProfileId) {
     if (!context || !data || alternativeBusy) return;
+    const targetProfile = preferredProfileId ?? selectedAiProfileId;
     setAlternativeBusy(true);
     setAlternativeError(null);
+    setAiPlan([]);
     window.setTimeout(() => {
       try {
         const options = generateAlternativePortfolios({
@@ -239,11 +241,9 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
           (a, b) =>
             b.uncertainty.p10 - a.uncertainty.p10 || b.downsideRetention - a.downsideRetention,
         )[0];
-        const profileId =
-          recommended?.profileId
-          ?? (alternativeById(options, selectedAiProfileId)
-            ? selectedAiProfileId
-            : DEFAULT_AI_PROFILE);
+        const profileId = alternativeById(options, targetProfile)
+          ? targetProfile
+          : (recommended?.profileId ?? DEFAULT_AI_PROFILE);
         selectAlternative(profileId, options);
       } catch (error) {
         setAlternativeError(error instanceof Error ? error.message : String(error));
@@ -430,6 +430,37 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     setView(nextView);
   }
 
+  function resetWorkspace() {
+    setUserPlan([]);
+    setAlternatives([]);
+    setAlternativeError(null);
+    setSelectedAiProfileId(DEFAULT_AI_PROFILE);
+    setAiPlan([]);
+    setAiDiagnostics(null);
+    setView('none');
+    setFrontier(null);
+    setFrontierError(null);
+    setStability(null);
+    setStabilityError(null);
+    setPareto(null);
+    setParetoError(null);
+    setSessionCommunityRecords([]);
+    setBenchmark(null);
+    setBreakage(null);
+    setBenchmarkError(null);
+    setBudgetCredits(DEFAULT_SCENARIO.budgetCredits);
+    if (data?.climateContext) {
+      const next = defaultScenarioFromClimate(data.climateContext, DEFAULT_SCENARIO.budgetCredits);
+      setScenario({
+        rainMm: next.rainMm,
+        antecedentWetness: next.antecedentWetness,
+        planningYear: 1,
+        presetId: next.presetId,
+        climate: next.climate,
+      });
+    }
+  }
+
   function upsertSessionCommunityRecord(partial) {
     const record = normalizeCommunityRecord(
       {
@@ -499,5 +530,6 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     benchmarkBusy,
     benchmarkError,
     upsertSessionCommunityRecord,
+    resetWorkspace,
   };
 }

@@ -1,19 +1,20 @@
-import { useCallback, useMemo, useState } from 'react';
-import { CityPanel } from './components/CityPanel.jsx';
+import { useCallback, useMemo, useReducer, useState } from 'react';
 import { MapLegend } from './components/MapLegend.jsx';
-import { SandboxPanel } from './components/SandboxPanel.jsx';
+import { MapLayersControl } from './components/MapLayersControl.jsx';
 import { TopBar } from './components/TopBar.jsx';
 import { OureaLogo } from './components/OureaLogo.jsx';
 import { BRAND } from './config/brand.js';
 import { buildDecisionPackage, downloadDecisionPackage } from './domain/decisionPackage.js';
+import { DecisionFlow } from './flow/DecisionFlow.jsx';
+import { flowReducer, initialFlowState } from './flow/flowReducer.js';
+import { mapScopeForFlow } from './flow/flowGuards.js';
 import { useOureaData } from './hooks/useOureaData.js';
 import { useOureaMap } from './hooks/useOureaMap.js';
 import { usePortfolioWorkspace } from './hooks/usePortfolioWorkspace.js';
 
 export default function App() {
   const { data, loadError } = useOureaData();
-  const [scope, setScope] = useState('city');
-  const [cityLens, setCityLens] = useState('balanced');
+  const [flow, dispatch] = useReducer(flowReducer, initialFlowState);
   const [selectedBarrio, setSelectedBarrio] = useState(null);
   const [selectedCellId, setSelectedCellId] = useState(null);
   const [selectedType, setSelectedType] = useState('rwh');
@@ -23,6 +24,8 @@ export default function App() {
     roads: true,
   });
 
+  const cityLens = flow.cityLens;
+  const scope = mapScopeForFlow(flow);
   const onSelectCell = useCallback(setSelectedCellId, []);
   const onSelectBarrio = useCallback(setSelectedBarrio, []);
 
@@ -92,19 +95,22 @@ export default function App() {
     );
   }
 
-  function runGuidedDemo() {
-    setCityLens('balanced');
-    if (llanaditas) setSelectedBarrio(llanaditas.properties);
-    setSelectedCellId(35);
+  function startOver() {
+    workspace.resetWorkspace();
+    setSelectedBarrio(null);
+    setSelectedCellId(null);
     setSelectedType('rwh');
-    setScope('sandbox');
-    workspace.runGuidedDemo();
+    dispatch({ type: 'RESET' });
   }
 
   if (loadError) throw loadError;
 
+  const areaLabel = flow.areaId === 'llanaditas' || scope === 'sandbox'
+    ? BRAND.provingGround
+    : 'Medellín';
+
   return (
-    <div className="app">
+    <div className={`app app-${flow.mode} app-step-${flow.step}`}>
       <div className="map">
         <div ref={mapNode} className="map-canvas" data-testid="map-canvas" />
         {mapStatus === 'unavailable' && (
@@ -117,6 +123,19 @@ export default function App() {
             {mapError ? <small>{mapError}</small> : null}
           </div>
         )}
+        {scope === 'sandbox' && (
+          <MapLayersControl
+            open={flow.layersOpen}
+            layerState={layerState}
+            onToggleOpen={() => dispatch({ type: 'TOGGLE_LAYERS' })}
+            onToggleLayer={(key) =>
+              setLayerState((current) => ({
+                ...current,
+                [key]: !current[key],
+              }))
+            }
+          />
+        )}
       </div>
 
       {!data && (
@@ -128,107 +147,53 @@ export default function App() {
       )}
 
       <TopBar
-        scope={scope}
-        onScopeChange={setScope}
-        view={workspace.view}
-        onViewChange={workspace.changeView}
-        userCost={workspace.userCost}
-        aiCost={workspace.aiCost}
-        aiProfileLabel={workspace.aiDiagnostics?.profile?.label}
-        onRunGuidedDemo={runGuidedDemo}
-        guidedDemoBusy={workspace.alternativeBusy || workspace.benchmarkBusy}
+        areaLabel={areaLabel}
+        mode={flow.mode}
+        menuOpen={flow.menuOpen}
+        onToggleMenu={() => dispatch({ type: 'TOGGLE_MENU' })}
+        onCloseMenu={() => dispatch({ type: 'CLOSE_MENU' })}
+        onHelp={() => dispatch({ type: 'OPEN_DRAWER', drawer: 'help' })}
+        onAbout={() => dispatch({ type: 'OPEN_DRAWER', drawer: 'about' })}
+        onStartOver={startOver}
+        onToggleExplore={() =>
+          dispatch({
+            type: flow.mode === 'explore' ? 'RETURN_TO_GUIDED_MODE' : 'ENTER_EXPLORE_MODE',
+          })
+        }
+        onLoadExample={() => {
+          dispatch({ type: 'CLOSE_MENU' });
+          if (llanaditas) setSelectedBarrio(llanaditas.properties);
+          dispatch({ type: 'SET_AREA', areaId: 'llanaditas' });
+          dispatch({ type: 'SET_LENS', cityLens: 'balanced' });
+          dispatch({ type: 'GENERATION_STARTED', kind: 'example' });
+          workspace.runGuidedDemo();
+        }}
       />
 
-      <MapLegend scope={scope} cityLens={cityLens} />
+      <MapLegend
+        scope={scope}
+        cityLens={cityLens}
+        collapsed={flow.legendCollapsed}
+        onToggle={() => dispatch({ type: 'TOGGLE_LEGEND' })}
+      />
 
-      <aside className="panel">
-        <div className="eyebrow">
-          {BRAND.event} · {BRAND.expansion}
-        </div>
-
-        {scope === 'city' ? (
-          <CityPanel
-            screening={data?.screening}
-            selectedBarrio={selectedBarrio}
-            llanaditas={llanaditas}
-            cityLens={cityLens}
-            onCityLensChange={setCityLens}
-            onSelectBarrio={setSelectedBarrio}
-            onOpenSandbox={() => setScope('sandbox')}
-            onRunGuidedDemo={runGuidedDemo}
-          />
-        ) : (
-          <SandboxPanel
-            scenario={workspace.scenario}
-            onScenarioChange={workspace.setScenario}
-            summary={data?.summary}
-            metrics={workspace.metrics}
-            baseline={workspace.baseline}
-            monteCarlo={workspace.monteCarlo}
-            capturedVolumeM3={workspace.capturedVolumeM3}
-            budgetCredits={workspace.budgetCredits}
-            onBudgetChange={workspace.setBudgetCredits}
-            selectedType={selectedType}
-            onSelectType={setSelectedType}
-            selectedCell={selectedCell}
-            cells={data?.cells}
-            selectedCellId={selectedCellId}
-            onSelectCell={setSelectedCellId}
-            userPlan={workspace.userPlan}
-            userCost={workspace.userCost}
-            canAddSelected={workspace.canAddSelected}
-            onAddSelected={workspace.addSelectedIntervention}
-            onRemoveUserProject={workspace.removeUserProject}
-            onClearUser={workspace.clearUserPlan}
-            aiPlan={workspace.aiPlan}
-            aiDiagnostics={workspace.aiDiagnostics}
-            alternatives={workspace.alternatives}
-            alternativeBusy={workspace.alternativeBusy}
-            alternativeError={workspace.alternativeError}
-            selectedAiProfileId={workspace.selectedAiProfileId}
-            onGenerateAlternatives={workspace.generateAlternatives}
-            onSelectAlternative={workspace.selectAlternative}
-            frontier={workspace.frontier}
-            frontierBusy={workspace.frontierBusy}
-            frontierError={workspace.frontierError}
-            onAnalyzeFrontier={workspace.analyzeFrontier}
-            onExportDecisionPackage={exportDecisionPackage}
-            stability={workspace.stability}
-            stabilityBusy={workspace.stabilityBusy}
-            stabilityError={workspace.stabilityError}
-            onAnalyzeStability={workspace.analyzeStability}
-            pareto={workspace.pareto}
-            paretoBusy={workspace.paretoBusy}
-            paretoError={workspace.paretoError}
-            onAnalyzePareto={workspace.analyzePareto}
-            evidence={data?.evidence}
-            climate={data?.climateContext}
-            onSelectClimatePreset={workspace.applyClimatePreset}
-            communityAssessment={workspace.communityAssessment}
-            activePlan={workspace.activePlan}
-            onRecordCommunityEvidence={workspace.upsertSessionCommunityRecord}
-            planAlignment={data?.planAlignment}
-            benchmark={workspace.benchmark}
-            breakage={workspace.breakage}
-            benchmarkBusy={workspace.benchmarkBusy}
-            benchmarkError={workspace.benchmarkError}
-            onAnalyzeBenchmark={workspace.analyzeBenchmark}
-            layerState={layerState}
-            onToggleLayer={(key) =>
-              setLayerState((state) => ({
-                ...state,
-                [key]: !state[key],
-              }))
-            }
-          />
-        )}
-
-        <footer>
-          {BRAND.name} · {BRAND.expansion}. Decision support for accountable city choices — not a
-          substitute for engineering design. Rainfall contexts are CHIRPS v3 Final gridded
-          observations, not real-time forecasts.
-        </footer>
-      </aside>
+      {data && (
+        <DecisionFlow
+          state={flow}
+          dispatch={dispatch}
+          data={data}
+          workspace={workspace}
+          selectedBarrio={selectedBarrio}
+          llanaditas={llanaditas}
+          selectedType={selectedType}
+          selectedCell={selectedCell}
+          selectedCellId={selectedCellId}
+          onSelectType={setSelectedType}
+          onSelectCell={setSelectedCellId}
+          onSelectBarrio={setSelectedBarrio}
+          onExport={exportDecisionPackage}
+        />
+      )}
     </div>
   );
 }

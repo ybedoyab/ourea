@@ -95,6 +95,68 @@ export function frontierTakeaway(frontier) {
   return `Most additional robust benefit is captured by ${capture.budgetCredits} planning credits in this ensemble.`;
 }
 
+export const PRIORITY_CARDS = Object.freeze({
+  balanced: {
+    name: 'Balanced',
+    description: 'Balance risk reduction, equity and access.',
+    how: 'Keeps exposure reduction first, then adds modest equity and access weights.',
+  },
+  equity: {
+    name: 'Equity-first',
+    description: 'Prioritize places with greater vulnerable exposure.',
+    how: 'Increases decision weight on cells with high stratum-1 exposure.',
+  },
+  access: {
+    name: 'Access-first',
+    description: 'Prioritize interventions related to hillside access.',
+    how: 'Increases decision weight on cells that support mapped hillside access.',
+  },
+  low_regret: {
+    name: 'Low-regret',
+    description: 'Prioritize projects that remain useful under adverse assumptions.',
+    how: 'Penalizes lower-tail uncertainty so fewer, more defensible projects remain.',
+  },
+});
+
+export const FLOW_STEPS = Object.freeze([
+  {
+    id: 'area',
+    short: 'Area',
+    title: 'Where should the city act?',
+    instruction: 'The detailed proving ground is Llanaditas. Other barrios inform city ranking only.',
+  },
+  {
+    id: 'conditions',
+    short: 'Conditions',
+    title: 'What conditions should we plan for?',
+    instruction: 'Choose an observed rainfall context and a planning-credit budget.',
+  },
+  {
+    id: 'priorities',
+    short: 'Priorities',
+    title: 'What should the portfolio prioritize?',
+    instruction: 'Pick the public-policy lens Ourea should use under the same data and budget.',
+  },
+  {
+    id: 'portfolio',
+    short: 'Portfolio',
+    title: 'How do you want to build the portfolio?',
+    instruction: 'Let Ourea recommend a portfolio, or place interventions yourself.',
+  },
+  {
+    id: 'review',
+    short: 'Review',
+    title: 'Does this portfolio hold up?',
+    instruction: 'Read the lower tail first, then compare alternatives on the map.',
+  },
+  {
+    id: 'safeguards',
+    short: 'Safeguards',
+    title: 'Is this decision ready to discuss?',
+    instruction: 'Check evidence, community status and local alignment before export.',
+  },
+]);
+
 export const DECISION_ENGINE_COPY = Object.freeze({
   title: 'Decision engine',
   eligibleCandidates: 125,

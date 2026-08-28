@@ -2,93 +2,61 @@ import { BRAND } from '../config/brand.js';
 import { OureaLogo } from './OureaLogo.jsx';
 
 export function TopBar({
-  scope,
-  onScopeChange,
-  view,
-  onViewChange,
-  userCost,
-  aiCost,
-  aiProfileLabel,
-  onRunGuidedDemo,
-  guidedDemoBusy,
+  areaLabel,
+  mode,
+  menuOpen,
+  onToggleMenu,
+  onCloseMenu,
+  onHelp,
+  onAbout,
+  onStartOver,
+  onToggleExplore,
+  onLoadExample,
 }) {
-  const robustLabel = aiProfileLabel
-    ? `OUREA · ${aiProfileLabel}`
-    : 'OUREA robust options';
-
   return (
     <header className="topbar">
       <div className="brand-group">
         <OureaLogo compact />
-        <span className="sub">
-          {scope === 'city' ? BRAND.descriptor : BRAND.slogan}
-        </span>
+        <span className="topbar-area">{areaLabel}</span>
       </div>
-
-      <nav className="scope" aria-label="Product scale">
-        <button
-          type="button"
-          data-testid="scope-city"
-          className={scope === 'city' ? 'active' : ''}
-          aria-pressed={scope === 'city'}
-          onClick={() => onScopeChange('city')}
-        >
-          City screen
-        </button>
-        <button
-          type="button"
-          data-testid="scope-sandbox"
-          className={scope === 'sandbox' ? 'active' : ''}
-          aria-pressed={scope === 'sandbox'}
-          onClick={() => onScopeChange('sandbox')}
-        >
-          Decision sandbox
-        </button>
-      </nav>
-
-      <button
-        type="button"
-        className="guided-demo"
-        data-testid="run-guided-demo"
-        onClick={onRunGuidedDemo}
-        disabled={guidedDemoBusy}
-      >
-        {guidedDemoBusy ? 'Running demo…' : 'Run guided demo'}
-      </button>
-
-      {scope === 'sandbox' && (
-        <div className="seg" role="group" aria-label="Active portfolio comparison">
+      <div className="topbar-actions" data-testid="persistent-nav">
+        <button type="button" data-testid="help-button" onClick={onHelp}>Help</button>
+        <div className="topbar-menu">
           <button
             type="button"
-            data-testid="view-none"
-            className={view === 'none' ? 'active' : ''}
-            aria-pressed={view === 'none'}
-            onClick={() => onViewChange('none')}
+            data-testid="app-menu"
+            aria-expanded={menuOpen}
+            aria-haspopup="menu"
+            onClick={onToggleMenu}
           >
-            No action
+            More
           </button>
-          <button
-            type="button"
-            data-testid="view-user"
-            className={view === 'user' ? 'active' : ''}
-            aria-pressed={view === 'user'}
-            onClick={() => onViewChange('user')}
-            disabled={!userCost}
-          >
-            Your plan · {userCost}
-          </button>
-          <button
-            type="button"
-            data-testid="view-ai"
-            className={view === 'ai' ? 'active' : ''}
-            aria-pressed={view === 'ai'}
-            onClick={() => onViewChange('ai')}
-            disabled={!aiCost}
-          >
-            {robustLabel} · {aiCost}
-          </button>
+          {menuOpen && (
+            <div className="topbar-menu-list" role="menu">
+              <button type="button" role="menuitem" data-testid="load-example" onClick={onLoadExample}>
+                Load completed example
+              </button>
+              <button type="button" role="menuitem" data-testid="start-over" onClick={onStartOver}>
+                Start over
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                data-testid="toggle-explore"
+                onClick={onToggleExplore}
+              >
+                {mode === 'explore' ? 'Return to guided decision' : 'Explore freely'}
+              </button>
+              <button type="button" role="menuitem" data-testid="about-ourea" onClick={onAbout}>
+                About Ourea
+              </button>
+              <button type="button" role="menuitem" onClick={onCloseMenu}>Close menu</button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </header>
   );
 }
+
+export { BRAND };
