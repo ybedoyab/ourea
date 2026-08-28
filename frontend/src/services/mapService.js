@@ -2,6 +2,7 @@ import * as maplibregl from 'maplibre-gl';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { CITY_MAX_BOUNDS, MAP_VIEWS, SANDBOX_BBOX } from '../config/modelConfig.js';
+import { assetUrl } from '../config/assetUrl.js';
 
 maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
@@ -12,7 +13,7 @@ const BASEMAP_TILES = [
 
 const DEM_SOURCE = Object.freeze({
   type: 'raster-dem',
-  tiles: ['/terrain/{z}/{x}/{y}.png'],
+  tiles: [assetUrl('terrain/{z}/{x}/{y}.png')],
   tileSize: 256,
   encoding: 'mapbox',
   minzoom: 15,

@@ -5,9 +5,17 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ourea-qa-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   qa:
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v5
 
@@ -33,15 +41,23 @@ jobs:
         working-directory: frontend
         run: npm run build
 
+      - name: Confirm MapLibre remains a deferred chunk
+        working-directory: frontend
+        run: node -e "const fs=require('fs'); const files=fs.readdirSync('dist/assets'); if(!files.some(f=>f.startsWith('maplibre-')&&f.endsWith('.js'))) throw new Error('MapLibre chunk missing'); const app=files.filter(f=>f.endsWith('.js')&&!f.startsWith('maplibre-')); const initial=app.map(f=>'dist/assets/'+f).map(p=>fs.statSync(p).size); if(Math.max(...initial)>500000) throw new Error('Initial JS exceeded 500 kB'); console.log(files.join('\\n'));"
+
       - name: Install Python QA dependencies
         run: python -m pip install --upgrade pip && pip install -r requirements-qa.txt
 
       - name: Compile Python
-        run: python -m compileall -q scripts
+        run: python -m compileall -q scripts tests
 
-      - name: SIATA and GeoJSON loader tests
-        working-directory: scripts
-        run: python -m unittest -v test_siata_ingest.py test_siata_event_diagnostics.py test_geojson_io.py
+      - name: Python unit tests
+        run: |
+          python -m unittest discover -s tests -p "test_*.py" -v
+          python -m unittest discover -s scripts -p "test_*.py" -v
+
+      - name: Offline climate context
+        run: python scripts/validate_climate_context.py
 
       - name: Browser optimizer checkpoint
         run: node frontend/scripts/generateCheckpoint.mjs
@@ -61,6 +77,16 @@ jobs:
         working-directory: frontend
         run: npx playwright install --with-deps chromium
 
-      - name: End-to-end smoke
+      - name: End-to-end
         working-directory: frontend
         run: npx playwright test
+
+      - name: Playwright artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            frontend/playwright-report
+            frontend/test-results
+          if-no-files-found: ignore
