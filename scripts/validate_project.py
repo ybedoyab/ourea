@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from pathlib import Path
 import json
+import subprocess
+import sys
 
 import numpy as np
 import pandas as pd
@@ -235,10 +237,30 @@ require(
     "Planning-credit/COP guardrail missing",
 )
 require(
+    any("pre-feasibility implementation envelope" in item for item in guardrails),
+    "USD envelope guardrail missing",
+)
+require(
     any("not a prediction of social acceptance" in item for item in guardrails),
     "Community-evidence guardrail missing",
 )
 ok("Evidence/provenance and DRY guardrails pass")
+
+cost_context = json.loads((DATA / "cost_context.json").read_text(encoding="utf-8"))
+require(cost_context["schema"] == "ourea-cost-context", "cost_context schema changed")
+require(cost_context["fx"]["date"] == "2026-08-28", "cost_context FX date drifted")
+require(float(cost_context["fx"]["cop_per_usd"]) == 3144.28, "cost_context TRM drifted")
+require(
+    cost_context["interventions"]["drainage"]["length_m"]["base"] == 60,
+    "drainage scenario length drifted",
+)
+stale = subprocess.run(
+    [sys.executable, str(ROOT / "scripts" / "build_cost_context.py"), "--check"],
+    cwd=ROOT,
+    check=False,
+)
+require(stale.returncode == 0, "frontend/public/data/cost_context.json is stale")
+ok("Versioned USD cost context is present and reproducible")
 
 stress = model["stress"]
 require(

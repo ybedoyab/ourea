@@ -95,10 +95,10 @@
     {
       "id": "cost",
       "label": "Intervention costs",
-      "status": "planning-credits",
-      "confidence": "not-currency",
-      "basis": "Local evidence ladder exists, but heterogeneous project scopes are not yet comparable unit costs",
-      "use": "Budget constraint without false COP precision"
+      "status": "pre-feasibility-usd-envelope",
+      "confidence": "credits-internal-usd-brief",
+      "basis": "Versioned TRM, DANE IPC and local procurement/public-works comparators; optimizer remains on planning credits",
+      "use": "Decision-brief implementation envelope; not an offer, contract or engineering estimate"
     }
   ]
 }

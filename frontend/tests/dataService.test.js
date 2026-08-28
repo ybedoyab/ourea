@@ -12,6 +12,25 @@ function response({ status = 200, body = '{}' } = {}) {
   };
 }
 
+test('required cost context is not optional', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('cost_context.json')) {
+      return { status: 404, ok: false, async text() { return 'Not found'; } };
+    }
+    return response({ body: '{}' });
+  };
+
+  try {
+    await assert.rejects(
+      () => loadOureaData(),
+      /Failed to load .*cost_context\.json: HTTP 404/,
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('required climate context is not optional', async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url) => {

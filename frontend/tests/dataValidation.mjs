@@ -405,6 +405,13 @@ assert.ok(
 const alignment = JSON.parse(
   await readFile(join(root, 'public', 'data', 'plan_alignment.json'), 'utf8'),
 );
+const costContext = await json('cost_context.json');
+assert.equal(costContext.schema, 'ourea-cost-context');
+assert.equal(costContext.fx.date, '2026-08-28');
+assert.equal(costContext.fx.cop_per_usd, 3144.28);
+assert.equal(costContext.interventions.rwh.usd_per_system.base, 780);
+assert.equal(costContext.interventions.drainage.length_m.base, 60);
+assert.ok(costContext.sources.every((item) => item.url && item.id));
 assert.equal(alignment.schema, 'ourea-plan-alignment');
 assert.equal(alignment.schema_version, 2);
 assert.equal(alignment.status, 'documentary-alignment-not-community-support');

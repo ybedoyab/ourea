@@ -10,6 +10,7 @@ export const REQUIRED_DATA_FILES = Object.freeze({
   evidence: assetUrl('data/evidence_status.json'),
   climateContext: assetUrl('data/climate_context.json'),
   planAlignment: assetUrl('data/plan_alignment.json'),
+  costContext: assetUrl('data/cost_context.json'),
 });
 
 export const OPTIONAL_DATA_FILES = Object.freeze({
