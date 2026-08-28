@@ -910,26 +910,48 @@
   font-size: 12px;
 }
 
-.hillside-anim {
+.early-action {
   margin: 0 0 12px;
-  padding: 8px;
+  padding: 10px 12px 8px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #111517;
+  background: var(--panel, #f7f3ea);
 }
 
-.hillside-anim canvas {
+.early-action b {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.early-action-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.early-action-frame {
+  margin: 0;
+}
+
+.early-action-frame svg {
   display: block;
   width: 100%;
   height: auto;
   border-radius: 6px;
 }
 
-.hillside-anim figcaption {
-  margin: 8px 4px 2px;
+.early-action-frame figcaption,
+.early-action p {
+  margin: 6px 0 0;
   color: var(--text-muted);
   font-size: 11px;
-  line-height: 1.4;
+  line-height: 1.35;
+}
+
+@media (max-width: 720px) {
+  .early-action-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -30,6 +30,10 @@ for (const file of sourceFiles) {
       !source.includes('restoration_suitability'),
     `${file} references an obsolete V1 risk-weighted suitability field`,
   );
+  assert.ok(
+    !/houses fall|houses lean|fallPose|HillsideFall|collapse warning/i.test(source),
+    `${file} contains collapse-prediction imagery or copy`,
+  );
 
   assert.ok(
     !source.includes('medellin_barrio_screening.geojson'),

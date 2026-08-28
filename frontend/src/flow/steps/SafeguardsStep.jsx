@@ -2,7 +2,7 @@ import { EVIDENCE_GROUPS } from '../../config/uiCopy.js';
 import { COMMUNITY_COPY } from '../../config/communityEvidence.js';
 import { INTERVENTIONS } from '../../config/modelConfig.js';
 import { CellPlaceLinks } from '../../components/CellPlaceLinks.jsx';
-import { HillsideFallAnimation } from '../../components/HillsideFallAnimation.jsx';
+import { EarlyActionDiagram } from '../../components/EarlyActionDiagram.jsx';
 import { EvidenceIcon, CommunityIcon, AlignmentIcon, DownloadIcon } from '../../components/FlowIcons.jsx';
 import { featureLngLat } from '../../domain/placeLinks.js';
 import { FlowActions } from '../FlowActions.jsx';
@@ -55,7 +55,7 @@ export function SafeguardsStep({
         <span className="label-with-icon"><DownloadIcon /> Downloads a formatted PDF proposal for the meeting.</span>
       </p>
 
-      <HillsideFallAnimation />
+      <EarlyActionDiagram />
 
       {(projects ?? []).length > 0 && (
         <article className="choice-card static-card" data-testid="cell-place-list">
