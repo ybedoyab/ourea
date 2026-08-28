@@ -53,14 +53,13 @@ It is not a current household census.
 ## Dynamic Climate Stress
 
 Current controls:
-- hypothetical storm depth;
-- antecedent wetness;
-- planning horizon.
+- rainfall accumulation context from CHIRPS v3 Final observational percentiles;
+- antecedent rainfall percentile;
+- planning-year restoration maturity.
 
-The UI explicitly states these are not SIATA return periods or calibrated storm classes.
+These are planning rainfall contexts, not SIATA return periods, not calibrated storm classes, and not landslide probability.
 
-Target replacement:
-- real SIATA rainfall features + historical validation.
+A local SIATA series, if supplied, is an optional intensity comparison. It is not required to use Ourea.
 
 ## Intervention families
 
@@ -141,12 +140,11 @@ Final decisions remain with:
 
 ## Validation path
 
-1. raw SIATA QA;
-2. verified June 2022 event timestamp;
-3. hindcast/sensitivity analysis;
-4. additional historical events if available;
-5. local intervention-effect distributions;
-6. comparable cost distributions;
-7. stakeholder policy-weight co-design;
-8. structured pilot user testing;
-9. community co-design of safeguards without inventing social scores.
+1. CHIRPS v3 Final observational climatology as shipped climate context;
+2. optional SIATA station comparison if a city supplies a series;
+3. additional historical events only when independently verified;
+4. local intervention-effect distributions;
+5. comparable cost distributions;
+6. stakeholder policy-weight co-design;
+7. structured pilot user testing;
+8. community co-design of safeguards without inventing social scores.

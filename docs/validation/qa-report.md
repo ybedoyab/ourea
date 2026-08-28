@@ -230,7 +230,7 @@ The supplied launch scripts fail fast in that order.
 
 ## Known scientific limitations intentionally retained
 
-- dynamic Climate Stress is not SIATA-calibrated yet;
+- climate stress uses CHIRPS v3 Final gridded observational context, not SIATA station calibration;
 - intervention effects are development priors;
 - planning credits are not COP;
 - city hazard-exposure assumes within-barrio uniform population;

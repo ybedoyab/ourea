@@ -2,7 +2,7 @@
 
 ## 1. Architectural goal
 
-Ourea separates **evidence, uncertainty, public-policy choices and UI** so the product can evolve from a hackathon prototype into a defensible city pilot without rewriting everything when SIATA/calibration data arrive.
+Ourea separates **evidence, uncertainty, public-policy choices and UI** so the decision sandbox can be piloted without rewriting the architecture if a city later supplies station series for optional local-intensity comparison.
 
 ## 2. Design principles
 
@@ -115,16 +115,13 @@ Stable inputs:
 - official access network;
 - roof/open-space/access opportunity features.
 
-Dynamic input today:
-- hypothetical storm depth;
-- antecedent wetness;
+Dynamic climate input:
+- observational rainfall contexts from CHIRPS v3 Final (typical / high / extreme presets, or Explore);
+- antecedent rainfall percentile derived from accumulated rainfall context, not in-situ soil moisture;
 - planning-year restoration maturity (not a temporal pathway optimizer).
 
-Dynamic target after SIATA:
-- observed rainfall increments;
-- rolling accumulations;
-- optional soil moisture;
-- calibrated/validated dynamic driver.
+Optional later comparison, not a runtime requirement:
+- a local SIATA station series if a city supplies it, used only to compare gridded context with gauge intensity.
 
 ## 6. Opportunity vs exposure separation
 
@@ -223,13 +220,13 @@ It supports:
 
 The formal model and interactive algorithm are related but not identical; disagreement is documented rather than hidden.
 
-## 14. SIATA integration
+## 14. Optional SIATA station comparison
 
-`scripts/siata_ingest.py` converts real raw station exports into QA'd rainfall features.
+`scripts/siata_ingest.py` can convert a local station export into QA'd rainfall features if a city supplies one.
 
-`scripts/siata_event_diagnostics.py` summarizes rainfall state around a verified event timestamp.
+`scripts/siata_event_diagnostics.py` can summarize rainfall state around a verified event timestamp.
 
-Neither script creates synthetic rainfall or trains a predictor from one historical event.
+Neither script runs in the browser. Ourea does not download station data at runtime and does not wait on a third-party delivery to present a complete decision product.
 
 See `docs/methodology/siata-calibration.md`.
 

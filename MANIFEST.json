@@ -260,8 +260,8 @@
     },
     {
       "path": "docs/competition/final-submission-checklist.md",
-      "bytes": 3565,
-      "sha256": "2dc0190dcd331a6fcad61ed3fa0b83444fdeed9eac4ef43f876253a4ae49b6c4"
+      "bytes": 3744,
+      "sha256": "5c803ffa0aad56a5f90efe7aff3d0622addb80e7bc13c2c35a5a5890d200f338"
     },
     {
       "path": "docs/competition/judge-qa.md",
@@ -335,8 +335,8 @@
     },
     {
       "path": "docs/product/architecture.md",
-      "bytes": 8843,
-      "sha256": "e5ed148796ce90f5756a2095aa270167c59486707a56ce683296a3f4ab36a9eb"
+      "bytes": 9146,
+      "sha256": "1a9162ab0254f7e637f782a5655500784715dab46e26526e67a930a96803fa7a"
     },
     {
       "path": "docs/product/competitive-landscape.md",
@@ -345,8 +345,8 @@
     },
     {
       "path": "docs/product/model-card.md",
-      "bytes": 4395,
-      "sha256": "63d9e4af690644acc198982adcf8b0033ecadf724d8667f3518b4423abd71d56"
+      "bytes": 4611,
+      "sha256": "75105ecd53f19d015b0df9579f6a4965803fb4877e42f5b894e0c70d3d1578a9"
     },
     {
       "path": "docs/research/case-studies/moravia.md",
@@ -380,8 +380,8 @@
     },
     {
       "path": "docs/validation/qa-report.md",
-      "bytes": 7660,
-      "sha256": "06dd35d18f185bc45d77f37f467e69b7e89ce0490e69dc839322cf3ea2018066"
+      "bytes": 7706,
+      "sha256": "76b0bb710dbf496f2813798542e73ea7028185e6acff72f4bcfb1cd1e530fd7d"
     },
     {
       "path": "frontend/e2e/errorAllowlist.js",

@@ -77,18 +77,15 @@ Must show the AI/decision engine doing something visible:
 
 Do not let the demo become “look at our 3D map.”
 
-## Historical validation
+## Climate context and optional station comparison
 
-If SIATA arrives before submission:
-- [ ] raw QA complete;
-- [ ] exact June 2022 event timestamp independently verified;
-- [ ] event diagnostic produced;
-- [ ] calibrated/hindcast result added only if defensible.
+Ourea ships a complete observed climate context from CHIRPS v3 Final. Do not present a waiting state.
 
-If SIATA does not arrive:
-- [ ] clearly show “Awaiting official raw SIATA station series”;
-- [ ] explain completed ingestion/validation architecture;
-- [ ] do not fabricate historical data.
+- [x] Observed climate context is CHIRPS v3 Final, climatology 1991–2020;
+- [x] Typical / high / extreme presets are observational percentiles, not arbitrary millimetres;
+- [x] Every visible climate figure includes source, period and accumulation window;
+- [x] Copy states that Ourea supports planning decisions and does not issue real-time forecasts;
+- [x] SIATA is optional local-intensity comparison, not a runtime dependency and not a missing feature.
 
 ## Final links/files
 
