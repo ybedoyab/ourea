@@ -75,7 +75,8 @@ def main() -> None:
     city = load_json("frontend/public/data/medellin_city_priority_screen.geojson")
     summary = load_json("frontend/public/data/summary.json")
     evidence = load_json("frontend/public/data/evidence_status.json")
-    replay = load_json("frontend/public/data/replay_contract.json")
+    climate = load_json("frontend/public/data/climate_context.json")
+    alignment = load_json("frontend/public/data/plan_alignment.json")
     browser = load_json("frontend/public/data/optimizer_checkpoint.json")
     frontier = load_json("data/derived/browser_budget_frontier.json")
     stability = load_json("data/derived/browser_selection_stability.json")
@@ -103,11 +104,11 @@ def main() -> None:
     manifest = {
         "project": "Ourea",
         "package_version": package["version"],
-        "manifest_date": "2026-08-27",
+        "manifest_date": "2026-08-28",
         "model_status": model["status"],
         "production_build_status": (
             "local npm ci, npm test and npm run build succeeded; "
-            "initial application JS is ~297 kB minified; MapLibre is a deferred ~947 kB chunk"
+            "initial application JS is ~306 kB minified; MapLibre is a deferred ~947 kB chunk"
         ),
         "data_counts": {
             "detailed_buildings": len(buildings["features"]),
@@ -132,10 +133,16 @@ def main() -> None:
             "entries": len(evidence["layers"]),
             "global_guardrails": len(guardrails["items"]),
         },
-        "historical_replay": {
-            "status": replay["historical_replay"]["status"],
-            "required_features": replay["historical_replay"]["required_features"],
-            "synthetic_timeline_shipped": (ROOT / "frontend/public/data/replay_timeline.json").exists(),
+        "climate_context": {
+            "source_name": climate["source_name"],
+            "source_version": climate["source_version"],
+            "climatology_period": climate["climatology_period"]["label"],
+            "available_period": climate["available_period"]["label"],
+            "preset_ids": [item["id"] for item in climate["scenario_presets"]],
+        },
+        "plan_alignment": {
+            "schema_version": alignment.get("schema_version"),
+            "entries": len(alignment.get("entries", [])),
         },
         "browser_balanced_checkpoint": {
             "budget_credits": browser["budgetCredits"],
