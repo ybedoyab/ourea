@@ -126,18 +126,8 @@
     "schema_version": 1,
     "references": 3
   },
-  "file_count_excluding_manifest": 228,
+  "file_count_excluding_manifest": 226,
   "files": [
-    {
-      "path": ".cache/chirps/llanaditas_daily_rnl.csv",
-      "bytes": 114592,
-      "sha256": "a01ff46346f7e0c3d4afd1d0217abb5cc93a25d95994f9a0d76d251318515445"
-    },
-    {
-      "path": ".cache/chirps/llanaditas_pentad_latam.csv",
-      "bytes": 62121,
-      "sha256": "45f83b5ff6e71e1b936ad9899e728fd8160de3fa6b4d7ef3a2cd62ea6d6eb7e8"
-    },
     {
       "path": ".github/workflows/ourea-pages.yml",
       "bytes": 994,
@@ -1210,8 +1200,8 @@
     },
     {
       "path": "scripts/make_manifest.py",
-      "bytes": 8699,
-      "sha256": "dd116de65093dc450dfae2983cf118e065d5a61e372b4b7ece082607e89e84b8"
+      "bytes": 8721,
+      "sha256": "cf91a066840bb9c450615557b10de7b83ce0a5517fb5738c72572c7c08cfc7ff"
     },
     {
       "path": "scripts/optimizer_milp.py",

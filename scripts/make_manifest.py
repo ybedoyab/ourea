@@ -29,6 +29,7 @@ def include(path: Path) -> bool:
             "playwright-report",
             "test-results",
             "blob-report",
+            ".cache",
         }
         for part in relative.parts
     ):
