@@ -24,10 +24,9 @@ cd "$ROOT"
 echo "== Python syntax =="
 python -m compileall -q scripts
 
-echo "== SIATA ingestion + event diagnostic regression tests =="
-cd "$ROOT/scripts"
-python -m unittest -v test_siata_ingest.py test_siata_event_diagnostics.py test_geojson_io.py
-cd "$ROOT"
+echo "== Python unit tests =="
+python -m unittest discover -s tests -p "test_*.py" -v
+python -m unittest discover -s scripts -p "test_*.py" -v
 
 echo "== Browser checkpoints =="
 node frontend/scripts/generateCheckpoint.mjs >/dev/null

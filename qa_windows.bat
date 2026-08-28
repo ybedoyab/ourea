@@ -29,11 +29,11 @@ echo == Python syntax ==
 python -m compileall -q scripts
 if errorlevel 1 exit /b 1
 
-echo == SIATA ingestion + event diagnostic regression tests ==
-cd scripts
-python -m unittest -v test_siata_ingest.py test_siata_event_diagnostics.py test_geojson_io.py
+echo == Python unit tests ==
+python -m unittest discover -s tests -p "test_*.py" -v
 if errorlevel 1 exit /b 1
-cd ..
+python -m unittest discover -s scripts -p "test_*.py" -v
+if errorlevel 1 exit /b 1
 
 echo == Browser checkpoints ==
 node frontend\scripts\generateCheckpoint.mjs >NUL

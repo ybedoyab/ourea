@@ -105,6 +105,18 @@ for (const file of domainFiles) {
 }
 
 for (const file of sourceFiles) {
+  if (file.endsWith(`${join('config', 'assetUrl.js')}`)) continue;
+  const source = await readFile(file, 'utf8');
+  assert.ok(
+    !source.includes("'/data/") &&
+      !source.includes('"/data/') &&
+      !source.includes("'/terrain/") &&
+      !source.includes('"/terrain/'),
+    `${file} hardcodes an absolute public path; use assetUrl() so GitHub Pages /ourea/ works`,
+  );
+}
+
+for (const file of sourceFiles) {
   const source = await readFile(file, 'utf8');
   const retiredIdentity = new RegExp(
     String.raw`\bV` + `4\\b|_v` + `4|load` + `LaderaData|create` + `LaderaMap|Ladera` + `Lab`,

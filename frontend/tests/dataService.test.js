@@ -12,22 +12,19 @@ function response({ status = 200, body = '{}' } = {}) {
   };
 }
 
-test('optional replay tolerates SPA HTML fallback without failing required data', async () => {
+test('required climate context is not optional', async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url) => {
-    if (String(url).includes('replay_timeline.json')) {
-      return response({ body: '<!doctype html><html></html>' });
+    if (String(url).includes('climate_context.json')) {
+      return { status: 404, ok: false, async text() { return 'Not found'; } };
     }
     return response({ body: '{}' });
   };
 
   try {
-    const data = await loadOureaData();
-    assert.equal(data.replay, null);
-    assert.deepEqual(data.buildings, {});
-    assert.ok(Array.isArray(data.evidence.global_guardrails));
-    assert.ok(
-      data.evidence.global_guardrails.some((item) => item.includes('not landslide probability')),
+    await assert.rejects(
+      () => loadOureaData(),
+      /Failed to load .*climate_context\.json: HTTP 404/,
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -78,16 +75,12 @@ test('optional community evidence file may be absent without failing required da
     if (String(url).includes('community_evidence.json')) {
       return { status: 404, ok: false, async text() { return 'Not found'; } };
     }
-    if (String(url).includes('replay_timeline.json')) {
-      return { status: 404, ok: false, async text() { return 'Not found'; } };
-    }
     return response({ body: '{}' });
   };
 
   try {
     const data = await loadOureaData();
     assert.equal(data.communityEvidence, null);
-    assert.equal(data.replay, null);
     assert.ok(Array.isArray(data.evidence.global_guardrails));
   } finally {
     globalThis.fetch = originalFetch;

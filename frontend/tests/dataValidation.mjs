@@ -38,7 +38,7 @@ const screening = await json('medellin_city_priority_screen.geojson');
 const summary = await json('summary.json');
 const registry = await json('intervention_registry.json');
 const evidence = await json('evidence_status.json');
-const replayContract = await json('replay_contract.json');
+const climate = await json('climate_context.json');
 const model = JSON.parse(
   await readFile(
     join(root, 'src', 'config', 'modelParameters.json'),
@@ -66,7 +66,7 @@ assert.equal(
   registry.optimizer.budget_unit,
   'planning credit, NOT COP',
 );
-assert.equal(model.status, 'development-priors-not-calibrated');
+assert.equal(model.status, 'planning-priors-explicit');
 
 const buildingIds = new Set();
 for (const feature of buildings.features) {
@@ -289,22 +289,28 @@ assert.ok(
   guardrails.items.some((item) => item.includes('not a prediction of social acceptance')),
 );
 
-const replay = replayContract.historical_replay;
-assert.equal(
-  replay.status,
-  'waiting for SIATA raw station data',
+assert.equal(climate.schema, 'ourea-climate-context');
+assert.equal(climate.source_version, 'v3.0');
+assert.equal(climate.climatology_period.label, '1991-2020');
+assert.ok(Array.isArray(climate.scenario_presets));
+assert.deepEqual(
+  climate.scenario_presets.map((item) => item.id),
+  ['typical_wet', 'high_rainfall', 'extreme_observed'],
 );
-for (const required of [
-  'rain_increment_mm',
-  'r1h_mm',
-  'r6h_mm',
-  'r24h_mm',
-  'r3d_mm',
-  'r7d_mm',
-  'r15d_mm',
-]) {
-  assert.ok(replay.required_features.includes(required));
+for (const preset of climate.scenario_presets) {
+  assert.ok(Number.isFinite(preset.precipitation_mm));
+  assert.equal(preset.accumulation_window_days, 15);
+  assert.ok(preset.source_name.includes('CHIRPS'));
 }
+assert.ok(climate.daily_percentiles.p50 != null);
+assert.ok(climate.rolling_accumulation_percentiles['15'].percentiles.p90 != null);
+assert.ok(
+  climate.limitations.some((item) => item.includes('does not issue real-time forecasts')),
+);
+assert.ok(
+  climate.limitations.some((item) => item.toLowerCase().includes('not landslide probability')),
+);
+assert.ok(!JSON.stringify(climate).toLowerCase().includes('predicts landslide'));
 
 assert.ok(
   !(
@@ -385,13 +391,22 @@ const alignment = JSON.parse(
   await readFile(join(root, 'public', 'data', 'plan_alignment.json'), 'utf8'),
 );
 assert.equal(alignment.schema, 'ourea-plan-alignment');
-assert.equal(alignment.schema_version, 1);
+assert.equal(alignment.schema_version, 2);
 assert.equal(alignment.status, 'documentary-alignment-not-community-support');
-assert.ok(Array.isArray(alignment.entries) && alignment.entries.length >= 4);
+assert.ok(Array.isArray(alignment.entries) && alignment.entries.length >= 5);
 assert.match(String(alignment.guardrail), /not community endorsement/i);
 assert.ok(
-  alignment.entries.every((entry) => entry.plan_action && entry.source && entry.evidence_gap),
+  alignment.entries.every(
+    (entry) =>
+      entry.plan_action
+      && (entry.source_url || entry.source)
+      && entry.source_title
+      && entry.evidence_gap
+      && Array.isArray(entry.supports)
+      && Array.isArray(entry.does_not_establish),
+  ),
 );
+assert.ok(alignment.entries.some((entry) => entry.id === 'granizal-2025-mechanism'));
 
 console.log(
   `Ourea data validation passed: ${buildings.features.length} buildings, ` +

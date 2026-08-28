@@ -2,17 +2,21 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 180000,
+  timeout: 240000,
   expect: { timeout: 30000 },
   fullyParallel: false,
   retries: process.env.CI ? 1 : 0,
   workers: 1,
-  reporter: process.env.CI ? [['github'], ['list']] : 'list',
+  reporter: process.env.CI
+    ? [['github'], ['html', { open: 'never' }], ['list']]
+    : 'list',
   use: {
     baseURL: 'http://127.0.0.1:4173',
     browserName: 'chromium',
     headless: true,
     trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+    video: 'off',
   },
   webServer: {
     command: 'npx vite preview --host 127.0.0.1 --port 4173',

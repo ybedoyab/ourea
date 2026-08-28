@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 
 from geojson_io import read_local_geojson
+from validate_climate_context import validate_climate_context
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "frontend" / "public" / "data"
@@ -305,29 +306,12 @@ require(
 )
 ok("Cross-language seeded uncertainty fixture is stable")
 
-replay_contract = json.loads(
-    (DATA / "replay_contract.json").read_text(encoding="utf-8")
-)["historical_replay"]
-required_rainfall = {
-    "rain_increment_mm",
-    "r1h_mm",
-    "r6h_mm",
-    "r24h_mm",
-    "r3d_mm",
-    "r7d_mm",
-    "r15d_mm",
-}
-require(
-    required_rainfall.issubset(
-        set(replay_contract["required_features"])
-    ),
-    "Replay contract missing rainfall features",
-)
-require(
-    not (DATA / "replay_timeline.json").exists(),
-    "Synthetic/test SIATA replay timeline found in deliverable",
-)
-ok("SIATA replay contract ready; no synthetic timeline shipped")
+climate_path = DATA / "climate_context.json"
+require(climate_path.exists(), "climate_context.json missing")
+climate = json.loads(climate_path.read_text(encoding="utf-8"))
+climate_errors = validate_climate_context(climate)
+require(not climate_errors, f"climate_context.json invalid: {climate_errors}")
+ok("CHIRPS climate context is complete and offline")
 
 browser = json.loads(
     (DATA / "optimizer_checkpoint.json").read_text(encoding="utf-8")
@@ -514,9 +498,17 @@ ok("Community evidence template is present and no fabricated community file is s
 
 alignment = json.loads((DATA / "plan_alignment.json").read_text(encoding="utf-8"))
 require(alignment["schema"] == "ourea-plan-alignment", "Plan alignment schema changed")
-require(int(alignment["schema_version"]) == 1, "Plan alignment schema_version changed")
+require(int(alignment["schema_version"]) == 2, "Plan alignment schema_version changed")
 require("documentary" in alignment["status"], "Plan alignment must remain documentary")
-require(len(alignment["entries"]) >= 3, "Plan alignment registry is unexpectedly empty")
+require(len(alignment["entries"]) >= 5, "Plan alignment registry is unexpectedly empty")
+require(
+    any(entry.get("id") == "granizal-2025-mechanism" for entry in alignment["entries"]),
+    "Granizal 2025 mechanism evidence is missing",
+)
+require(
+    all(entry.get("source_title") and (entry.get("source_url") or entry.get("source")) for entry in alignment["entries"]),
+    "Plan alignment entries must have linked titles",
+)
 ok("Comuna 8 documentary plan alignment is present and not treated as community support")
 
 print("\nAll Ourea validation checks passed.")
