@@ -27,6 +27,9 @@ test-results/
 blob-report/
 playwright/.cache/
 
+# Local climate-extract cache (CHIRPS rasters/series; never commit)
+.cache/
+
 # OS and editor
 .DS_Store
 Thumbs.db

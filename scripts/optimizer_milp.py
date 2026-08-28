@@ -38,6 +38,18 @@ LCG_INCREMENT = 1013904223
 PROJECT_HASH_MULTIPLIER = 16777619
 
 
+def typical_wet_context() -> tuple[float, float]:
+    climate = json.loads((DATA / "climate_context.json").read_text(encoding="utf-8"))
+    typical = next(item for item in climate["scenario_presets"] if item["id"] == "typical_wet")
+    return (
+        float(typical["precipitation_mm"]),
+        float(typical["antecedent_rainfall_percentile"]),
+    )
+
+
+TYPICAL_RAIN_MM, TYPICAL_ANTECEDENT = typical_wet_context()
+
+
 def load_model() -> dict:
     return MODEL
 
@@ -145,8 +157,8 @@ def _scenario_draws(
 def _cell_exposure_ensemble(
     model: dict,
     buildings: GeoDataFrame,
-    rain: float = 95,
-    wet: float = 0.45,
+    rain: float = TYPICAL_RAIN_MM,
+    wet: float = TYPICAL_ANTECEDENT,
     samples: int | None = None,
     seed: int = BASE_SEED,
 ) -> dict[int, np.ndarray]:
@@ -283,8 +295,8 @@ def _cell_factors(
 
 
 def build_project_table(
-    rain: float = 95,
-    wet: float = 0.45,
+    rain: float = TYPICAL_RAIN_MM,
+    wet: float = TYPICAL_ANTECEDENT,
     year: float = 1,
     profile_name: str = "balanced",
 ):
@@ -411,8 +423,8 @@ def _solve_project_table(
 
 def optimize(
     budget: int = 10,
-    rain: float = 95,
-    wet: float = 0.45,
+    rain: float = TYPICAL_RAIN_MM,
+    wet: float = TYPICAL_ANTECEDENT,
     year: float = 1,
     profile_name: str = "balanced",
 ):
@@ -437,8 +449,8 @@ def optimize(
 def reevaluate_nonlinear(
     selected: pd.DataFrame,
     cells: GeoDataFrame,
-    rain: float = 95,
-    wet: float = 0.45,
+    rain: float = TYPICAL_RAIN_MM,
+    wet: float = TYPICAL_ANTECEDENT,
     year: float = 1,
     samples: int = 500,
 ) -> dict:
@@ -636,8 +648,8 @@ def generate_outputs(budgets=range(4, 21)):
 
 def generate_policy_crosschecks(
     budget: int = 10,
-    rain: float = 95,
-    wet: float = 0.45,
+    rain: float = TYPICAL_RAIN_MM,
+    wet: float = TYPICAL_ANTECEDENT,
     year: float = 1,
 ):
     """Solve every named policy lens with the formal binary model."""

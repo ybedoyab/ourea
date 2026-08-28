@@ -78,19 +78,19 @@
     },
     {
       "id": "climate",
-      "label": "Dynamic climate stress",
-      "status": "development-prior",
-      "confidence": "low-until-siata",
-      "basis": "Provisional rain/wetness formulation",
-      "use": "UX and optimizer development only"
+      "label": "Observed rainfall context",
+      "status": "observed-gridded-climatology",
+      "confidence": "appropriate-for-planning-scenarios",
+      "basis": "CHIRPS v3.0 Final pentad extract for the Llanaditas / upper Comuna 8 0.05° cell; 1991–2020 climatology; daily series allocated uniformly within each pentad",
+      "use": "Anchor typical, high and extreme planning rainfall contexts; not station intensity and not landslide probability"
     },
     {
       "id": "intervention_effects",
       "label": "Intervention effects",
-      "status": "development-priors",
-      "confidence": "low",
-      "basis": "Transparent effect ranges pending local/transferable calibration",
-      "use": "Uncertainty engine development"
+      "status": "explicit-planning-priors",
+      "confidence": "transparent-ranges",
+      "basis": "Published effect ranges used as uncertainty bounds, not locally calibrated slope-performance coefficients",
+      "use": "Stress-test portfolios under effect uncertainty"
     },
     {
       "id": "cost",

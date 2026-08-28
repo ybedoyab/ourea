@@ -1,0 +1,4 @@
+# Optional dependencies for scripts/build_climate_context.py
+# CI does not install these. The runtime app never downloads CHIRPS.
+rasterio==1.4.3
+numpy==2.3.5

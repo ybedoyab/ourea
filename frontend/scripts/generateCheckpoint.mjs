@@ -24,9 +24,11 @@ async function load(name) {
 
 const buildings = await load('buildings.geojson');
 const cells = await load('planning_cells.geojson');
+const climate = await load('climate_context.json');
+const typical = climate.scenario_presets.find((item) => item.id === 'typical_wet');
 const scenario = {
-  rainMm: DEFAULT_SCENARIO.rainMm,
-  antecedentWetness: DEFAULT_SCENARIO.antecedentWetness,
+  rainMm: typical.precipitation_mm,
+  antecedentWetness: typical.antecedent_rainfall_percentile,
   planningYear: DEFAULT_SCENARIO.planningYear,
 };
 const context = createScenarioContext(buildings, cells);
@@ -45,7 +47,7 @@ const uncertainty = monteCarloPortfolio({
 });
 
 const checkpoint = {
-  status: 'development-only browser robust heuristic; parameters remain uncalibrated',
+  status: 'browser robust heuristic with explicit planning priors; not a landslide forecast',
   scenario,
   budgetCredits: DEFAULT_SCENARIO.budgetCredits,
   spentCredits: planCostCredits(optimized.plan),

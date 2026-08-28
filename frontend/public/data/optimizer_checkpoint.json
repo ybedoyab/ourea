@@ -1,8 +1,8 @@
 {
-  "status": "development-only browser robust heuristic; parameters remain uncalibrated",
+  "status": "browser robust heuristic with explicit planning priors; not a landslide forecast",
   "scenario": {
-    "rainMm": 95,
-    "antecedentWetness": 0.45,
+    "rainMm": 118.788,
+    "antecedentWetness": 0.5,
     "planningYear": 1
   },
   "budgetCredits": 10,
@@ -25,11 +25,11 @@
       "type": "drainage"
     },
     {
-      "cell_id": 29,
+      "cell_id": 28,
       "type": "rwh"
     },
     {
-      "cell_id": 28,
+      "cell_id": 29,
       "type": "rwh"
     }
   ],
@@ -45,13 +45,13 @@
     "candidateCount": 125,
     "scenarioSamples": 80,
     "selectionMethod": "marginal-robust-greedy",
-    "robustObjectiveProxy": 79.2693
+    "robustObjectiveProxy": 85.502
   },
   "benefitProxyMonteCarlo": {
-    "p10": 64.2711,
-    "median": 79.8448,
-    "p90": 93.9914,
-    "mean": 79.347,
+    "p10": 69.2631,
+    "median": 86.0597,
+    "p90": 100.9559,
+    "mean": 85.4873,
     "runs": 500
   },
   "warning": "Do not interpret benefit proxy as people protected, avoided losses, or landslide probability reduction."

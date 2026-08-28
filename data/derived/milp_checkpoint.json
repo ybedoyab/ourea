@@ -37,13 +37,13 @@
       "opportunity": 0.9237
     }
   ],
-  "robust_objective_linearized": 83.535,
+  "robust_objective_linearized": 90.039,
   "nonlinear_portfolio_re_evaluation": {
     "runs": 500,
-    "p10": 64.4507,
-    "median": 80.7083,
-    "p90": 96.5977,
-    "mean": 80.6469
+    "p10": 69.3223,
+    "median": 87.0449,
+    "p90": 103.8546,
+    "mean": 86.8876
   },
   "warning": "The MILP objective is a linear selection checkpoint. The nonlinear re-evaluation is the appropriate combined portfolio benefit proxy, but it is still based on uncalibrated priors."
 }

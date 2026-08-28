@@ -37,13 +37,13 @@
         "opportunity": 0.9237
       }
     ],
-    "linearized_robust_objective": 83.5354,
+    "linearized_robust_objective": 90.0387,
     "nonlinear_re_evaluation": {
       "runs": 500,
-      "p10": 64.4507,
-      "median": 80.7083,
-      "p90": 96.5977,
-      "mean": 80.6469
+      "p10": 69.3223,
+      "median": 87.0449,
+      "p90": 103.8546,
+      "mean": 86.8876
     },
     "warning": "Formal selection uses linearized development coefficients; nonlinear re-evaluation remains based on uncalibrated priors."
   },
@@ -85,13 +85,13 @@
         "opportunity": 0.9237
       }
     ],
-    "linearized_robust_objective": 141.9536,
+    "linearized_robust_objective": 153.0055,
     "nonlinear_re_evaluation": {
       "runs": 500,
-      "p10": 64.4507,
-      "median": 80.7083,
-      "p90": 96.5977,
-      "mean": 80.6469
+      "p10": 69.3223,
+      "median": 87.0449,
+      "p90": 103.8546,
+      "mean": 86.8876
     },
     "warning": "Formal selection uses linearized development coefficients; nonlinear re-evaluation remains based on uncalibrated priors."
   },
@@ -133,13 +133,13 @@
         "opportunity": 0.849
       }
     ],
-    "linearized_robust_objective": 127.099,
+    "linearized_robust_objective": 136.9464,
     "nonlinear_re_evaluation": {
       "runs": 500,
-      "p10": 63.7467,
-      "median": 79.9004,
-      "p90": 96.8806,
-      "mean": 79.9216
+      "p10": 68.5186,
+      "median": 85.8879,
+      "p90": 104.0398,
+      "mean": 86.107
     },
     "warning": "Formal selection uses linearized development coefficients; nonlinear re-evaluation remains based on uncalibrated priors."
   },
@@ -181,13 +181,13 @@
         "opportunity": 0.9237
       }
     ],
-    "linearized_robust_objective": 37.7251,
+    "linearized_robust_objective": 40.7199,
     "nonlinear_re_evaluation": {
       "runs": 500,
-      "p10": 64.4507,
-      "median": 80.7083,
-      "p90": 96.5977,
-      "mean": 80.6469
+      "p10": 69.3223,
+      "median": 87.0449,
+      "p90": 103.8546,
+      "mean": 86.8876
     },
     "warning": "Formal selection uses linearized development coefficients; nonlinear re-evaluation remains based on uncalibrated priors."
   }
