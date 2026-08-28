@@ -3,6 +3,8 @@ import {
   COMMUNITY_COPY,
   COMMUNITY_FIELD_OPTIONS,
 } from '../config/communityEvidence.js';
+import { SelectField } from './SelectField.jsx';
+import { TextField } from './TextField.jsx';
 import { SectionHeading } from './SectionHeading.jsx';
 
 const FIELD_LABELS = {
@@ -66,7 +68,7 @@ export function CommunitySafeguardsPanel({
 
   return (
     <section className="community-panel" data-testid="community-panel">
-      <SectionHeading step={9} title={COMMUNITY_COPY.title}>
+      <SectionHeading title={COMMUNITY_COPY.title}>
         {COMMUNITY_COPY.heading}
       </SectionHeading>
 
@@ -125,103 +127,79 @@ export function CommunitySafeguardsPanel({
         <div className="community-form-label">{COMMUNITY_COPY.participatoryLabel}</div>
         <p className="hint">{COMMUNITY_COPY.participatoryHint}</p>
 
-        <label>
-          Selected project
-          <select
-            aria-label="Project for community evidence"
-            data-testid="community-project"
-            value={draft.cell_id === '' ? '' : `${draft.cell_id}:${draft.intervention_type}`}
-            onChange={(event) => {
-              const [cellId, type] = event.target.value.split(':');
-              setDraft((current) => ({
-                ...current,
-                cell_id: cellId,
-                intervention_type: type,
-              }));
-            }}
-            disabled={!selectedOptions.length}
-          >
-            <option value="">Choose a selected project</option>
-            {selectedOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <SelectField
+          id="community-project"
+          testId="community-project"
+          label="Selected project"
+          placeholder="Choose a selected project"
+          disabled={!selectedOptions.length}
+          value={draft.cell_id === '' ? '' : `${draft.cell_id}:${draft.intervention_type}`}
+          options={selectedOptions}
+          onChange={(value) => {
+            if (!value) {
+              setDraft((current) => ({ ...current, cell_id: '', intervention_type: '' }));
+              return;
+            }
+            const [cellId, type] = value.split(':');
+            setDraft((current) => ({
+              ...current,
+              cell_id: cellId,
+              intervention_type: type,
+            }));
+          }}
+        />
 
         {Object.entries(FIELD_LABELS).map(([field, label]) => (
-          <label key={field}>
-            {label}
-            <select
-              aria-label={label}
-              data-testid={`community-${field}`}
-              value={draft[field]}
-              onChange={(event) =>
-                setDraft((current) => ({
-                  ...current,
-                  [field]: event.target.value,
-                }))
-              }
-            >
-              {COMMUNITY_FIELD_OPTIONS[field].map((option) => (
-                <option key={option} value={option}>
-                  {labelize(option)}
-                </option>
-              ))}
-            </select>
-          </label>
+          <SelectField
+            key={field}
+            id={`community-${field}`}
+            testId={`community-${field}`}
+            label={label}
+            placeholder={null}
+            value={draft[field]}
+            options={COMMUNITY_FIELD_OPTIONS[field].map((option) => ({
+              value: option,
+              label: labelize(option),
+            }))}
+            onChange={(value) =>
+              setDraft((current) => ({
+                ...current,
+                [field]: value,
+              }))
+            }
+          />
         ))}
 
-        <label>
-          Source
-          <input
-            type="text"
-            aria-label="Community evidence source"
-            data-testid="community-source"
-            value={draft.source}
-            onChange={(event) =>
-              setDraft((current) => ({ ...current, source: event.target.value }))
-            }
-          />
-        </label>
+        <TextField
+          id="community-source"
+          testId="community-source"
+          label="Source"
+          value={draft.source}
+          onChange={(value) => setDraft((current) => ({ ...current, source: value }))}
+        />
 
-        <label>
-          As of
-          <input
-            type="date"
-            aria-label="Community evidence as-of date"
-            data-testid="community-as-of"
-            value={draft.as_of}
-            onChange={(event) =>
-              setDraft((current) => ({ ...current, as_of: event.target.value }))
-            }
-          />
-        </label>
+        <TextField
+          id="community-as-of"
+          testId="community-as-of"
+          type="date"
+          label="As of"
+          value={draft.as_of}
+          onChange={(value) => setDraft((current) => ({ ...current, as_of: value }))}
+        />
 
-        <label>
-          Process or source reference
-          <input
-            type="text"
-            aria-label="Process or source reference"
-            value={draft.process_reference}
-            onChange={(event) =>
-              setDraft((current) => ({ ...current, process_reference: event.target.value }))
-            }
-          />
-        </label>
+        <TextField
+          id="community-process"
+          label="Process or source reference"
+          value={draft.process_reference}
+          onChange={(value) => setDraft((current) => ({ ...current, process_reference: value }))}
+        />
 
-        <label>
-          Notes
-          <input
-            type="text"
-            aria-label="Community evidence notes"
-            value={draft.notes}
-            onChange={(event) =>
-              setDraft((current) => ({ ...current, notes: event.target.value }))
-            }
-          />
-        </label>
+        <TextField
+          id="community-notes"
+          label="Notes"
+          value={draft.notes}
+          onChange={(value) => setDraft((current) => ({ ...current, notes: value }))}
+        />
 
         <button
           type="submit"

@@ -13,6 +13,8 @@ export function AlternativePortfolios({
   error,
   onGenerate,
   onSelect,
+  showEngine = true,
+  showGenerate = true,
 }) {
   const consensus = policyConsensus(alternatives);
   const consensusCore = consensus.filter((item) => item.consensus);
@@ -26,6 +28,7 @@ export function AlternativePortfolios({
 
   return (
     <div className="alternative-box">
+      {showEngine && (
       <div className="decision-engine" data-testid="decision-engine">
         <b>{DECISION_ENGINE_COPY.title}</b>
         <ul>
@@ -37,6 +40,7 @@ export function AlternativePortfolios({
         <p>{DECISION_ENGINE_COPY.explanation}</p>
         <small>{DECISION_ENGINE_COPY.milpNote}</small>
       </div>
+      )}
       <div className="alternative-head">
         <div>
           <b>OUREA robust options</b>
@@ -44,6 +48,7 @@ export function AlternativePortfolios({
             Four transparent policy lenses. Same data and budget — different public-policy weights.
           </span>
         </div>
+        {showGenerate && (
         <button type="button" onClick={onGenerate} className="primary" disabled={busy} data-testid="generate-alternatives">
           {busy
             ? 'Generating…'
@@ -51,6 +56,7 @@ export function AlternativePortfolios({
               ? 'Regenerate options'
               : 'Generate robust options'}
         </button>
+        )}
       </div>
 
       {error && (

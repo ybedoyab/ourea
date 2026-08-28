@@ -3,6 +3,7 @@ import { INTERVENTION_COPY } from '../config/uiCopy.js';
 import { AlternativePortfolios } from './AlternativePortfolios.jsx';
 import { PortfolioList } from './PortfolioList.jsx';
 import { SectionHeading } from './SectionHeading.jsx';
+import { SelectField } from './SelectField.jsx';
 
 function InterventionIcon({ type }) {
   if (type === 'rwh') {
@@ -143,25 +144,18 @@ export function PortfolioBuilder({
           {' '}{userCost}/{budgetCredits}.
         </small>
 
-        <label htmlFor="planning-cell">
-          Planning cell
-        </label>
-        <select
+        <SelectField
           id="planning-cell"
-          data-testid="select-cell"
-          aria-label="Planning cell"
-          value={selectedCellId ?? ''}
-          onChange={(event) =>
-            onSelectCell?.(event.target.value === '' ? null : Number(event.target.value))
-          }
-        >
-          <option value="">Choose a planning cell</option>
-          {(cells?.features ?? []).map((feature) => (
-            <option key={feature.properties.cell_id} value={feature.properties.cell_id}>
-              Cell {feature.properties.cell_id}
-            </option>
-          ))}
-        </select>
+          testId="select-cell"
+          label="Planning cell"
+          placeholder="Choose a planning cell"
+          value={selectedCellId == null ? '' : String(selectedCellId)}
+          onChange={(value) => onSelectCell?.(value == null ? null : Number(value))}
+          options={(cells?.features ?? []).map((feature) => ({
+            value: String(feature.properties.cell_id),
+            label: `Cell ${feature.properties.cell_id}`,
+          }))}
+        />
 
         <InterventionTools
           selectedType={selectedType}

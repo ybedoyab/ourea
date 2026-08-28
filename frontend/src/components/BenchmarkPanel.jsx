@@ -61,7 +61,7 @@ export function BenchmarkPanel({
             {` ${Math.round(breakage.thresholdRatio * 100)}% `}
             of the reference benefit proxy.
           </span>
-          <span data-testid="breakage-combination-count">
+          <span>
             {combinationCount} scenario combinations fall below the threshold.
           </span>
           {(breakage.oneAtATime ?? []).map((item) => (

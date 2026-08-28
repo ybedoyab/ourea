@@ -20,6 +20,7 @@ export function ClimateContextPanel({
   climate,
   scenario,
   onSelectPreset,
+  showPresets = true,
 }) {
   const presets = observationalPresets(climate);
   if (!climate) {
@@ -31,7 +32,7 @@ export function ClimateContextPanel({
 
   return (
     <section data-testid="climate-context-panel">
-      <SectionHeading step={3} title="Observed climate context">
+      <SectionHeading title="Observed climate context">
         Planning rainfall contexts are anchored in the CHIRPS v3 Final gridded record for the
         Llanaditas / upper Comuna 8 cell.
       </SectionHeading>
@@ -48,6 +49,7 @@ export function ClimateContextPanel({
         <span><small>Temporal resolution</small><b>{climate.temporal_resolution}</b></span>
       </div>
 
+      {showPresets && (
       <div className="scenario-presets" role="group" aria-label="Observed rainfall context presets">
         {presets.map((preset) => {
           const active = activeId === preset.id;
@@ -71,6 +73,7 @@ export function ClimateContextPanel({
           );
         })}
       </div>
+      )}
 
       <p>
         <a
