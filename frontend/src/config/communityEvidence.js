@@ -154,7 +154,7 @@ function collectErrors(payload, catalog) {
   if (Number(payload.schema_version) !== COMMUNITY_SCHEMA_VERSION) {
     errors.push(`schema_version must be ${COMMUNITY_SCHEMA_VERSION}`);
   }
-  if (payload.status != null && !['loaded', 'template-not-observed-data'].includes(payload.status)) {
+  if (payload.status != null && !['loaded', 'absent', 'template-not-observed-data'].includes(payload.status)) {
     errors.push('status is not an allowed community-evidence status');
   }
   if (payload.records != null && !Array.isArray(payload.records)) {

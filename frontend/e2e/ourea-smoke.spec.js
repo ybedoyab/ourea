@@ -4,6 +4,7 @@ import {
   VIEWPORTS,
   attachErrorGuards,
   assertNoHorizontalOverflow,
+  assertMapSurface,
 } from './errorAllowlist.js';
 
 async function completeCommunityRecord(page) {
@@ -33,11 +34,13 @@ async function runDecisionJourney(page, { generate = true } = {}) {
   const labels = await page.getByTestId('screening-row').allTextContents();
   expect(labels.join(' ')).not.toMatch(/Special \/ unmatched/i);
   await assertNoHorizontalOverflow(page);
+  await assertMapSurface(page);
 
   await page.getByTestId('open-sandbox').click();
   await expect(page.getByTestId('select-cell')).toBeVisible();
   await expect(page.getByTestId('climate-context-panel')).toBeVisible();
   await expect(page.getByText('Observed climate context')).toBeVisible();
+  await assertMapSurface(page);
   await expect(page.getByTestId('climate-source-link')).toBeVisible();
   await page.getByTestId('climate-preset-high_rainfall').click();
   await expect(page.getByTestId('climate-preset-high_rainfall')).toHaveAttribute('aria-pressed', 'true');
@@ -118,6 +121,7 @@ test.describe('desktop', () => {
     await expect(page.getByTestId('climate-context-panel')).toBeVisible();
     await expect(page.getByTestId('decision-engine')).toBeVisible();
     await expect(page.getByTestId('action-footprint')).toBeVisible();
+    await assertMapSurface(page);
     guards.assertClean();
   });
 
@@ -128,6 +132,7 @@ test.describe('desktop', () => {
     await page.getByTestId('open-sandbox').focus();
     await page.keyboard.press('Enter');
     await expect(page.getByTestId('climate-context-panel')).toBeVisible();
+    await assertMapSurface(page);
     await page.keyboard.press('Tab');
     guards.assertClean();
   });
@@ -208,6 +213,7 @@ test('published demo', async ({ page, baseURL }) => {
   );
   expect(ranks).toEqual(['1', '2', '3', '4', '5', '6', '7', '8']);
   await assertNoHorizontalOverflow(page);
+  await assertMapSurface(page);
 
   const origin = new URL(page.url());
   if (!origin.pathname.endsWith('/')) origin.pathname += '/';
@@ -215,10 +221,14 @@ test('published demo', async ({ page, baseURL }) => {
   expect(climate.ok(), `climate_context.json ${climate.status()}`).toBeTruthy();
   const geojson = await page.request.get(new URL('data/medellin_city_priority_screen.geojson', origin).href);
   expect(geojson.ok(), `city screen geojson ${geojson.status()}`).toBeTruthy();
+  const community = await page.request.get(new URL('data/community_evidence.json', origin).href);
+  expect(community.ok(), `community_evidence.json ${community.status()}`).toBeTruthy();
+  expect((await community.json()).records).toEqual([]);
 
   await page.getByTestId('run-guided-demo').click();
   await expect(page.getByTestId('climate-context-panel')).toBeVisible({ timeout: 180000 });
   await expect(page.getByTestId('decision-engine')).toBeVisible();
   await expect(page.getByTestId('action-footprint')).toBeVisible();
+  await assertMapSurface(page);
   guards.assertClean();
 });

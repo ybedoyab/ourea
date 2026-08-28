@@ -3,7 +3,7 @@
   "schema_version": 1,
   "template": true,
   "status": "template-not-observed-data",
-  "note": "Template only. Do not treat these rows as observed community evidence. Copy to community_evidence.json after a real co-design session. Absence of that file means every project is not assessed.",
+  "note": "Template only. Do not treat these rows as observed community evidence. Copy real co-design records into community_evidence.json. The shipped file is an empty sentinel: every project stays not assessed until a documented deliberation is recorded.",
   "records": [
     {
       "cell_id": 0,

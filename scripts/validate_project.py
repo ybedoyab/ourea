@@ -494,11 +494,13 @@ community_template = json.loads(
     (DATA / "community_evidence.template.json").read_text(encoding="utf-8")
 )
 require(community_template["template"] is True, "Community template must be marked template=true")
-require(
-    not (DATA / "community_evidence.json").exists(),
-    "Observed community_evidence.json must not ship invented social data",
-)
-ok("Community evidence template is present and no fabricated community file is shipped")
+community_path = DATA / "community_evidence.json"
+community_file = json.loads(community_path.read_text(encoding="utf-8"))
+require(community_file.get("schema") == "ourea-community-evidence", "Community evidence schema changed")
+require(community_file.get("status") == "absent", "Shipped community evidence must remain an absent sentinel")
+require(community_file.get("template") is not True, "Shipped community evidence must not be the template")
+require(community_file.get("records") == [], "Shipped community_evidence.json must not contain invented records")
+ok("Community evidence ships as an empty sentinel with no fabricated social data")
 
 alignment = json.loads((DATA / "plan_alignment.json").read_text(encoding="utf-8"))
 require(alignment["schema"] == "ourea-plan-alignment", "Plan alignment schema changed")

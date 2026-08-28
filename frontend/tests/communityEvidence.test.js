@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import {
   COMMUNITY_FIELD_OPTIONS,
   isAllowedCommunityValue,
@@ -101,6 +103,24 @@ test('absent community file is not assessed rather than support or low risk', ()
   assert.equal(assessment.records[0].livelihood_disruption, 'unknown');
   assert.equal(assessment.records[0].displacement_risk, 'unknown');
   assert.deepEqual(assessment.safeguards_activated, []);
+});
+
+test('shipped community sentinel has no records and stays not assessed', async () => {
+  const payload = JSON.parse(
+    await readFile(
+      fileURLToPath(new URL('../public/data/community_evidence.json', import.meta.url)),
+      'utf8',
+    ),
+  );
+  const parsed = parseCommunityEvidenceFile(payload);
+  assert.equal(parsed.status, 'absent');
+  assert.deepEqual(parsed.records, []);
+  const assessment = assessCommunitySafeguards({
+    projects: [{ cell_id: 1, type: 'rwh' }],
+    communityFile: payload,
+  });
+  assert.equal(assessment.file_status, 'absent');
+  assert.equal(assessment.validation_status, 'not_assessed');
 });
 
 test('template community file is ignored as unobserved', () => {

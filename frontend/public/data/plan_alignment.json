@@ -107,7 +107,7 @@
         "Veto criteria recorded without converting them into hidden optimizer weights"
       ],
       "maintenance_responsible": null,
-      "evidence_gap": "No organization is named as a confirmed Ourea partner. Absence of community_evidence.json means not assessed."
+      "evidence_gap": "No organization is named as a confirmed Ourea partner. The shipped community_evidence.json has no records, so every project is not assessed."
     },
     {
       "id": "granizal-2025-mechanism",

@@ -81,9 +81,9 @@ export function SandboxPanel({
           {BRAND.provingGroundRole} — city screening in, high-resolution action testing here.
         </SectionHeading>
         <div className="fact-strip">
-          <span><small>Buildings</small><b>{summary?.buildings?.toLocaleString() ?? '1,588'}</b></span>
-          <span><small>People proxy</small><b>~{summary?.population_proxy?.toLocaleString() ?? '4,057'}</b></span>
-          <span><small>High hazard</small><b>{summary?.high_hazard_buildings?.toLocaleString() ?? '1,445'}</b></span>
+          <span><small>Buildings</small><b>{summary?.buildings?.toLocaleString('en-US') ?? '1,588'}</b></span>
+          <span><small>People proxy</small><b>~{summary?.population_proxy?.toLocaleString('en-US') ?? '4,057'}</b></span>
+          <span><small>High hazard</small><b>{summary?.high_hazard_buildings?.toLocaleString('en-US') ?? '1,445'}</b></span>
           <span><small>Median slope</small><b>{summary?.median_slope_deg ?? 25.4}°</b></span>
         </div>
       </section>

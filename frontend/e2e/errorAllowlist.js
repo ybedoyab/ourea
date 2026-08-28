@@ -89,3 +89,19 @@ export async function assertNoHorizontalOverflow(page) {
   );
   expect(overflow, 'horizontal overflow').toBe(false);
 }
+
+export async function assertMapSurface(page) {
+  const fallback = page.getByTestId('map-fallback');
+  if (await fallback.isVisible()) return;
+  const host = page.getByTestId('map-canvas');
+  await expect(host).toBeVisible();
+  const box = await host.boundingBox();
+  expect(box?.width ?? 0, 'map surface width').toBeGreaterThan(120);
+  expect(box?.height ?? 0, 'map surface height').toBeGreaterThan(120);
+  const canvasSize = await host.evaluate((el) => {
+    const canvas = el.querySelector('canvas');
+    return { width: canvas?.width ?? 0, height: canvas?.height ?? 0 };
+  });
+  expect(canvasSize.width, 'MapLibre drawing buffer width').toBeGreaterThan(0);
+  expect(canvasSize.height, 'MapLibre drawing buffer height').toBeGreaterThan(0);
+}

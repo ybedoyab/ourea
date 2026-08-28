@@ -39,6 +39,7 @@ const DEM_SOURCE = Object.freeze({
 });
 
 const SANDBOX_LAYER_IDS = Object.freeze([
+  'sandbox-ground',
   'shade',
   'hazard',
   'roads',
@@ -353,6 +354,7 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
     );
     if (terrainFault) {
       if (map.getTerrain()) map.setTerrain(null);
+      setVisibility(map, 'shade', false);
       return;
     }
     console.warn('MapLibre error', event.error ?? event);
@@ -384,6 +386,14 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
     map.resize();
   });
   resizeObserver.observe(container);
+
+  function requestResize() {
+    map.resize();
+    requestAnimationFrame(() => {
+      map.resize();
+      requestAnimationFrame(() => map.resize());
+    });
+  }
 
   function clearSettleTimer() {
     if (settleTimer) {
@@ -450,7 +460,7 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
   }
 
   map.on('load', () => {
-    map.resize();
+    requestResize();
 
     map.addSource('basemap', {
       type: 'raster',
@@ -466,10 +476,10 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
       paint: {
         'raster-opacity': [
           'interpolate', ['linear'], ['zoom'],
-          11, 0.72,
-          13, 0.5,
-          15.5, 0.4,
-          17.5, 0.2,
+          11, 0.78,
+          13, 0.62,
+          15.5, 0.55,
+          18, 0.48,
         ],
         'raster-saturation': -0.35,
         'raster-contrast': 0.08,
@@ -815,6 +825,7 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
     map.on('mouseenter', 'screening-fill', () => { map.getCanvas().style.cursor = 'pointer'; });
     map.on('mouseleave', 'screening-fill', () => { map.getCanvas().style.cursor = ''; });
 
+    requestResize();
     onReady?.();
   });
 
@@ -842,7 +853,13 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
       map.setFilter('cells-hover-fill', ['==', ['get', 'cell_id'], -1]);
     }
     if (map.getTerrain()) map.setTerrain(null);
+    requestResize();
     runCamera(scope, true);
+    if (!isCity) {
+      setVisibility(map, 'buildings', true);
+      setVisibility(map, 'sandbox-ground', true);
+      setVisibility(map, 'projects', true);
+    }
   }
 
   function focusBarrio(barrio) {

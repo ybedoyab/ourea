@@ -87,6 +87,32 @@ test('optional community evidence file may be absent without failing required da
   }
 });
 
+test('empty community sentinel loads as not assessed rather than 404', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('community_evidence.json')) {
+      return response({
+        body: JSON.stringify({
+          schema: 'ourea-community-evidence',
+          schema_version: 1,
+          status: 'absent',
+          template: false,
+          records: [],
+        }),
+      });
+    }
+    return response({ body: '{}' });
+  };
+
+  try {
+    const data = await loadOureaData();
+    assert.equal(data.communityEvidence.status, 'absent');
+    assert.deepEqual(data.communityEvidence.records, []);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('SPA HTML fallback for community evidence is absent rather than invalid', async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url) => {

@@ -105,7 +105,8 @@ export default function App() {
 
   return (
     <div className="app">
-      <div ref={mapNode} className="map">
+      <div className="map">
+        <div ref={mapNode} className="map-canvas" data-testid="map-canvas" />
         {mapStatus === 'unavailable' && (
           <div className="map-fallback" role="status" data-testid="map-fallback">
             <b>3D map unavailable in this browser</b>

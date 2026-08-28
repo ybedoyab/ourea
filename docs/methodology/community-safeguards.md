@@ -12,9 +12,11 @@ Technically robust does not mean community-validated.
 
 Optional file: `frontend/public/data/community_evidence.json`
 
-Shipped template only: `frontend/public/data/community_evidence.template.json`
+Shipped demonstration file: empty `records` and `status: "absent"`. This avoids a 404 and does **not** assert community review.
 
-The template is marked `"template": true` and is **not** observed data. Absence of `community_evidence.json` means every project is `not_assessed`.
+Shipped template: `frontend/public/data/community_evidence.template.json`
+
+The template is marked `"template": true` and is **not** observed data. Empty `records` in the demonstration file means every project is `not_assessed`.
 
 Allowed fields per cell or project:
 
@@ -44,7 +46,7 @@ There is no composite social score.
 
 | Condition | Portfolio status |
 |---|---|
-| File missing | `not_assessed` |
+| File missing or empty `absent` sentinel | `not_assessed` |
 | File malformed or schema-invalid | `invalid` |
 | Any selected project has an unresolved safeguard | `requires_deliberation` |
 | Every selected project is a documented `validated` review | `community_reviewed` |
