@@ -1,5 +1,12 @@
 # Ourea changelog
 
+## Financed decision brief — 2026-08-28
+
+- Decision brief is a six-page pre-feasibility package with a versioned US$ envelope, Ourea/Maps/Earth links and document metadata.
+- Collapse/falling-house imagery is replaced by a static “Why early action matters” mechanism diagram.
+- Planning credits remain the optimizer unit; they are not shown in the PDF.
+- `scripts/build_cost_context.py` writes `frontend/public/data/cost_context.json` from the local registry, TRM 2026-08-28 and DANE IPC factors.
+
 ## Complete decision product — 2026-08-27
 
 - Climate scenarios are anchored in CHIRPS v3 Final observations for Llanaditas / upper Comuna 8.

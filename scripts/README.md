@@ -88,6 +88,21 @@ Offline CHIRPS v3 Final extract for the Llanaditas / upper Comuna 8 cell.
 
 The runtime application never calls this script.
 
+## `build_cost_context.py`
+
+Offline USD cost context for the decision brief.
+
+- Reads `data/derived/cost_reference_registry.json` and `data/derived/local_infrastructure_cost_scale.csv`.
+- Applies versioned Banco de la República TRM and DANE IPC factors.
+- Writes `frontend/public/data/cost_context.json`.
+- `--check` fails if the committed JSON is stale.
+
+Runtime Ourea never calls this script or a price API.
+
+## `inspect_brief_pdfs.py`
+
+Renders the guided RWH+drainage and restoration fixture PDFs and checks page count, metadata and banned copy. Uses poppler (`pdfinfo`, `pdftotext`, `pdftoppm`) when installed.
+
 On macOS/Linux the entry scripts `run_mac_linux.sh` and `qa_mac_linux.sh` must keep the Git executable bit so they can be invoked as documented in the root README.
 
 ## `build_city_screen.py`

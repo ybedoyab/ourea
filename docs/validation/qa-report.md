@@ -1,12 +1,12 @@
 # Ourea — QA report
 
-**QA date:** 2026-08-27  
+**QA date:** 2026-08-28  
 **Artifact:** Ourea / package 1.0.0  
-**Scientific status:** complete decision product with CHIRPS-anchored rainfall contexts; intervention-effect ranges and planning credits remain explicit assumptions.
+**Scientific status:** complete decision product with CHIRPS-anchored rainfall contexts; intervention-effect ranges and internal planning credits remain explicit assumptions; the decision brief reports a pre-feasibility US$ envelope.
 
 ## Overall status
 
-Local revalidation on 2026-08-28: Node tests (62/62), data validation, source validation, Vite production build, CHIRPS climate context, checkpoint regeneration, MILP, full geospatial validation and manifest regeneration **PASS**.
+Local revalidation on 2026-08-28: Node tests (98/98), data validation, source validation, USD cost context, decision-brief PDF inspection, Vite production build, CHIRPS climate context, checkpoint regeneration, MILP, full geospatial validation and manifest regeneration.
 
 MapLibre dominates the production JavaScript bundle (~1.24 MB minified). That warning is accepted; a fragile extra split is not worth the maintenance cost.
 

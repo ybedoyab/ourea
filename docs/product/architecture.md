@@ -63,6 +63,7 @@ Focused UI pieces:
 - `EvidencePanel`;
 - `ClimateContextPanel`;
 - `MapLegend`;
+- `EarlyActionDiagram`;
 
 
 ### `frontend/src/domain/`
@@ -77,6 +78,9 @@ Focused UI pieces:
 - `stability.js` — selection stability under uncertainty resampling;
 - `pareto.js` — sampled non-dominated multi-objective trade-offs;
 - `decisionPackage.js` — auditable export;
+- `decisionBrief.js` / `decisionBriefPdf.js` — six-page decision brief;
+- `costEstimate.js` — pre-feasibility US$ envelope from `cost_context.json`;
+- `earlyAction.js` — planning-safe mechanism copy for UI and PDF;
 - `communitySafeguards.js` — community evidence status without scoring;
 - `benchmark.js` — hazard-only vs deterministic vs robust comparison;
 - `sensitivity.js` — deterministic “what breaks this portfolio?” grid.

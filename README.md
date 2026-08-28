@@ -139,11 +139,11 @@ Ourea labels major inputs as:
 - explicit planning prior;
 - planning-credit budget unit.
 
-The optimizer still uses **planning credits, not COP**.
+The optimizer still uses **planning credits, not COP or USD**.
 
-Local cost evidence is strong enough to establish implementation precedent and scale, but not yet homogeneous enough for fair cross-intervention optimization.
+The decision brief shows a **pre-feasibility US$ envelope** (low/base/high) from versioned TRM and local comparators. Planning credits stay inside portfolio comparison. No cost figure is an offer, contract or engineering estimate.
 
-Ourea includes an official Medellín 2023 procurement budget ceiling equivalent to approximately **COP 2.119 million per installed 1,000 L household rainwater system** in Santa Elena. It remains an evidence anchor—not a Comuna 8 unit price.
+Local RWH evidence includes an official Medellín 2023 procurement budget ceiling equivalent to approximately **COP 2.119 million per installed 1,000 L household system** in Santa Elena (~US$782 after 2026 normalization). It remains an evidence anchor—not a Comuna 8 unit price.
 
 See `docs/methodology/cost-evidence.md`.
 
@@ -161,7 +161,7 @@ Do **not** call current outputs:
 - avoided losses;
 - current exact household population;
 - drainage capacity;
-- a COP investment recommendation;
+- a COP or USD investment recommendation, offer or contract;
 - an exhaustive Pareto frontier;
 - community acceptance.
 

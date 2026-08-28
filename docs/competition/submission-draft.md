@@ -194,7 +194,7 @@ Every major layer is labeled as:
 - explicit planning prior;
 - planning-credit budget unit.
 
-Current optimizer costs remain planning credits rather than invented COP values.
+Current optimizer costs remain planning credits. The decision brief reports a pre-feasibility US$ envelope without putting currency into the objective.
 
 Ourea now has a real local RWH procurement budget ceiling anchor, but deliberately does not transfer that value blindly into Comuna 8.
 

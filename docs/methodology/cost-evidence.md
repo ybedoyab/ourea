@@ -1,6 +1,6 @@
 # OUREA — local cost evidence ladder (Ourea)
 
-**Status:** local evidence is now strong enough to define intervention typologies and plausible cost scale, but **not yet strong enough to replace planning credits with COP in the optimizer**.
+**Status:** local evidence defines intervention typologies and a **pre-feasibility US$ envelope** for the decision brief. It is **not** strong enough to replace planning credits in the optimizer.
 
 The key rule remains: do not divide a heterogeneous project budget by an arbitrary length/area/system count and call the result a transferable unit cost.
 
@@ -113,45 +113,35 @@ Source:
 
 **Do not use as:** COP/m² or COP/cell without installed quantities and scope decomposition.
 
-## 4. Why the app still uses planning credits
+## 4. Planning credits remain internal
 
-We now have three different evidence strengths:
+The optimizer still uses **planning credits**, not USD or COP. Heterogeneous drainage packages, a project-scale restoration sheet without installed area, and a RWH procurement ceiling that is not an awarded Comuna 8 price are **not** a fair objective in currency.
 
-1. **RWH:** strong local technical archetype; incomplete isolated economic award.
-2. **Hydraulic/drainage:** several current local budgets, but heterogeneous scope.
-3. **Bioengineering:** local project-scale budget, but no transferable quantity basis.
+Credits compare portfolios. They do not appear in the decision brief.
 
-That is enough to establish **feasibility and realistic order of magnitude**, but not enough for fair cross-intervention optimization in COP.
+## 5. Pre-feasibility USD envelope in the decision brief
 
-Planning credits therefore remain a deliberate scientific/product decision, not missing functionality.
+The exported PDF shows a **US$ implementation envelope** for the selected portfolio. It is generated from `frontend/public/data/cost_context.json`, built offline by `scripts/build_cost_context.py` from this registry and `data/derived/local_infrastructure_cost_scale.csv`. Runtime Ourea does not call price APIs.
 
-## 5. Cost model required before final COP optimization
+Versioned FX (Banco de la República TRM, 2026-08-28, 3,144.28 COP/USD) and documented DANE IPC factors make the conversion reproducible.
 
-For each intervention family, create a distribution with:
+| Family | Quantity basis | Low / base / high | Evidence |
+|---|---|---|---|
+| Rainwater harvesting | Participating systems = max(1, round(buildings × 0.25)) | US$550 / 780 / 1,200 per system | 2023 Santa Elena ceiling, IPC-normalized to 2026 (~US$782/system); not an awarded Comuna 8 price |
+| Drainage | Named corridor lengths 40 / 60 / 80 m | Descriptive USD/reported-m from converted 2026 hydraulic packages (~US$7,800 / 11,300 / 15,800) | Not a transferable unit price; length is not surveyed |
+| Restoration | One project-scale package per selected cell | US$140,000 / 196,000 / 295,000 | CPI- and TRM-normalized 2019 DAGRD Comuna 8 COP 400 million sheet; not a USD/m² rate |
+| Design | 5% / 7.5% / 10% of construction | IDB *Design Well, Build Better* | Guidance, not a Medellín fee schedule |
 
-- typology;
-- quantity basis;
-- base year;
-- direct construction/supply cost;
-- design/supervision;
-- transport/access premium;
-- maintenance;
-- contingency;
-- uncertainty distribution;
-- evidence tier.
+For the guided fixture (one RWH system in cell 12, one drainage cell 18) the envelope rounds to **US$328,000 / US$730,000 / US$1,390,000**. Drainage length dominates capital uncertainty. A site survey converts scenario length into a bill of quantities. Community review remains a decision gate.
 
-Only after those fields are populated should OUREA expose a COP budget slider.
+No figure is an offer, contract or engineering estimate.
 
-## 6. Immediate next evidence target
+## 6. What would change the optimizer unit
 
-Highest-value missing item:
-
-**recover the awarded/evaluated economic proposal for the 130-system Comuna 1 RWH procurement**, or another Medellín procurement where exact RWH system quantity and isolated total price coexist.
-
-That would allow the first defensible local `COP/system` prior.
+Comparable typologies with quantity, design, logistics, maintenance and uncertainty distributions would be required before replacing planning credits in the objective. The brief can already talk in US$ without pretending that comparison is fair inside the search.
 
 
-## Ourea addition — first defensible local COP/system ceiling
+## 7. Santa Elena 1,000 L ceiling (RWH anchor)
 
 A 2023 Fundación Universidad de Antioquia procurement for **Santa Elena, Medellín** is unusually useful because the technical specification and budget align cleanly:
 

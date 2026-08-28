@@ -26,7 +26,7 @@ Ourea is not:
 
 Stable spatial inputs are real/official or explicitly derived from official sources. Rainfall contexts are anchored in CHIRPS v3 Final.
 
-Intervention-effect ranges, planning-credit costs and decision weights remain explicit planning assumptions, not missing features.
+Intervention-effect ranges, **internal** planning-credit costs and decision weights remain explicit planning assumptions. The decision brief additionally shows a pre-feasibility **US$** envelope that is not an offer, contract or engineering estimate.
 
 ## City screening
 
@@ -115,6 +115,10 @@ This is not an exhaustive mathematical Pareto frontier.
 ## Formal cross-check
 
 An independent binary MILP uses linearized robust coefficients and exact budget/cell constraints, then re-evaluates selected portfolios with nonlinear multiplicative effects.
+
+## Cost
+
+The optimizer budget is planning credits. The decision brief reports a low/base/high US$ envelope from versioned TRM, IPC and local comparators. Drainage corridor length is a named 40/60/80 m scenario until surveyed. Restoration is a project-scale package, not USD/m².
 
 ## Prohibited interpretations
 

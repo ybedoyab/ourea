@@ -40,7 +40,7 @@ Open **Advanced analysis** only if a judge wants benchmark, breakage, frontier o
 
 ## 1:40–2:00 — Is this decision ready to discuss?
 
-Evidence, community review and local alignment sit behind short cards. Export the decision package.
+Evidence, community review and local alignment sit behind short cards. Export the decision package — a six-page brief with a US$ envelope, cell links and a mechanism diagram, not a collapse animation.
 
 “Don’t just show me where climate risk is. Let me test what Medellín can do about it — and see which choices stay robust enough to take to residents.”
 
