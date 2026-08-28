@@ -22,11 +22,11 @@ Ourea is not:
 
 ## Model status
 
-`development-priors-not-calibrated`
+`planning-priors-explicit`
 
-Stable spatial inputs are real/official or explicitly derived from official sources.
+Stable spatial inputs are real/official or explicitly derived from official sources. Rainfall contexts are anchored in CHIRPS v3 Final.
 
-The dynamic climate term, intervention-effect ranges, planning-credit costs and decision weights remain development settings pending calibration/co-design.
+Intervention-effect ranges, planning-credit costs and decision weights remain explicit planning assumptions, not missing features.
 
 ## City screening
 

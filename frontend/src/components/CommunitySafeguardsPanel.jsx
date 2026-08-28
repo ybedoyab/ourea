@@ -66,7 +66,7 @@ export function CommunitySafeguardsPanel({
 
   return (
     <section className="community-panel" data-testid="community-panel">
-      <SectionHeading step={8} title={COMMUNITY_COPY.title}>
+      <SectionHeading step={9} title={COMMUNITY_COPY.title}>
         {COMMUNITY_COPY.heading}
       </SectionHeading>
 

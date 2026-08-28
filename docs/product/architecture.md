@@ -30,7 +30,7 @@ Community categories and copy live in `frontend/src/config/communityEvidence.js`
 
 ### Fail visibly
 - required JSON/data failures surface;
-- optional SIATA replay can be absent safely;
+- optional community-evidence file can be absent safely;
 - a missing community-evidence file is `not_assessed`; a malformed file is `invalid`;
 - missing rainfall stays missing;
 - validation scripts fail on stale/obsolete fields and model artifacts.
@@ -52,7 +52,7 @@ Focused UI pieces:
 - `PlanAlignmentPanel`;
 - `BenchmarkPanel`;
 - `EvidencePanel`;
-- `ReplayPanel`;
+- `ClimateContextPanel`;
 - `EvidencePanel`;
 - `MapLegend`;
 - `LayerControls`.
@@ -60,7 +60,8 @@ Focused UI pieces:
 `SandboxPanel` is composition-oriented.
 
 ### `frontend/src/domain/`
-- `climateStress.js` — provisional dynamic/stable stress model;
+- `climateScenarios.js` — observational presets from CHIRPS context;
+- `climateStress.js` — planning climate-stress index from rainfall context and spatial susceptibility;
 - `interventionModel.js` — opportunity, maturity, RWH physics, stacking;
 - `uncertainty.js` — deterministic scenarios/project seeds;
 - `scenarioEngine.js` — deterministic + Monte Carlo portfolio evaluation;

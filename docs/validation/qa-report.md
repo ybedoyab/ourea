@@ -1,12 +1,12 @@
 # Ourea — QA report
 
 **QA date:** 2026-08-27  
-**Artifact:** Ourea / package 0.4.0  
-**Scientific status:** spatial/evidence architecture assembled; SIATA dynamic calibration and final local effect/cost calibration remain pending.
+**Artifact:** Ourea / package 1.0.0  
+**Scientific status:** complete decision product with CHIRPS-anchored rainfall contexts; intervention-effect ranges and planning credits remain explicit assumptions.
 
 ## Overall status
 
-Local revalidation on 2026-08-27: Node tests (40/40), data validation, source validation, Vite production build, SIATA tests (8/8), checkpoint regeneration, MILP, full geospatial validation and manifest regeneration **PASS**.
+Local revalidation on 2026-08-28: Node tests (62/62), data validation, source validation, Vite production build, CHIRPS climate context, checkpoint regeneration, MILP, full geospatial validation and manifest regeneration **PASS**.
 
 MapLibre dominates the production JavaScript bundle (~1.24 MB minified). That warning is accepted; a fragile extra split is not worth the maintenance cost.
 
@@ -20,7 +20,7 @@ node --test tests/*.test.js
 ```
 
 Result:
-- **40/40 passed**;
+- **62/62 passed**;
 - 0 failed;
 - 0 skipped.
 
@@ -33,7 +33,7 @@ Coverage includes:
 - budget/duplicate/max-project constraints;
 - profile-aware robust optimizer;
 - four robust policy alternatives;
-- decision package (`ourea-decision-package`, schema_version 1) including community safeguards;
+- decision package (`ourea-decision-package`, schema_version 2) including community safeguards, climate provenance and a reproducible identifier;
 - community evidence categories, absent-file handling and no silent optimizer change;
 - selection stability;
 - budget frontier;
@@ -109,9 +109,9 @@ Tested behavior includes:
 
 ## PASS — browser Balanced checkpoint
 
-Default development scenario:
-- rain: 95 mm hypothetical;
-- antecedent wetness: 45%;
+Typical wet observational scenario from CHIRPS v3 Final (15-day P75, 1991–2020):
+- rainfall context: 118.788 mm;
+- antecedent rainfall percentile: 50%;
 - planning year: 1;
 - budget: 10 planning credits.
 
@@ -122,21 +122,21 @@ Optimizer:
 - spends 10/10 credits.
 
 500-future checkpoint:
-- P10 **64.2711**;
-- median **79.8448**;
-- P90 **93.9914**;
-- mean **79.3470**.
+- P10 **69.2631**;
+- median **86.0597**;
+- P90 **100.9559**;
+- mean **85.4873**.
 
-These are development benefit proxies.
+These are planning benefit proxies, not people protected.
 
 ## PASS — four named robust policy alternatives
 
 Each policy is budget-feasible and uses the same 220 comparison futures:
 
-- **Balanced** — 10 cr, 6 projects, P10 64.54, median 80.67
-- **Equity-first** — 10 cr, 6 projects, P10 63.03, median 80.32
-- **Access-first** — 10 cr, 6 projects, P10 65.63, median 78.82
-- **Low-regret** — 10 cr, 4 projects, P10 66.33, median 81.90
+- **Balanced** — 10 cr, 6 projects, P10 69.60, median 87.17
+- **Equity-first** — 10 cr, 6 projects, P10 67.98, median 86.53
+- **Access-first** — 10 cr, 6 projects, P10 70.83, median 84.91
+- **Low-regret** — 10 cr, 4 projects, P10 71.55, median 88.51
 
 Current lower-tail leader:
 **Low-regret**.

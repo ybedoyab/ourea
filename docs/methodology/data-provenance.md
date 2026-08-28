@@ -169,24 +169,13 @@ Based on open-space/slope opportunity.
 
 Not a vegetation/geotechnical suitability survey.
 
-## 10. Historical rainfall
+## 10. Observed rainfall context
 
-Current status:
-**pending official SIATA raw station response**.
+Shipped status: **CHIRPS v3 Final pentads** for the Llanaditas / upper Comuna 8 0.05° cell, 1991–2020 climatology, with a 1981–2024 record summary. Daily series used for rolling windows allocate each pentad total uniformly across calendar days.
 
-No synthetic historical rainfall timeline is shipped.
+No CHIRPS rasters are stored in Git. The application does not download CHIRPS at runtime.
 
-When received, the pipeline will preserve missing data and calculate:
-- increment;
-- 1 h;
-- 6 h;
-- 24 h;
-- 3 d;
-- 7 d;
-- 15 d accumulations;
-- coverage fields.
-
-See `docs/methodology/siata-calibration.md`.
+Optional SIATA station ingest can compare local intensity if a series is supplied. See `docs/methodology/climate-context.md`.
 
 ## 11. Cost evidence
 
@@ -209,6 +198,7 @@ Key audit files:
 - `data/derived/city_screening_source_metadata.json`
 - `data/derived/city_priority_screen.csv`
 - `data/derived/cost_reference_registry.json`
+- `frontend/public/data/climate_context.json`
 - `frontend/src/config/modelParameters.json`
 - `MANIFEST.json`
 - `SHA256SUMS.txt`

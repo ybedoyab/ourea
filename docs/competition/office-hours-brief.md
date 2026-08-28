@@ -23,7 +23,7 @@ Official page:
 - sampled equity/access trade-offs;
 - formal MILP cross-check;
 - evidence/provenance labels;
-- SIATA ingestion pipeline ready while raw data are pending.
+- CHIRPS v3 Final climatology shipped offline.
 
 ## Five questions worth asking mentors
 

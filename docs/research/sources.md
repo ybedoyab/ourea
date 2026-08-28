@@ -202,7 +202,7 @@ Final parameters must be tagged as:
 - local engineering estimate;
 - local procurement/project evidence;
 - transferable literature prior;
-- development placeholder.
+- explicit planning prior.
 
 Current numerical source of truth:
 `frontend/src/config/modelParameters.json`

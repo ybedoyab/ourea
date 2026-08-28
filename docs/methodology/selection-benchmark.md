@@ -1,22 +1,27 @@
 # Selection benchmark
 
-Ourea can compare three reproducible selection rules under the same budget and comparison seed:
+Ourea can compare three reproducible selection rules under the same budget, candidates and comparison seed:
 
 1. **Hazard-only** — greedy placement on mapped high-hazard exposure.
-2. **Deterministic central scenario** — one frozen development scenario, no uncertainty ensemble.
+2. **Deterministic central scenario** — one frozen planning scenario, no uncertainty ensemble.
 3. **Ourea robust** — the published uncertainty ensemble and named policy profile.
 
-The comparison reports budget feasibility, median and lower-tail (P10) benefit proxies, project overlap with the robust plan, P10 regret versus robust, and equity/access proxies where the model already computes them.
+P10 **regret** is `max(0, robust P10 − strategy P10)` and is therefore non-negative. P10 **delta** is signed (`strategy − robust`).
+
+The comparison reports budget feasibility, median and lower-tail (P10) benefit proxies, project overlap with the robust plan, and equity/access proxies where the model already computes them.
 
 ## What breaks this portfolio?
 
-A deterministic sensitivity grid varies rainfall, antecedent wetness and restoration-maturity year. It reports:
+One-at-a-time sensitivity varies:
 
-- scenario cells below 80% of the reference benefit proxy;
-- which published assumptions move the proxy most;
-- rainfall values that change the robust recommendation;
-- the gap versus a named alternative plan.
+- rainfall context;
+- antecedent rainfall percentile;
+- restoration maturity;
+- intervention effect range;
+- cost uncertainty (effective budget).
 
-This is not a calibrated climate forecast and not machine-learning scenario discovery.
+It reports which assumptions change **portfolio composition** versus which change **results only**. Combinations below the benefit threshold are **scenario combinations**, not spatial grid cells.
+
+This is not a calibrated climate forecast.
 
 Neither benchmark nor sensitivity consumes community-evidence records.

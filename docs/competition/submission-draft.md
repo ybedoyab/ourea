@@ -6,7 +6,7 @@
 
 ## One-line pitch
 
-**OUREA helps cities compare which climate-adaptation portfolios to fund, and where, while making uncertainty and public-policy trade-offs explicit.**
+**Ourea is an evidence-backed decision sandbox that helps cities turn climate risk, budget constraints, equity and community safeguards into robust portfolios of urban resilience actions.**
 
 ## ≤200-character description
 
@@ -175,31 +175,24 @@ The innovation is:
 
 > **robust adaptation portfolio decision intelligence under uncertainty, grounded in a real city workflow and explicitly separating evidence from assumptions.**
 
-## Historical validation
+## Observed climate context
 
-Target:
-**June 2022 El Faro–Altos de La Torre event**.
+Ourea ships a CHIRPS v3 Final climatology for the Llanaditas / upper Comuna 8 cell (1991–2020, plus a 1981–2024 record summary). Typical, high and extreme planning presets are observational percentiles, not arbitrary millimetres.
 
-Raw SIATA station data have been requested.
+CHIRPS is a 0.05° gridded estimate. It is not station intensity, not a real-time forecast and not landslide probability.
 
-The ingestion and event-diagnostic pipeline is already implemented.
-
-Validation question:
-
-> Does the calibrated dynamic climate-stress indicator increase in the known affected area before/during the verified event?
-
-Not:
-> Could we retroactively claim an exact landslide probability?
+Optional SIATA station ingest remains a local-intensity comparison tool. It is not required to use Ourea.
 
 ## Evidence / anti-fake-precision design
 
 Every major layer is labeled as:
-- official/observed;
+- observed / official;
 - official projection;
 - planning proxy;
 - derived screening proxy;
-- development prior;
-- planning-credit placeholder.
+- observed gridded climatology;
+- explicit planning prior;
+- planning-credit budget unit.
 
 Current optimizer costs remain planning credits rather than invented COP values.
 

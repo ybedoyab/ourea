@@ -1,5 +1,12 @@
 # Ourea changelog
 
+## Complete decision product — 2026-08-27
+
+- Climate scenarios are anchored in CHIRPS v3 Final observations for Llanaditas / upper Comuna 8.
+- Historical rainfall panel replaced by Observed climate context.
+- Benchmark P10 regret is non-negative; sensitivity combinations are not spatial grid cells.
+- Guided demo, GitHub Pages `/ourea/` base path, and expanded Playwright coverage.
+
 ## Reproducible QA, community evidence and competitive depth — 2026-08-27
 
 - Local GeoJSON QA now loads JSON and builds GeoDataFrames without Fiona/pyogrio native readers.
@@ -11,7 +18,7 @@
 ## Identity, community safeguards and documentation — 2026-08-27
 
 - The product is named **Ourea** throughout the repository. Retired marketing labels and former product names were removed from UI, docs, data contracts, scripts and artifacts.
-- Decision export uses `schema: ourea-decision-package` with `schema_version: 1`.
+- Decision export uses `schema: ourea-decision-package` with `schema_version: 2`.
 - Documentation moved under `docs/` with a navigable index.
 - Added Community Evidence & Safeguards as a visible, non-scoring layer. Missing records mean not assessed.
 - Documented Moravia as a learning case for participation and in-situ adaptation, not as a proving ground or optimizer target.
@@ -21,7 +28,7 @@
 ## Brand / judge-ready UI — 2026-08-18
 
 - Established the Ourea product identity (Optimized Urban Resilience through Equity & Adaptation).
-- Added inline SVG mark, design tokens, numbered journey, intervention cards, P10–P90 interval, grouped evidence and SIATA “calibration bridge” framing.
+- Added inline SVG mark, design tokens, numbered journey, intervention cards, P10–P90 interval and grouped evidence.
 - Numerical model, optimizer, uncertainty and evidence meanings were not changed.
 
 ## City-scale screening and named policy profiles — 2026-08-18

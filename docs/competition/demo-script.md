@@ -1,12 +1,16 @@
-# Ourea — 3-minute demo
+# Ourea — 2-minute demo
 
-## 0:00–0:15 — What this is
+Public demo: https://ybedoyab.github.io/ourea/
+
+Optional: click **Run guided demo** for a fixed-seed walkthrough. Exploration remains available.
+
+## 0:00–0:20 — What this is
 
 Open **City screen**.
 
-“This is OUREA: AI decision intelligence for climate-resilient hillsides. From climate risk to robust action.”
+“Ourea is an evidence-backed decision sandbox that helps cities turn climate risk, budget constraints, equity and community safeguards into robust portfolios of urban resilience actions.”
 
-## 0:15–0:40 — Screen the city
+## 0:20–0:40 — Where is the risk?
 
 Switch lenses: **Exposure → Balanced → Equity**.
 
@@ -18,51 +22,53 @@ Click Llanaditas.
 
 Open the proving ground.
 
-## 0:40–1:05 — Understand the hotspot
+## 0:40–1:00 — What can be funded?
 
-“City scale in, high-resolution action here: 1,588 cadastral buildings, real 1 m terrain, official hazard, access and a DANE population planning proxy.”
+“1,588 cadastral buildings, 1 m terrain, official hazard, access and a DANE population planning proxy.”
 
-Hover a building: “Planning cell, barrio, people proxy.”
+Select a cell. Show rainwater harvesting, drainage and restoration.
 
-## 1:05–1:25 — Stress the future
-
-Point to **Hypothetical development scenarios**.
-
-“Moderate / Wet / Severe are UX presets, not SIATA return periods. Climate Stress is a development index, not landslide probability.”
-
-## 1:25–1:45 — Test action
-
-Select a cell. Show the three intervention cards.
-
-“Rainwater harvesting, drainage, restoration — each with mechanism, planning-credit cost, opportunity proxy and evidence status. Credits are not COP.”
+“Each intervention has a mechanism, planning-credit cost, opportunity proxy and evidence status. Credits are not COP.”
 
 Add one project: “This is Your plan.”
 
-## 1:45–2:15 — Compare robust portfolios
+## 1:00–1:20 — What does Ourea recommend, and versus hazard-only?
 
 Click **Generate robust options**.
 
-“OUREA does not hide the public-policy choice. Balanced, Equity-first, Access-first and Low-regret use the same budget and ensemble.”
+“Balanced, Equity-first, Access-first and Low-regret use the same budget, candidates and seed.”
 
-Point to **Highest P10 in current ensemble** — “strongest lower-tail benefit in this draw, not universal optimality.”
+Point to **Highest P10 in current ensemble** — strongest lower-tail benefit in this draw, not universal optimality.
 
-Open **Why here?** — opportunity, equity exposure, access relevance, robust marginal value, and what could change the recommendation.
+Click **Compare selection rules**.
 
-## 2:15–2:40 — Trade-offs and stability
+“Hazard-only, deterministic and robust stay comparable. P10 regret is a non-negative shortfall versus robust. Combinations below the threshold are scenario combinations, not spatial grid cells.”
 
-Show P10 / median / P90 interval.
+## 1:20–1:35 — How does it behave under more demanding climate?
 
-Then budget frontier, stability (12/12 vs sensitive), and sampled non-dominated trade-offs.
+Open **Observed climate context**.
 
-“There is no single best portfolio. Selection frequency is stability under resampling, not probability of optimality.”
+“CHIRPS v3 Final, climatology 1991–2020, 0.05° native pentads. Typical wet, high rainfall and extreme observed contexts. Each figure has source, period and accumulation window.”
 
-## 2:40–3:00 — Evidence, safeguards and close
+Switch to **High rainfall context** or **Extreme observed context**.
 
-Scroll evidence groups: observed / planning proxies / development priors / placeholders.
+“Ourea evaluates portfolio performance across observed and stress-tested rainfall contexts. It supports planning decisions; it does not issue real-time forecasts.”
 
-Community panel: “Technically robust does not mean community-validated. Missing records are not assessed, not support. Moravia is a lesson, not this proving ground.”
+## 1:35–1:50 — Who is protected, and what evidence is required?
 
-SIATA panel: “Historical calibration bridge. Awaiting official rainfall. No synthetic series.”
+Show equity and access benefit proxies.
+
+“Equity weights stratum-1 exposure. Access weights proximity to the official network. Neither is community validation.”
+
+Scroll documentary alignment: linked titles, including the Granizal 2025 paper as metropolitan mechanism evidence, not Llanaditas calibration.
+
+Community panel: “Technically robust does not mean community-validated. Missing records are not assessed. Moravia is a lesson, not this proving ground.”
+
+## 1:50–2:00 — What can be exported?
+
+Click **Export decision package**.
+
+“The JSON carries the selected portfolio, budget, profile, climate percentile and source, P10/P50/P90, benchmark, sensitivity, documentary alignment, community-evidence status, schema versions and a reproducible identifier.”
 
 “Don’t just show me where climate risk is. Let me test what Medellín can do about it — and see which choices stay robust enough to take to residents.”
 

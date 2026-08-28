@@ -20,7 +20,8 @@ Full artifact validator:
 - sampled non-dominated trade-offs;
 - formal Balanced MILP;
 - formal all-policy MILP cross-checks;
-- no synthetic SIATA replay.
+- CHIRPS climate context;
+- no synthetic rainfall timeline.
 
 ## `optimizer_milp.py`
 
@@ -43,7 +44,7 @@ Raw rainfall adapter:
 - rolling coverage;
 - 1h/6h/24h/3d/7d/15d features;
 - QA report;
-- optional replay JSON.
+- optional SIATA station comparison if a local series is supplied.
 
 ## `siata_event_diagnostics.py`
 
@@ -74,6 +75,18 @@ Creates:
 Checksums are SHA-256 of the Git canonical form (LF text, raw binary). Working-tree CRLF checkouts on Windows therefore match Linux CI.
 
 The Ourea manifest records city-screen, policy-alternative, sampled trade-off and formal cross-check metadata.
+
+## `build_climate_context.py`
+
+Offline CHIRPS v3 Final extract for the Llanaditas / upper Comuna 8 cell.
+
+- Reads Latin America pentad GeoTIFFs with a one-pixel window.
+- Allocates each pentad total uniformly across calendar days.
+- Writes `frontend/public/data/climate_context.json`.
+- Cache: `.cache/chirps/` (Git-ignored).
+- Pure statistics live in `chirps_stats.py` and are unit-tested.
+
+The runtime application never calls this script.
 
 On macOS/Linux the entry scripts `run_mac_linux.sh` and `qa_mac_linux.sh` must keep the Git executable bit so they can be invoked as documented in the root README.
 

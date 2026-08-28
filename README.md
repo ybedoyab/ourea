@@ -4,11 +4,13 @@
 
 **From climate risk to robust action.**
 
-Adaptation investment decision intelligence under uncertainty for vulnerable urban hillsides. Medellín is the first proving ground.
+An evidence-backed decision sandbox that helps cities turn climate risk, budget constraints, equity and community safeguards into robust portfolios of urban resilience actions. Medellín is the first proving ground.
+
+Public demo: https://ybedoyab.github.io/ourea/
 
 Current product flow:
 
-`CITY SCREEN → DETAILED PROVING GROUND → STRESS THE FUTURE → TEST ACTION → COMPARE ROBUST PORTFOLIOS → UNDERSTAND TRADE-OFFS → INSPECT EVIDENCE → COMMUNITY SAFEGUARDS → PLAN ALIGNMENT`
+`CITY SCREEN → DETAILED PROVING GROUND → OBSERVED CLIMATE CONTEXT → EXPLORE RAINFALL → TEST ACTION → COMPARE ROBUST PORTFOLIOS → UNDERSTAND TRADE-OFFS → INSPECT EVIDENCE → COMMUNITY SAFEGUARDS → PLAN ALIGNMENT`
 
 ## Why Ourea is different
 
@@ -94,7 +96,7 @@ Ourea generates four explicit policy lenses under the same budget/data:
 
 The UI does not claim one objective is universally correct.
 
-After generation it highlights the option with the **highest P10 lower-tail benefit in the current development ensemble**, not “the optimal plan”.
+After generation it highlights the option with the **highest P10 lower-tail benefit in the current ensemble**, not “the optimal plan”.
 
 ### Robustness diagnostics
 
@@ -110,32 +112,32 @@ Ourea includes:
 
 See `docs/methodology/policy-portfolios.md`.
 
-## SIATA readiness
+## Observed climate context
 
-The raw historical station series is pending, but the integration path is already implemented.
+Ourea anchors planning rainfall contexts in **CHIRPS v3 Final** for the Llanaditas / upper Comuna 8 0.05° cell. The application ships `frontend/public/data/climate_context.json` and never downloads CHIRPS at runtime.
 
-`siata_ingest.py`:
-- auto-detects common source columns;
-- supports explicit incremental/cumulative gauge modes;
-- preserves missing rainfall as missing;
-- calculates 1 h / 6 h / 24 h / 3 d / 7 d / 15 d accumulations;
-- tracks rolling-window coverage;
-- writes a quality report;
-- creates the optional UI replay timeline.
+The 1991–2020 climatology supplies three named presets — Typical wet conditions, High rainfall context, Extreme observed context — plus an Explore mode. Each visible rainfall figure carries source, period and accumulation window.
 
-`siata_event_diagnostics.py` summarizes observed rainfall around a **verified** event timestamp without fitting a fake prediction model.
+CHIRPS is a gridded estimate, not rain-gauge intensity at a hillside station. Daily series used for rolling windows allocate each Final pentad total uniformly across calendar days. These values are not landslide probability and not a real-time forecast.
 
-See `docs/methodology/siata-calibration.md`.
+Rebuild the shipped JSON from a windowed Latin America pentad extract (rasters stay in a local Git-ignored cache):
+
+```bash
+python scripts/build_climate_context.py
+```
+
+Optional SIATA station ingest remains available as a local-intensity comparison tool. It is not required for the decision product. See `docs/methodology/climate-context.md`.
 
 ## Evidence and cost discipline
 
 Ourea labels major inputs as:
-- official/observed;
+- observed / official;
 - official projection;
 - planning proxy;
 - derived screening proxy;
-- development prior;
-- planning-credit placeholder.
+- observed gridded climatology;
+- explicit planning prior;
+- planning-credit budget unit.
 
 The optimizer still uses **planning credits, not COP**.
 
@@ -147,8 +149,7 @@ See `docs/methodology/cost-evidence.md`.
 
 ## Scientific boundary
 
-The spatial datasets are real. The following remain development priors until calibration:
-- the dynamic Climate Stress formulation;
+The spatial datasets are real. Climate scenarios are observationally anchored. The following remain explicit planning assumptions, not missing product features:
 - intervention-effect ranges;
 - planning-credit costs;
 - public-policy objective weights.
@@ -232,12 +233,8 @@ or:
 
 The user should run final browser QA locally after `npm install`.
 
+Playwright covers city screen, climate context, portfolios, benchmark, community evidence, export, keyboard and 390×844 / tablet / desktop viewports.
+
 ## Documentation
 
 Start at [`docs/README.md`](docs/README.md).
-
-## Highest-value remaining scientific gate
-
-**SIATA raw rainfall + verified June 2022 event timestamp.**
-
-Once those arrive, the architecture is already prepared to replace the provisional dynamic climate term and run the historical hindcast without redesigning the product.

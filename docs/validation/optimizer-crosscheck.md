@@ -2,10 +2,10 @@
 
 This is a **software/model consistency artifact**, not real-world validation of intervention effectiveness.
 
-## Default development scenario
+## Default observational scenario
 
-- hypothetical storm depth: 95 mm
-- antecedent wetness: 45%
+- CHIRPS v3 Final 15-day P75 (typical wet): 118.788 mm
+- antecedent rainfall percentile: 50%
 - planning year: 1
 - budget: 10 planning credits
 
@@ -15,14 +15,14 @@ All named options use the same 220 comparison futures in the current Ourea confi
 
 | Policy | Credits | Projects | P10 | Median | Equity proxy | Access proxy |
 |---|---:|---:|---:|---:|---:|---:|
-| Balanced | 10 | 6 | 64.54 | 80.67 | 78.59 | 51.42 |
-| Equity-first | 10 | 6 | 63.03 | 80.32 | 79.09 | 51.65 |
-| Access-first | 10 | 6 | 65.63 | 78.82 | 79.38 | 57.31 |
-| Low-regret | 10 | 4 | 66.33 | 81.90 | 80.95 | 56.61 |
+| Balanced | 10 | 6 | 69.60 | 87.17 | 84.67 | 55.40 |
+| Equity-first | 10 | 6 | 67.98 | 86.53 | 85.21 | 55.65 |
+| Access-first | 10 | 6 | 70.83 | 84.91 | 85.52 | 61.74 |
+| Low-regret | 10 | 4 | 71.55 | 88.51 | 87.21 | 60.99 |
 
 Current lower-tail leader: **Low-regret**.
 
-This means highest P10 in the current development ensemble, **not universal optimality**.
+This means highest P10 in the current observational ensemble, **not universal optimality**.
 
 ## Policy consensus
 
@@ -43,9 +43,9 @@ Selected projects:
 - cell 28 — rwh
 
 500-future checkpoint:
-- P10: 64.2711
-- median: 79.8448
-- P90: 93.9914
+- P10: 69.2631
+- median: 86.0597
+- P90: 100.9559
 
 ## Formal Balanced MILP cross-check
 
@@ -56,9 +56,9 @@ Selected projects:
 - cell 35 — drainage
 
 Nonlinear post-selection reevaluation:
-- P10: 64.4507
-- median: 80.7083
-- P90: 96.5977
+- P10: 69.3223
+- median: 87.0449
+- P90: 103.8546
 
 The browser and MILP need not select identical plans:
 - browser = sequential marginal nonlinear decision process;
@@ -68,10 +68,10 @@ The browser and MILP need not select identical plans:
 
 | Policy | Credits | Projects | P10 nonlinear | Median nonlinear | P90 nonlinear |
 |---|---:|---:|---:|---:|---:|
-| balanced | 10 | 4 | 64.45 | 80.71 | 96.60 |
-| equity | 10 | 4 | 64.45 | 80.71 | 96.60 |
-| access | 10 | 4 | 63.75 | 79.90 | 96.88 |
-| low_regret | 10 | 4 | 64.45 | 80.71 | 96.60 |
+| balanced | 10 | 4 | 69.32 | 87.04 | 103.85 |
+| equity | 10 | 4 | 69.32 | 87.04 | 103.85 |
+| access | 10 | 4 | 68.52 | 85.89 | 104.04 |
+| low_regret | 10 | 4 | 69.32 | 87.04 | 103.85 |
 
 Some formal profiles collapse to the same plan under current linearized coefficients. Ourea preserves that result rather than manufacturing differentiation.
 

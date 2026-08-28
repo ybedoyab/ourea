@@ -26,7 +26,7 @@ Open DevTools.
 - [ ] no failed required GeoJSON/JSON requests;
 - [ ] no MapLibre layer/source errors;
 - [ ] terrain tile requests succeed;
-- [ ] optional missing `replay_timeline.json` does not crash the app.
+- [ ] climate_context.json loads locally; the app does not fetch CHIRPS at runtime.
 
 ## 3. City screen
 
@@ -61,13 +61,13 @@ Click **Open Llanaditas proving ground**.
 - [ ] hazard / cells / roads toggles work;
 - [ ] map remains responsive.
 
-## 5. Scenario controls
+## 5. Climate context and explore
 
-Try all hypothetical presets.
-
-- [ ] labels explicitly say hypothetical / not SIATA-calibrated;
-- [ ] stress colors/metrics respond;
-- [ ] no text calls the metric landslide probability.
+- [ ] Observed climate context shows CHIRPS v3 Final and 1991–2020;
+- [ ] Typical wet / high rainfall / extreme observed presets are selectable;
+- [ ] each preset shows window, millimetres, percentile, period and source;
+- [ ] Explore still lets you vary rainfall and antecedent rainfall percentile by hand;
+- [ ] no text calls the metric landslide probability or soil wetness.
 
 ## 6. Manual plan
 
@@ -127,16 +127,13 @@ Expand at least two selected projects.
 - [ ] labels/rows fit within panel;
 - [ ] wording says sampled non-dominated, not exact Pareto frontier.
 
-## 10. SIATA panel
+## 10. Observed climate context
 
-Before raw data arrive:
-- [ ] shows pending state;
-- [ ] lists target rainfall features;
-- [ ] no fake historical values appear.
-
-If actual replay data are later added:
-- [ ] missing accumulations render `—`, not `0.0 mm`;
-- [ ] timeline slider works.
+- [ ] panel shows CHIRPS v3 Final and 1991–2020;
+- [ ] three observational presets are selectable;
+- [ ] source link uses a title, not a raw URL;
+- [ ] method disclosure is collapsed by default;
+- [ ] no empty “waiting for data” panel.
 
 ## 11. Evidence panel
 
@@ -157,7 +154,11 @@ Open JSON and verify:
 - [ ] robust alternatives included if generated;
 - [ ] policy consensus included;
 - [ ] frontier/stability/Pareto included if analyzed;
-- [ ] scientific guardrails included.
+- [ ] climate percentile, window and source included;
+- [ ] benchmark and sensitivity included if analyzed;
+- [ ] documentary alignment included;
+- [ ] community-evidence status included;
+- [ ] schema versions and reproducible identifier included;
 
 ## 13. Responsive/browser smoke test
 

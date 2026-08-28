@@ -14,7 +14,8 @@ This index is the entry point. The repository root keeps only `README.md`, `CHAN
 
 - [City screen](methodology/city-screen.md)
 - [Policy portfolios](methodology/policy-portfolios.md)
-- [SIATA calibration](methodology/siata-calibration.md)
+- [Observed climate context](methodology/climate-context.md)
+- [Optional SIATA station comparison](methodology/siata-calibration.md)
 - [Data provenance](methodology/data-provenance.md)
 - [Cost evidence](methodology/cost-evidence.md)
 - [Community evidence and safeguards](methodology/community-safeguards.md)
