@@ -25,6 +25,13 @@ async function runDecisionJourney(page, { generate = true } = {}) {
   await page.goto('/');
   await expect(page.getByTestId('open-sandbox')).toBeVisible({ timeout: 60000 });
   await expect(page.getByRole('heading', { name: /Screen the city/i })).toBeVisible();
+  await expect(page.getByTestId('population-matches')).toContainText('248/249');
+  const ranks = await page.getByTestId('screening-row').evaluateAll((rows) =>
+    rows.map((row) => row.getAttribute('data-rank')),
+  );
+  expect(ranks).toEqual(['1', '2', '3', '4', '5', '6', '7', '8']);
+  const labels = await page.getByTestId('screening-row').allTextContents();
+  expect(labels.join(' ')).not.toMatch(/Special \/ unmatched/i);
   await assertNoHorizontalOverflow(page);
 
   await page.getByTestId('open-sandbox').click();
@@ -88,6 +95,7 @@ async function runDecisionJourney(page, { generate = true } = {}) {
   expect(payload.community_safeguards.validation_status).toBeTruthy();
   expect(payload.reproducible_id).toMatch(/^ourea-/);
   expect(payload.schema_versions.climate_context).toBe(1);
+  expect(payload.action_footprint.planning_cells_targeted).toBeGreaterThan(0);
 
   await assertNoHorizontalOverflow(page);
   guards.assertClean();
@@ -108,6 +116,8 @@ test.describe('desktop', () => {
     await expect(page.getByTestId('select-profile-balanced')).toBeVisible({ timeout: 180000 });
     await expect(page.getByTestId('breakage-combination-count')).toBeVisible({ timeout: 180000 });
     await expect(page.getByTestId('climate-context-panel')).toBeVisible();
+    await expect(page.getByTestId('decision-engine')).toBeVisible();
+    await expect(page.getByTestId('action-footprint')).toBeVisible();
     guards.assertClean();
   });
 
@@ -167,12 +177,47 @@ test('built app serves local data without third-party APIs', async ({ page }) =>
   await expect(page.getByTestId('climate-facts')).toContainText('CHIRPS');
 });
 
-test('published demo', async ({ page }) => {
-  const url = process.env.OUREA_DEMO_URL;
-  test.skip(!url, 'OUREA_DEMO_URL not set');
+test('falls back cleanly when WebGL2 is unavailable', async ({ page }) => {
+  const guards = attachErrorGuards(page);
+  await page.addInitScript(() => {
+    const original = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function getContext(type, ...args) {
+      if (String(type).toLowerCase().includes('webgl')) return null;
+      return original.call(this, type, ...args);
+    };
+  });
+  await page.goto('/');
+  await expect(page.getByTestId('map-fallback')).toBeVisible({ timeout: 60000 });
+  await expect(page.getByText('3D map unavailable in this browser')).toBeVisible();
+  await expect(page.getByTestId('open-sandbox')).toBeVisible();
+  await page.getByTestId('run-guided-demo').click();
+  await expect(page.getByTestId('select-profile-balanced')).toBeVisible({ timeout: 180000 });
+  await expect(page.getByTestId('export-package')).toBeEnabled();
+  await expect(page.getByTestId('map-fallback')).toBeVisible();
+  guards.assertClean();
+});
+
+test('published demo', async ({ page, baseURL }) => {
+  const url = process.env.OUREA_DEMO_URL || baseURL;
   const guards = attachErrorGuards(page);
   await page.goto(url);
   await expect(page.getByTestId('open-sandbox')).toBeVisible({ timeout: 60000 });
+  await expect(page.getByTestId('population-matches')).toContainText('248/249');
+  const ranks = await page.getByTestId('screening-row').evaluateAll((rows) =>
+    rows.map((row) => row.getAttribute('data-rank')),
+  );
+  expect(ranks).toEqual(['1', '2', '3', '4', '5', '6', '7', '8']);
   await assertNoHorizontalOverflow(page);
+
+  const origin = new URL(page.url());
+  const climate = await page.request.get(new URL('data/climate_context.json', origin).href);
+  expect(climate.ok(), `climate_context.json ${climate.status()}`).toBeTruthy();
+  const geojson = await page.request.get(new URL('data/medellin_city_priority_screen.geojson', origin).href);
+  expect(geojson.ok(), `city screen geojson ${geojson.status()}`).toBeTruthy();
+
+  await page.getByTestId('run-guided-demo').click();
+  await expect(page.getByTestId('climate-context-panel')).toBeVisible({ timeout: 180000 });
+  await expect(page.getByTestId('decision-engine')).toBeVisible();
+  await expect(page.getByTestId('action-footprint')).toBeVisible();
   guards.assertClean();
 });

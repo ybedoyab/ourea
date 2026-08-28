@@ -18,10 +18,12 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'off',
   },
-  webServer: {
-    command: 'npx vite preview --host 127.0.0.1 --port 4173',
-    url: 'http://127.0.0.1:4173',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
-  },
+  webServer: process.env.OUREA_DEMO_URL
+    ? undefined
+    : {
+        command: 'npx vite preview --host 127.0.0.1 --port 4173',
+        url: 'http://127.0.0.1:4173',
+        reuseExistingServer: !process.env.CI,
+        timeout: 120000,
+      },
 });
