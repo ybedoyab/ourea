@@ -141,7 +141,7 @@
     "profileId": "low_regret",
     "profile": {
       "label": "Low-regret",
-      "description": "Penalizes lower-tail uncertainty strongly, favoring fewer projects whose marginal benefit remains defensible in adverse development draws.",
+      "description": "Penalizes lower-tail uncertainty strongly, favoring fewer projects whose marginal benefit remains defensible in adverse uncertainty-ensemble draws.",
       "equityWeight": 0.25,
       "accessWeight": 0.1,
       "downsidePenalty": 1.5
