@@ -2,7 +2,25 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from build_climate_context import (  # noqa: E402
+    OUTPUT,
+    VERSIONED_CSV,
+    VERSIONED_META,
+    build_document,
+    expand_pentads_to_daily,
+    is_valid_precip,
+    iter_year_month_pentads,
+    load_versioned_metadata,
+    load_versioned_pentads,
+    sha256_file,
+)
+from chirps_stats import AVAILABLE_END, AVAILABLE_START  # noqa: E402
 
 REQUIRED_TOP = (
     "schema_version",
@@ -80,15 +98,48 @@ def validate_climate_context(document: dict) -> list[str]:
             errors.append(f"banned claim: {banned}")
     if "chirps" not in blob:
         errors.append("document does not mention CHIRPS")
+    sample = (document.get("input_provenance") or {}).get("sample") or {}
+    if sample.get("row") is None or sample.get("col") is None:
+        errors.append("input_provenance.sample is missing raster row/col")
+    if not (document.get("input_provenance") or {}).get("csv_sha256"):
+        errors.append("input_provenance.csv_sha256 missing")
     return errors
 
 
+def rebuild_from_versioned_csv() -> dict:
+    if not VERSIONED_CSV.exists() or not VERSIONED_META.exists():
+        raise FileNotFoundError("versioned CHIRPS CSV/metadata missing")
+    pentads = load_versioned_pentads()
+    metadata = load_versioned_metadata()
+    keys = iter_year_month_pentads(AVAILABLE_START, AVAILABLE_END)
+    series = expand_pentads_to_daily(pentads, AVAILABLE_START, AVAILABLE_END)
+    valid = sum(1 for value in pentads.values() if is_valid_precip(value))
+    return build_document(series, metadata, valid, len(keys))
+
+
+def compare_shipped_with_rebuild(shipped: dict, rebuilt: dict) -> list[str]:
+    left = json.dumps(shipped, indent=2, ensure_ascii=False)
+    right = json.dumps(rebuilt, indent=2, ensure_ascii=False)
+    if left == right:
+        return []
+    return [
+        "shipped climate_context.json does not match a deterministic rebuild from the versioned CSV"
+    ]
+
+
 def main() -> int:
-    path = Path(__file__).resolve().parents[1] / "frontend" / "public" / "data" / "climate_context.json"
+    path = OUTPUT
     if not path.exists():
         print(f"missing {path}")
         return 1
-    errors = validate_climate_context(load_climate_context(path))
+    document = load_climate_context(path)
+    errors = validate_climate_context(document)
+    try:
+        rebuilt = rebuild_from_versioned_csv()
+        errors.extend(compare_shipped_with_rebuild(document, rebuilt))
+        print(f"versioned CSV sha256={sha256_file(VERSIONED_CSV)}")
+    except FileNotFoundError as error:
+        errors.append(str(error))
     if errors:
         print("\n".join(errors))
         return 1

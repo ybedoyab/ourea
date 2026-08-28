@@ -13,7 +13,7 @@
     "https://data.chc.ucsb.edu/products/CHIRPS/v3.0/pentads/latam/tifs/"
   ],
   "doi": "https://doi.org/10.1038/s41597-026-07096-4",
-  "accessed_at": "2026-08-28T02:01:59Z",
+  "accessed_at": "2026-08-28T02:02:00Z",
   "spatial_resolution": "0.05 degrees (~5.5 km at the equator)",
   "temporal_resolution": "Native pentads (Final); daily series allocated uniformly within each pentad",
   "area": "Llanaditas / upper Comuna 8, Medellín. One CHIRPS 0.05° cell containing the proving-ground centroid.",
@@ -29,7 +29,12 @@
       -75.53662,
       6.25492
     ],
-    "extracted_cell_approx": null
+    "extracted_cell": [
+      -75.55,
+      6.25,
+      -75.5,
+      6.3
+    ]
   },
   "climatology_period": {
     "start": "1991-01-01",
@@ -255,15 +260,26 @@
     "filename_pattern": "chirps-v3.0.{YYYY}.{MM}.{pentad}.tif",
     "sample": {
       "url": "https://data.chc.ucsb.edu/products/CHIRPS/v3.0/pentads/latam/tifs/chirps-v3.0.1981.01.1.tif",
-      "crs": null,
-      "row": null,
-      "col": null,
-      "width": null,
-      "height": null,
-      "bytes": null,
-      "from_cache": true
+      "crs": "EPSG:4326",
+      "row": 574,
+      "col": 889,
+      "width": 1720,
+      "height": 1900,
+      "cell_center": {
+        "lon": -75.525,
+        "lat": 6.275
+      },
+      "cell_bounds": [
+        -75.55,
+        6.25,
+        -75.5,
+        6.3
+      ],
+      "from_versioned_csv": true
     },
-    "cache_csv": ".cache/chirps/llanaditas_pentad_latam.csv",
+    "versioned_csv": "data/derived/climate/llanaditas_chirps_v3_pentads.csv",
+    "csv_sha256": "bf82ec3ad1044a05f649b72e0969ffc45c782868038d5f2e4e3667512cdd0aa5",
+    "snapshot_at": "2026-08-28T02:02:00Z",
     "nodata_value": -9999.0
   }
 }

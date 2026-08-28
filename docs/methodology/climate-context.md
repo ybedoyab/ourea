@@ -18,11 +18,12 @@ The runtime application never downloads CHIRPS. After `npm run build`, GeoJSON, 
 
 - Product: CHIRPS v3.0 **Final pentads**, Latin America GeoTIFF subset. Not preliminary.
 - Geometry: the single 0.05° cell containing the proving-ground centroid (−75.53887, 6.25265). Colombia-wide rasters are not stored in Git.
+- Versioned extract: `data/derived/climate/llanaditas_chirps_v3_pentads.csv` plus `metadata.json`. CI rebuilds `climate_context.json` from that CSV and compares it with the shipped file.
 - Daily series: each pentad total is divided equally across its calendar days (1–5, 6–10, 11–15, 16–20, 21–25, 26–end of month). This preserves pentad mass, so 15- and 30-day accumulations match the native product. Intra-pentad timing is not independently observed.
 - Climatology: 1991–2020.
 - Additional record: 1981–2024.
 - Statistics: daily-allocated values; trailing 3/7/15/30-day accumulations; empirical P50/P75/P90/P95/P99 (Hyndman-Fan type 7); observed maxima; valid-day counts; coverage dates.
-- Cache: `.cache/chirps/` (Git-ignored).
+- Optional download cache: `.cache/chirps/` (Git-ignored). Promote with `--from-cache-only` or refresh from UCSB with `--update-from-source`.
 
 ## Appropriate use
 

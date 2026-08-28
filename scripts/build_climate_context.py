@@ -42,6 +42,13 @@ ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / ".cache" / "chirps"
 OUTPUT = ROOT / "frontend" / "public" / "data" / "climate_context.json"
 PENTAD_CSV = CACHE / "llanaditas_pentad_latam.csv"
+VERSIONED_DIR = ROOT / "data" / "derived" / "climate"
+VERSIONED_CSV = VERSIONED_DIR / "llanaditas_chirps_v3_pentads.csv"
+VERSIONED_META = VERSIONED_DIR / "metadata.json"
+DEFAULT_SNAPSHOT = "2026-08-28T02:02:00Z"
+PIXEL_SIZE_DEG = 0.05
+EXTRACT_ROW = 574
+EXTRACT_COL = 889
 
 CHIRPS_VERSION = "v3.0"
 CHIRPS_PRODUCT = "pentads/latam (Final)"
@@ -117,6 +124,111 @@ def write_cached_pentads(series: dict[tuple[int, int, int], float | None]) -> No
                     "precip_mm": "" if value is None else f"{value:.6f}",
                 }
             )
+
+
+def cell_geometry(lon: float, lat: float) -> dict[str, object]:
+    west = PIXEL_SIZE_DEG * (lon // PIXEL_SIZE_DEG)
+    south = PIXEL_SIZE_DEG * (lat // PIXEL_SIZE_DEG)
+    east = west + PIXEL_SIZE_DEG
+    north = south + PIXEL_SIZE_DEG
+    return {
+        "query_lon": lon,
+        "query_lat": lat,
+        "cell_west": round(west, 5),
+        "cell_south": round(south, 5),
+        "cell_east": round(east, 5),
+        "cell_north": round(north, 5),
+        "cell_center_lon": round(west + PIXEL_SIZE_DEG / 2, 5),
+        "cell_center_lat": round(south + PIXEL_SIZE_DEG / 2, 5),
+        "bounds": [round(west, 5), round(south, 5), round(east, 5), round(north, 5)],
+    }
+
+
+def load_versioned_pentads(path: Path = VERSIONED_CSV) -> dict[tuple[int, int, int], float | None]:
+    if not path.exists():
+        return {}
+    out: dict[tuple[int, int, int], float | None] = {}
+    with path.open(encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle):
+            key = (int(row["year"]), int(row["month"]), int(row["pentad"]))
+            valid = str(row.get("valid", "1")).strip() in {"1", "true", "True"}
+            raw = row.get("precip_mm", "")
+            if not valid or raw in {"", "None", "nan"}:
+                out[key] = None
+            else:
+                value = float(raw)
+                out[key] = value if is_valid_precip(value, NODATA) else None
+    return out
+
+
+def write_versioned_pentads(
+    series: dict[tuple[int, int, int], float | None],
+    path: Path = VERSIONED_CSV,
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=["year", "month", "pentad", "precip_mm", "valid"],
+        )
+        writer.writeheader()
+        for year, month, pentad in sorted(series):
+            value = series[(year, month, pentad)]
+            valid = is_valid_precip(value)
+            writer.writerow(
+                {
+                    "year": year,
+                    "month": month,
+                    "pentad": pentad,
+                    "precip_mm": "" if not valid else f"{float(value):.6f}",
+                    "valid": 1 if valid else 0,
+                }
+            )
+
+
+def default_extract_metadata(snapshot_at: str, csv_sha256: str) -> dict[str, object]:
+    geometry = cell_geometry(LLANADITAS_LON, LLANADITAS_LAT)
+    return {
+        "source_name": "CHIRPS v3.0 Final",
+        "source_version": CHIRPS_VERSION,
+        "source_product": CHIRPS_PRODUCT,
+        "tif_root": CHIRPS_PENTAD_ROOT,
+        "filename_pattern": "chirps-v3.0.{YYYY}.{MM}.{pentad}.tif",
+        "query_coordinates": {"lon": LLANADITAS_LON, "lat": LLANADITAS_LAT, "epsg": 4326},
+        "cell_center": {
+            "lon": geometry["cell_center_lon"],
+            "lat": geometry["cell_center_lat"],
+        },
+        "cell_bounds": geometry["bounds"],
+        "crs": "EPSG:4326",
+        "row": EXTRACT_ROW,
+        "col": EXTRACT_COL,
+        "width": EXPECTED_WIDTH,
+        "height": EXPECTED_HEIGHT,
+        "nodata": NODATA,
+        "period": {
+            "start": AVAILABLE_START.isoformat(),
+            "end": AVAILABLE_END.isoformat(),
+        },
+        "snapshot_at": snapshot_at,
+        "csv": str(VERSIONED_CSV.relative_to(ROOT)).replace("\\", "/"),
+        "csv_sha256": csv_sha256,
+        "extract_method": (
+            "Windowed GeoTIFF read of the single 0.05° Latin America pentad cell "
+            "containing the Llanaditas / upper Comuna 8 centroid. Rasters are not stored."
+        ),
+    }
+
+
+def write_versioned_metadata(metadata: dict[str, object], path: Path = VERSIONED_META) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def load_versioned_metadata(path: Path = VERSIONED_META) -> dict[str, object]:
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def sample_pentad_pixel(url: str, lon: float, lat: float) -> tuple[float | None, dict[str, object]]:
@@ -259,8 +371,7 @@ def sha256_file(path: Path) -> str:
 
 def build_document(
     available_series: list[tuple[date, float | None]],
-    sample_provenance: dict[str, object],
-    accessed_at: str,
+    metadata: dict[str, object],
     pentad_valid: int,
     pentad_total: int,
 ) -> dict[str, object]:
@@ -269,27 +380,19 @@ def build_document(
     available = summarize_series(available_series)
     climatology["period"] = f"{CLIMATOLOGY_START.year}-{CLIMATOLOGY_END.year}"
     presets = build_scenario_presets(climatology)
-
-    pixel_bounds = None
-    if sample_provenance.get("row") is not None:
-        half = 0.025
-        pixel_bounds = [
-            round(LLANADITAS_LON - half, 5),
-            round(LLANADITAS_LAT - half, 5),
-            round(LLANADITAS_LON + half, 5),
-            round(LLANADITAS_LAT + half, 5),
-        ]
+    snapshot_at = str(metadata.get("snapshot_at") or DEFAULT_SNAPSHOT)
+    cell_bounds = metadata.get("cell_bounds")
 
     return {
         "schema": "ourea-climate-context",
         "schema_version": 1,
-        "generated_at": iso_now(),
+        "generated_at": snapshot_at,
         "source_name": "CHIRPS v3.0 Final",
         "source_version": CHIRPS_VERSION,
         "source_product": CHIRPS_PRODUCT,
         "source_urls": SOURCE_URLS,
         "doi": DOI,
-        "accessed_at": accessed_at,
+        "accessed_at": snapshot_at,
         "spatial_resolution": SPATIAL_RESOLUTION,
         "temporal_resolution": TEMPORAL_RESOLUTION,
         "area": "Llanaditas / upper Comuna 8, Medellín. One CHIRPS 0.05° cell containing the proving-ground centroid.",
@@ -300,7 +403,7 @@ def build_document(
         },
         "bounds": {
             "proving_ground": list(LLANADITAS_BBOX),
-            "extracted_cell_approx": pixel_bounds,
+            "extracted_cell": cell_bounds,
         },
         "climatology_period": {
             "start": CLIMATOLOGY_START.isoformat(),
@@ -364,16 +467,19 @@ def build_document(
             "tif_root": CHIRPS_PENTAD_ROOT,
             "filename_pattern": "chirps-v3.0.{YYYY}.{MM}.{pentad}.tif",
             "sample": {
-                "url": sample_provenance.get("url"),
-                "crs": sample_provenance.get("crs"),
-                "row": sample_provenance.get("row"),
-                "col": sample_provenance.get("col"),
-                "width": sample_provenance.get("width"),
-                "height": sample_provenance.get("height"),
-                "bytes": sample_provenance.get("bytes"),
-                "from_cache": bool(sample_provenance.get("from_cache")),
+                "url": pentad_url(AVAILABLE_START.year, AVAILABLE_START.month, 1),
+                "crs": metadata.get("crs"),
+                "row": metadata.get("row"),
+                "col": metadata.get("col"),
+                "width": metadata.get("width"),
+                "height": metadata.get("height"),
+                "cell_center": metadata.get("cell_center"),
+                "cell_bounds": metadata.get("cell_bounds"),
+                "from_versioned_csv": True,
             },
-            "cache_csv": str(PENTAD_CSV.relative_to(ROOT)).replace("\\", "/"),
+            "versioned_csv": str(VERSIONED_CSV.relative_to(ROOT)).replace("\\", "/"),
+            "csv_sha256": metadata.get("csv_sha256"),
+            "snapshot_at": snapshot_at,
             "nodata_value": NODATA,
         },
     }
@@ -385,7 +491,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--end", default=AVAILABLE_END.isoformat())
     parser.add_argument("--workers", type=int, default=12)
     parser.add_argument("--no-resume", action="store_true")
+    parser.add_argument("--update-from-source", action="store_true")
     parser.add_argument("--from-cache-only", action="store_true")
+    parser.add_argument("--from-versioned", action="store_true", default=True)
+    parser.add_argument("--snapshot-at", default=DEFAULT_SNAPSHOT)
     parser.add_argument("--output", type=Path, default=OUTPUT)
     return parser.parse_args()
 
@@ -394,23 +503,49 @@ def main() -> int:
     args = parse_args()
     start = date.fromisoformat(args.start)
     end = date.fromisoformat(args.end)
-    accessed_at = iso_now()
     keys = iter_year_month_pentads(start, end)
+    snapshot_at = args.snapshot_at
 
-    if args.from_cache_only:
-        cached = load_cached_pentads()
-        if not cached:
-            raise SystemExit("No CHIRPS pentad cache found. Run without --from-cache-only.")
-        pentads = {key: cached.get(key) for key in keys}
-        year, month, pentad = keys[0]
-        sample = {"url": pentad_url(year, month, pentad), "from_cache": True}
-    else:
+    if args.update_from_source:
         pentads, sample = extract_pentads(
             start,
             end,
             workers=args.workers,
             resume=not args.no_resume,
         )
+        write_versioned_pentads(pentads)
+        csv_sha = sha256_file(VERSIONED_CSV)
+        metadata = default_extract_metadata(snapshot_at, csv_sha)
+        if sample.get("crs"):
+            metadata["crs"] = sample["crs"]
+        if sample.get("row") is not None:
+            metadata["row"] = sample["row"]
+            metadata["col"] = sample["col"]
+            metadata["width"] = sample.get("width", EXPECTED_WIDTH)
+            metadata["height"] = sample.get("height", EXPECTED_HEIGHT)
+        write_versioned_metadata(metadata)
+    elif args.from_cache_only:
+        cached = load_cached_pentads()
+        if not cached:
+            raise SystemExit("No CHIRPS pentad cache found. Use --update-from-source or the versioned CSV.")
+        pentads = {key: cached.get(key) for key in keys}
+        write_versioned_pentads(pentads)
+        csv_sha = sha256_file(VERSIONED_CSV)
+        metadata = default_extract_metadata(snapshot_at, csv_sha)
+        write_versioned_metadata(metadata)
+    else:
+        pentads = load_versioned_pentads()
+        if not pentads:
+            raise SystemExit(
+                "Versioned CHIRPS CSV missing. Run with --update-from-source once, "
+                "or --from-cache-only to promote a local extract."
+            )
+        metadata = load_versioned_metadata()
+        if not metadata:
+            csv_sha = sha256_file(VERSIONED_CSV)
+            metadata = default_extract_metadata(snapshot_at, csv_sha)
+            write_versioned_metadata(metadata)
+        snapshot_at = str(metadata.get("snapshot_at") or snapshot_at)
 
     pentad_valid = sum(1 for value in pentads.values() if is_valid_precip(value))
     if pentad_valid < 2000:
@@ -429,7 +564,7 @@ def main() -> int:
             f"Climatology has only {climatology_valid} valid days; expected ~10,957. Refusing to write."
         )
 
-    document = build_document(series, sample, accessed_at, pentad_valid, len(keys))
+    document = build_document(series, metadata, pentad_valid, len(keys))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(document, indent=2, ensure_ascii=False) + "\n",
