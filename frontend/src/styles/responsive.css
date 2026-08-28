@@ -1,27 +1,21 @@
 @media (max-width: 1366px) {
   :root {
-    --panel-width: 400px;
+    --panel-width: 440px;
   }
 
-  .panel h1 {
+  .panel h1,
+  .step-title {
     font-size: 26px;
   }
 }
 
 @media (max-width: 1280px) {
   :root {
-    --panel-width: 380px;
+    --panel-width: 420px;
   }
 
   .topbar {
     gap: 6px 8px;
-  }
-
-  .scope button,
-  .seg button,
-  .guided-demo {
-    padding: 7px 8px;
-    font-size: 10px;
   }
 }
 
@@ -29,45 +23,9 @@
   .sub {
     display: none;
   }
-
-  .seg button {
-    padding: 7px 8px;
-    font-size: 10px;
-  }
 }
 
 @media (max-width: 920px) {
-  .panel {
-    top: auto;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: min(52dvh, 520px);
-    border-top: 1px solid var(--border);
-    border-left: 0;
-  }
-
-  .map {
-    inset: 0 0 min(52dvh, 520px);
-  }
-
-  .loading {
-    inset: 0 0 min(52dvh, 520px);
-  }
-
-  .topbar {
-    right: 16px;
-  }
-
-  .map-legend {
-    bottom: calc(min(52dvh, 520px) + 12px);
-  }
-
-  .map-inspect {
-    bottom: 12px;
-    max-width: calc(100% - 24px);
-  }
-
   .scenario-presets {
     grid-template-columns: 1fr 1fr;
   }
@@ -86,14 +44,11 @@
   }
 
   .brand-group {
-    width: 100%;
+    width: auto;
   }
 
-  .scope {
-    margin-left: 0 !important;
-  }
-
-  .panel h1 {
+  .panel h1,
+  .step-title {
     font-size: 22px;
   }
 
@@ -113,10 +68,6 @@
 
   .frontier-row span:last-child,
   .pareto-row span:last-child {
-    display: none;
-  }
-
-  .map-legend {
     display: none;
   }
 }
