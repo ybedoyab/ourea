@@ -6,7 +6,7 @@ import { OureaLogo } from './components/OureaLogo.jsx';
 import { BRAND } from './config/brand.js';
 import { buildDecisionPackage } from './domain/decisionPackage.js';
 import { buildDecisionBrief } from './domain/decisionBrief.js';
-import { buildDecisionBriefPdf, downloadBlob, renderSearchFigure, renderSitePlate } from './domain/decisionBriefPdf.js';
+import { buildDecisionBriefPdf, downloadBlob, renderSitePlate } from './domain/decisionBriefPdf.js';
 import { jpegFromDataUrl, jpegSofSize } from './domain/pdfDocument.js';
 import {
   clearSessionHash,
@@ -189,7 +189,7 @@ export default function App() {
       areaLabel,
       mapImage,
       cells: data.cells,
-      buildings: data.buildings,
+      costContext: data.costContext,
       simulatorUrl: simulatorBaseUrl(),
     });
     const session = {
@@ -208,13 +208,12 @@ export default function App() {
       plan: workspace.activePlan,
     });
     try {
-      brief.networkImage = renderSearchFigure(brief);
       brief.siteImage = await renderSitePlate(brief);
       downloadBlob(buildDecisionBriefPdf(brief), 'ourea_decision_brief.pdf');
     } catch (error) {
       console.warn('Decision brief PDF could not be generated', error);
       try {
-        downloadBlob(buildDecisionBriefPdf({ ...brief, figureImage: null, mapImage: null, networkImage: null, siteImage: null }), 'ourea_decision_brief.pdf');
+        downloadBlob(buildDecisionBriefPdf({ ...brief, siteImage: null }), 'ourea_decision_brief.pdf');
       } catch (fallbackError) {
         console.warn('Text-only PDF also failed', fallbackError);
       }

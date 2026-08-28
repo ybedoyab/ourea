@@ -51,14 +51,52 @@ function rgb(color) {
   return `${(r / 255).toFixed(3)} ${(g / 255).toFixed(3)} ${(b / 255).toFixed(3)}`;
 }
 
-function wrapLine(text, maxWidth, size) {
+const HELVETICA = Object.freeze({
+  ' ': 278, '!': 278, '"': 355, '#': 556, $: 556, '%': 889, '&': 667, "'": 191,
+  '(': 333, ')': 333, '*': 389, '+': 584, ',': 278, '-': 333, '.': 278, '/': 278,
+  0: 556, 1: 556, 2: 556, 3: 556, 4: 556, 5: 556, 6: 556, 7: 556, 8: 556, 9: 556,
+  ':': 278, ';': 278, '<': 584, '=': 584, '>': 584, '?': 556, '@': 1015,
+  A: 667, B: 667, C: 722, D: 722, E: 667, F: 611, G: 778, H: 722, I: 278, J: 500,
+  K: 667, L: 556, M: 833, N: 722, O: 778, P: 667, Q: 778, R: 722, S: 667, T: 611,
+  U: 722, V: 667, W: 944, X: 667, Y: 667, Z: 611,
+  '[': 278, '\\': 278, ']': 278, '^': 469, _: 556, '`': 333,
+  a: 556, b: 556, c: 500, d: 556, e: 556, f: 278, g: 556, h: 556, i: 222, j: 222,
+  k: 500, l: 222, m: 833, n: 556, o: 556, p: 556, q: 556, r: 333, s: 500, t: 278,
+  u: 556, v: 500, w: 722, x: 500, y: 500, z: 500,
+  '{': 334, '|': 260, '}': 334, '~': 584,
+  á: 556, é: 556, í: 222, ó: 556, ú: 556, ñ: 556, ü: 556,
+  Á: 667, É: 667, Í: 278, Ó: 778, Ú: 722, Ñ: 722, '°': 400, '·': 278,
+  '–': 556, '—': 1000, '’': 191, '‘': 191, '“': 333, '”': 333, '•': 350, '×': 584,
+});
+
+const HELVETICA_BOLD = Object.freeze({
+  ...HELVETICA,
+  A: 722, B: 722, C: 722, D: 722, E: 667, F: 611, G: 778, H: 778, I: 278, J: 556,
+  K: 722, L: 611, M: 833, N: 722, O: 778, P: 667, Q: 778, R: 722, S: 667, T: 611,
+  U: 722, V: 667, W: 944, X: 667, Y: 667, Z: 611,
+  a: 556, b: 611, c: 556, d: 611, e: 556, f: 333, g: 611, h: 611, i: 278, j: 278,
+  k: 556, l: 278, m: 889, n: 611, o: 611, p: 611, q: 611, r: 389, s: 556, t: 333,
+  u: 611, v: 556, w: 778, x: 556, y: 556, z: 500,
+});
+
+function glyphWidth(char, bold) {
+  const table = bold ? HELVETICA_BOLD : HELVETICA;
+  return table[char] ?? 600;
+}
+
+function widthOf(text, size, bold = false) {
+  let width = 0;
+  for (const char of String(text ?? '')) width += (glyphWidth(char, bold) * size) / 1000;
+  return width;
+}
+
+function wrapLine(text, maxWidth, size, bold = false) {
   const words = String(text ?? '').split(/\s+/).filter(Boolean);
   const lines = [];
   let current = '';
-  const widthOf = (value) => value.length * size * 0.5;
   for (const word of words) {
     const next = current ? `${current} ${word}` : word;
-    if (current && widthOf(next) > maxWidth) {
+    if (current && widthOf(next, size, bold) > maxWidth) {
       lines.push(current);
       current = word;
     } else {
@@ -67,6 +105,13 @@ function wrapLine(text, maxWidth, size) {
   }
   if (current) lines.push(current);
   return lines.length ? lines : [''];
+}
+
+function pdfDate(iso) {
+  const date = iso ? new Date(iso) : new Date();
+  if (Number.isNaN(date.getTime())) return null;
+  const pad = (value) => String(value).padStart(2, '0');
+  return `D:${date.getUTCFullYear()}${pad(date.getUTCMonth() + 1)}${pad(date.getUTCDate())}${pad(date.getUTCHours())}${pad(date.getUTCMinutes())}${pad(date.getUTCSeconds())}Z`;
 }
 
 function concatBytes(parts) {
@@ -84,7 +129,9 @@ function ascii(value) {
   return new TextEncoder().encode(value);
 }
 
-export function createPdf(pageSize = PAGE) {
+export function createPdf(options = {}) {
+  const pageSize = options.pageSize ?? PAGE;
+  const info = options.info ?? {};
   const pages = [];
   const images = [];
   let ops = [];
@@ -110,9 +157,9 @@ export function createPdf(pageSize = PAGE) {
     ops.push(`${lineWidth.toFixed(2)} w ${rgb(color)} RG ${x.toFixed(2)} ${yFromTop(y + height).toFixed(2)} ${width.toFixed(2)} ${height.toFixed(2)} re S`);
   }
 
-  function measure(value, { size = 11, maxWidth = null, lineHeight = null } = {}) {
+  function measure(value, { size = 11, maxWidth = null, lineHeight = null, bold = false } = {}) {
     const leading = lineHeight ?? size * 1.35;
-    const lines = maxWidth ? wrapLine(value, maxWidth, size) : [String(value ?? '')];
+    const lines = maxWidth ? wrapLine(value, maxWidth, size, bold) : [String(value ?? '')];
     return lines.length * leading;
   }
 
@@ -125,7 +172,7 @@ export function createPdf(pageSize = PAGE) {
   } = {}) {
     const font = bold ? 'F2' : 'F1';
     const leading = lineHeight ?? size * 1.35;
-    const lines = maxWidth ? wrapLine(value, maxWidth, size) : [String(value ?? '')];
+    const lines = maxWidth ? wrapLine(value, maxWidth, size, bold) : [String(value ?? '')];
     lines.forEach((line, index) => {
       const baseline = yFromTop(y + size * 0.8 + index * leading);
       ops.push('BT');
@@ -232,12 +279,12 @@ export function createPdf(pageSize = PAGE) {
       const pageRecords = (ops.length || annots.length)
         ? [...pages, { ops, annots }]
         : pages;
-      return assemblePdf(pageSize, pageRecords, images);
+      return assemblePdf(pageSize, pageRecords, images, info);
     },
   };
 }
 
-function assemblePdf(pageSize, pageRecords, images) {
+function assemblePdf(pageSize, pageRecords, images, info = {}) {
   const parts = [ascii('%PDF-1.4\n')];
   const offsets = [0];
 
@@ -301,7 +348,23 @@ function assemblePdf(pageSize, pageRecords, images) {
   const pagesId = queue([
     `<< /Type /Pages /Count ${pageObjectIds.length} /Kids [${pageObjectIds.map((id) => `${id} 0 R`).join(' ')}] >>\nendobj\n`,
   ]);
-  const catalogId = queue([`<< /Type /Catalog /Pages ${pagesId} 0 R >>\nendobj\n`]);
+  const created = pdfDate(info.creationDate);
+  const infoParts = ['<<'];
+  if (info.title) infoParts.push(` /Title ${pdfString(info.title)}`);
+  infoParts.push(` /Author ${pdfString(info.author || 'Ourea')}`);
+  if (info.subject) infoParts.push(` /Subject ${pdfString(info.subject)}`);
+  if (info.keywords) {
+    infoParts.push(` /Keywords ${pdfString(Array.isArray(info.keywords) ? info.keywords.join(', ') : info.keywords)}`);
+  }
+  infoParts.push(' /Creator (Ourea)');
+  infoParts.push(' /Producer (Ourea)');
+  if (created) infoParts.push(` /CreationDate (${created})`);
+  infoParts.push(' >>\nendobj\n');
+  const infoId = queue([infoParts.join('')]);
+  const lang = info.lang || 'en-US';
+  const catalogId = queue([
+    `<< /Type /Catalog /Pages ${pagesId} 0 R /Lang ${pdfString(lang)} /ViewerPreferences << /DisplayDocTitle true >> >>\nendobj\n`,
+  ]);
 
   const rewritten = objectBodies.map((chunks) => chunks.map((chunk) => {
     if (typeof chunk !== 'string') return chunk;
@@ -324,7 +387,7 @@ function assemblePdf(pageSize, pageRecords, images) {
     xref += `${String(offsets[i]).padStart(10, '0')} 00000 n \n`;
   }
   parts.push(ascii(xref));
-  parts.push(ascii(`trailer\n<< /Size ${rewritten.length + 1} /Root ${catalogId} 0 R >>\nstartxref\n${xrefStart}\n%%EOF\n`));
+  parts.push(ascii(`trailer\n<< /Size ${rewritten.length + 1} /Root ${catalogId} 0 R /Info ${infoId} 0 R >>\nstartxref\n${xrefStart}\n%%EOF\n`));
 
   return new Blob([concatBytes(parts)], { type: 'application/pdf' });
 }

@@ -2,8 +2,18 @@ import { rainfallChip, rainfallHeadline } from '../config/climateCopy.js';
 import { PRIORITY_CARDS, INTERVENTION_COPY } from '../config/uiCopy.js';
 import { INTERVENTIONS, RWH_ASSUMPTIONS, SANDBOX_BBOX } from '../config/modelConfig.js';
 import { BRAND } from '../config/brand.js';
+import { estimatePortfolioCost, formatUsd, formatUsdMillionRange, formatUsdMillions, rwhParticipatingSystems } from './costEstimate.js';
+import { EARLY_ACTION } from './earlyAction.js';
 import { googleEarthLookUrl, googleMapsSearchUrl, ringCentroid, ringOf } from './placeLinks.js';
 import { simulatorBaseUrl } from './sessionLink.js';
+
+function joinCells(ids) {
+  const cells = [...new Set(ids.map(Number))].filter(Number.isFinite);
+  if (!cells.length) return 'the recommended cells';
+  if (cells.length === 1) return `cell ${cells[0]}`;
+  if (cells.length === 2) return `cells ${cells[0]} and ${cells[1]}`;
+  return `cells ${cells.slice(0, -1).join(', ')} and ${cells[cells.length - 1]}`;
+}
 
 function typeLabel(type) {
   return INTERVENTIONS[type]?.label ?? type;
@@ -54,6 +64,30 @@ function describeCellPlace(cellId, cell, centroid) {
     : `an 80 m planning square on ${where}, ${access}`;
 }
 
+function quantityFor(project, cell) {
+  if (project.type === 'rwh') {
+    const buildings = Math.round(Number(cell.buildings) || 0);
+    const systems = rwhParticipatingSystems(buildings);
+    return {
+      quantity: systems,
+      quantityLabel: `${systems} participating system${systems === 1 ? '' : 's'}`,
+      quantityBasis: `${buildings} cadastral buildings × ${Math.round((RWH_ASSUMPTIONS.participationShare ?? 0.25) * 100)}% participation prior`,
+    };
+  }
+  if (project.type === 'drainage') {
+    return {
+      quantity: 60,
+      quantityLabel: '40 / 60 / 80 m corridor scenarios',
+      quantityBasis: 'Planning-cell width is 80 m. Length is inferred for pre-feasibility, not surveyed geometry.',
+    };
+  }
+  return {
+    quantity: 1,
+    quantityLabel: '1 project-scale package',
+    quantityBasis: 'Comuna 8 DAGRD-scale bioengineering package; installed area is unknown.',
+  };
+}
+
 function workOrder(project, feature) {
   const cell = feature?.properties ?? {};
   const cellId = Number(project.cell_id);
@@ -62,192 +96,90 @@ function workOrder(project, feature) {
   const people = Math.round(Number(cell.population_proxy) || 0);
   const slope = Number(cell.mean_slope_deg) || 0;
   const highHazard = Math.round(Number(cell.high_hazard_buildings) || 0);
-  const roofM2 = Math.round(Number(cell.roof_footprint_m2) || 0);
   const centroid = ringCentroid(ringOf(feature));
-  const place = describeCellPlace(cellId, cell, centroid);
   const lng = centroid?.[0] ?? null;
   const lat = centroid?.[1] ?? null;
-  const links = {
-    lng,
-    lat,
-    mapsUrl: googleMapsSearchUrl(lat, lng),
-    earthUrl: googleEarthLookUrl(lat, lng),
-  };
-
-  if (project.type === 'rwh') {
-    const participating = Math.max(1, Math.round(buildings * (RWH_ASSUMPTIONS.participationShare ?? 0.25)));
-    const installers = Math.max(4, Math.ceil(participating / 8));
-    const weeks = Math.max(2, Math.ceil(participating / 12));
-    return {
-      cell_id: cellId,
-      type: project.type,
-      label: typeLabel(project.type),
-      credits: INTERVENTIONS[project.type]?.costCredits ?? 0,
-      buildings,
-      households,
-      people,
-      slope,
-      highHazard,
-      place,
-      crew: `1 coordinator, 2 technicians, ${installers} community installers`,
-      crewCount: 3 + installers,
-      duration: `${weeks} weeks after gutters and tanks are specified`,
-      weeks,
-      firstTask: `Walk roofs in cell ${cellId}. Confirm which of the ${buildings} cadastral buildings can take a tank (planning prior: about ${participating} participating roofs, ${RWH_ASSUMPTIONS.storageM3PerParticipatingBuilding} m³ each).`,
-      how: 'Fit gutters, downpipes and storage so roof water does not run onto the slope. Train households to empty and maintain tanks.',
-      ...links,
-    };
-  }
-
-  if (project.type === 'drainage') {
-    return {
-      cell_id: cellId,
-      type: project.type,
-      label: typeLabel(project.type),
-      credits: INTERVENTIONS[project.type]?.costCredits ?? 0,
-      buildings,
-      households,
-      people,
-      slope,
-      highHazard,
-      place,
-      crew: '1 civil supervisor, 6 local workers, 1 community liaison',
-      crewCount: 8,
-      duration: '4-6 weeks on the corridor after survey and design',
-      weeks: 5,
-      firstTask: `Walk the drainage line in cell ${cellId} with residents. Mark where water concentrates (slope about ${slope.toFixed(0)}°, ${highHazard} high-hazard buildings in the cell).`,
-      how: 'Move concentrated runoff away from exposed cells with a designed corridor, not an informal ditch. Keep access paths open during works.',
-      ...links,
-    };
-  }
-
   return {
     cell_id: cellId,
     type: project.type,
     label: typeLabel(project.type),
-    credits: INTERVENTIONS[project.type]?.costCredits ?? 0,
+    verb: typeVerb(project.type),
     buildings,
     households,
     people,
     slope,
     highHazard,
-    roofM2,
-    place,
-    crew: '1 bioengineering lead, 8 community workers, 1 nursery support',
-    crewCount: 10,
-    duration: '3-6 weeks to plant; about 3 years to mature',
-    weeks: 4,
-    firstTask: `Stake planting lines on the slope in cell ${cellId} with residents. Do not start where a live drainage line still needs to be moved.`,
-    how: 'Stabilize the slope with vegetation and bioengineering. Restoration is not immediate protection; it needs care through the first wet seasons.',
-    ...links,
+    place: describeCellPlace(cellId, cell, centroid),
+    lng,
+    lat,
+    mapsUrl: googleMapsSearchUrl(lat, lng),
+    earthUrl: googleEarthLookUrl(lat, lng),
+    ...quantityFor(project, cell),
   };
 }
 
-function buildPhases(orders, footprint, communityStatus) {
-  const drainage = orders.filter((item) => item.type === 'drainage');
-  const rwh = orders.filter((item) => item.type === 'rwh');
-  const restoration = orders.filter((item) => item.type === 'restoration');
-  const households = orders.reduce((sum, item) => sum + item.households, 0);
-  const consentNote = communityStatus === 'community_reviewed'
-    ? 'Community review is already recorded; still walk each site before breaking ground.'
-    : 'Community review is not complete. Treat consent as a gate, not a later paperwork step.';
-
-  const phases = [
+function sixMonthPathway(orders) {
+  const cells = joinCells(orders.map((item) => item.cell_id));
+  const hasRwh = orders.some((item) => item.type === 'rwh');
+  return [
     {
-      title: 'Convene and walk the hillside',
-      duration: 'Weeks 1-2',
-      people: '12-20 people in the room, then a walking group of 8-12 on site',
-      body: `Hold a planning meeting with JAC / Llanaditas leaders, residents from the ${footprint.cells} targeted cells, municipal risk staff and the design team. ${consentNote} This brief is the decision to discuss, not a construction drawing.`,
+      title: 'Ourea deployment and decision preparation',
+      body: 'Keep the sandbox, evidence pack and this brief as the shared decision object for municipal staff, designers and community leaders.',
     },
     {
-      title: 'Survey, design and a real budget',
-      duration: 'Weeks 2-6',
-      people: '1 municipal owner, 1 design engineer, 1 community liaison',
-      body: `Commission topographic and drainage design for the marked cells. Convert ${footprint.creditsSpent} planning credits into a COP budget before procurement. Credits compare options; they are not pesos.`,
+      title: 'Site validation',
+      body: `Walk ${cells} with residents and municipal counterparts. Confirm water paths, access and which buildings can actually host works.`,
+    },
+    {
+      title: 'Community co-design',
+      body: 'Record consent, livelihood, maintenance and access concerns before any trench or tank is specified. Community review is a gate, not a later annex.',
+    },
+    {
+      title: 'Topographic and hydraulic survey',
+      body: 'Survey corridor length and drainage catchments. Scenario lengths of 40, 60 and 80 m convert into a bill of quantities only after this survey.',
+    },
+    {
+      title: '30% design',
+      body: 'Produce a 30% package that a reviewer can price. Design allowance in this brief is not that package.',
+    },
+    {
+      title: 'Procurement-ready bill of quantities',
+      body: 'Return with quantities, specifications and a construction decision. This envelope is not an offer.',
+    },
+    {
+      title: 'Demonstration rainwater harvesting',
+      body: hasRwh
+        ? 'Install demonstration tanks only if technically and socially validated on the walked roofs. Do not treat household count as people protected.'
+        : 'No rainwater harvesting is in the active portfolio. Do not add tanks without a new decision.',
+    },
+    {
+      title: 'Capital construction decision',
+      body: 'A major hydraulic corridor is not assumed to be completed during a six-month pilot. Construction proceeds only after survey, 30% design and community review.',
     },
   ];
-  if (drainage.length) {
-    phases.push({
-      title: 'Move water first (drainage)',
-      duration: 'Weeks 6-12',
-      people: `${drainage.reduce((sum, item) => sum + item.crewCount, 0)} field people if cells run in parallel; better to sequence one corridor crew of 8`,
-      body: `Build drainage upgrades in cells ${drainage.map((item) => item.cell_id).join(', ')} before adding storage or plants. Each corridor needs a civil supervisor, six local workers and a liaison (${drainage[0].duration}).`,
-    });
-  }
-  if (rwh.length) {
-    phases.push({
-      title: 'Capture roof water (rainwater harvesting)',
-      duration: 'After drainage is flowing',
-      people: `About ${Math.max(...rwh.map((item) => item.crewCount))} people on the largest cell crew; do not install every cell at once`,
-      body: `Install household systems in cells ${rwh.map((item) => item.cell_id).join(', ')}. Planning prior: about ${Math.round((RWH_ASSUMPTIONS.participationShare ?? 0.25) * 100)}% of buildings in a cell take a tank. Roughly ${households || 'the listed'} households (census proxy) live in targeted cells - use that to size outreach, not as a headcount of people protected.`,
-    });
-  }
-  if (restoration.length) {
-    phases.push({
-      title: 'Stabilize slopes (restoration)',
-      duration: 'Planting season; 3 years to mature',
-      people: '10 people per cell crew, plus household aftercare',
-      body: `Plant and bioengineer cells ${restoration.map((item) => item.cell_id).join(', ')} only after water is no longer cutting the slope. Restoration needs care through the first wet seasons and is not a real-time warning system.`,
-    });
-  }
-  phases.push({
-    title: 'Handover and maintenance',
-    duration: 'Ongoing',
-    people: '1 liaison plus trained households and a municipal inspection visit each wet season',
-    body: 'Leave a simple maintenance card per site: who clears the tank, who walks the drain, who waters plants. Do not treat map colors as landslide probability.',
-  });
-  return phases;
 }
 
-function buildCosting(orders, spent, available) {
-  const rows = ['drainage', 'rwh', 'restoration'].map((type) => {
-    const items = orders.filter((item) => item.type === type);
-    if (!items.length) return null;
-    const credits = items.reduce((sum, item) => sum + (item.credits || 0), 0);
-    const personWeeks = items.reduce((sum, item) => sum + (item.crewCount || 0) * (item.weeks || 4), 0);
-    const buy = {
-      drainage: 'One corridor crew to move concentrated runoff off the slope.',
-      rwh: 'Household tank packages so roof water does not run onto the hillside.',
-      restoration: 'Planting and bioengineering; planning effect matures over about 3 years.',
-    }[type];
-    return {
-      type,
-      label: typeLabel(type),
-      count: items.length,
-      credits,
-      personWeeks,
-      share: spent ? credits / spent : 0,
-      buy,
-    };
-  }).filter(Boolean);
-  return {
-    spent,
-    available,
-    rows,
-    personWeeks: rows.reduce((sum, row) => sum + row.personWeeks, 0),
-    copNote: 'Planning credits compare options. They are not Colombian pesos. After topographic design, convert these shares into a COP bill of quantities.',
-    ifNothing: 'If the city does nothing, the baseline climate-stress index stays on the cadastral buildings in these cells. Ourea does not predict houses collapsing or the year a slope fails.',
-    when: [
-      { label: 'Drainage and rainwater harvesting', body: 'In the model their effect is immediate after construction (maturity 0 years). The first wet season after works is the planning test, not a collapse countdown.' },
-      { label: 'Restoration', body: 'Needs about 3 years to mature. It is not a real-time warning system and does not pin a failure date.' },
-      { label: 'Do-nothing path', body: 'Stress remains on the same buildings. That is a planning warning, not a forecast that houses fall in year X.' },
-    ],
-  };
+function changeTriggers(orders, costing) {
+  const triggers = [
+    'Community deliberation blocking or relocating a recommended cell.',
+    'A rainfall context or policy priority that changes the robust portfolio, not only the score.',
+  ];
+  if (orders.some((item) => item.type === 'drainage')) {
+    triggers.unshift('A surveyed drainage length outside the 40–80 m pre-feasibility scenarios.');
+  }
+  if (costing?.complete === false) {
+    triggers.unshift('An intervention in the portfolio that still has no estimable cost scenario.');
+  }
+  return triggers;
 }
 
-function buildingsForFigure(buildings, cellIds) {
-  const wanted = new Set(cellIds);
-  return (buildings?.features ?? [])
-    .filter((feature) => wanted.has(Number(feature.properties?.cell_id)))
-    .map((feature) => ({
-      ring: ringOf(feature),
-      cellId: Number(feature.properties?.cell_id),
-      hazard: feature.properties?.hazard_max,
-      stress: Number(feature.properties?.baseline_stress_preview) || 0,
-      floors: Number(feature.properties?.numero_pisos) || 1,
-    }))
-    .sort((a, b) => b.stress - a.stress)
-    .slice(0, 180);
+function decisionText(orders, costing) {
+  const cellPhrase = joinCells(orders.map((item) => item.cell_id));
+  if (!costing?.complete || !costing.display?.total) {
+    return `Decision requested: Fund site validation and 30% design for ${cellPhrase}, then return with a bill of quantities before construction approval. A complete US$ envelope cannot be shown until every selected intervention has an estimable scenario. Surveyed drainage length and community review are mandatory decision gates. Ourea identifies where to investigate and which portfolio remains robust; it does not predict which house will fail.`;
+  }
+  const { low, base, high } = costing.display.total;
+  return `Decision requested: Fund site validation and 30% design for ${cellPhrase}, then return with a bill of quantities before construction approval. Current evidence places the package at a preliminary ${formatUsdMillionRange(low, high)} implementation envelope, with a ${formatUsdMillions(base)} base scenario. Surveyed drainage length and community review are mandatory decision gates. Ourea identifies where to investigate and which portfolio remains robust; it does not predict which house will fail.`;
 }
 
 export function buildDecisionBrief(payload, extras = {}) {
@@ -258,7 +190,6 @@ export function buildDecisionBrief(payload, extras = {}) {
     type,
     label: typeLabel(type),
     verb: typeVerb(type),
-    credits: INTERVENTIONS[type]?.costCredits ?? 0,
     projects: projects.filter((project) => project.type === type),
   })).filter((group) => group.projects.length);
 
@@ -273,12 +204,18 @@ export function buildDecisionBrief(payload, extras = {}) {
   const rainfall = rainfallChip(payload?.climate_context, { presetId });
   const communityStatus = payload?.community_safeguards?.validation_status;
   const orders = projects.map((project) => workOrder(project, lookup.get(Number(project.cell_id))));
-  const households = orders.reduce((sum, item) => sum + item.households, 0);
-  const peakCrew = orders.reduce((max, item) => Math.max(max, item.crewCount), 0);
-  const sequencedPeak = 4 + Math.max(peakCrew, 8);
+  const costing = extras.costing ?? estimatePortfolioCost({
+    portfolio: projects,
+    cells,
+    costContext: extras.costContext,
+  });
+
+  const envelope = costing.complete && costing.display?.total
+    ? `${formatUsd(costing.display.total.low)}–${formatUsd(costing.display.total.high)} (base ${formatUsd(costing.display.total.base)})`
+    : 'not estimable until every selected intervention has a cost scenario';
 
   const recommendation = byType.length
-    ? `Recommend ${projects.length} interventions in ${BRAND.provingGround}, using a ${priority.name.toLowerCase()} priority and ${payload?.budget?.spent ?? 0} of ${payload?.budget?.available ?? 0} planning credits.`
+    ? `Recommend ${projects.length} intervention${projects.length === 1 ? '' : 's'} in ${BRAND.provingGround} using a ${priority.name.toLowerCase()} priority.`
     : 'No interventions are in the active portfolio.';
 
   const sites = (cells?.features ?? []).map((feature) => ({
@@ -288,15 +225,6 @@ export function buildDecisionBrief(payload, extras = {}) {
     type: orders.find((item) => item.cell_id === Number(feature.properties?.cell_id))?.type ?? null,
   }));
 
-  const phases = buildPhases(
-    orders,
-    {
-      cells: footprint.planning_cells_targeted ?? orders.length,
-      creditsSpent: payload?.budget?.spent ?? 0,
-    },
-    communityStatus,
-  );
-
   return {
     product: BRAND.name,
     slogan: BRAND.slogan,
@@ -305,61 +233,43 @@ export function buildDecisionBrief(payload, extras = {}) {
     city: payload?.scope?.city ?? 'Medellín',
     generatedAt: payload?.generated_at ?? new Date().toISOString(),
     recommendation,
+    decisionRequested: `Fund site validation and 30% design for ${joinCells(orders.map((item) => item.cell_id))}, then return with a bill of quantities before construction approval.`,
     rainfall,
     rainfallHeadline: rainfallHeadline(payload?.climate_context),
     priority: priority.name,
     priorityHow: priority.how,
-    budgetSpent: payload?.budget?.spent ?? 0,
-    budgetAvailable: payload?.budget?.available ?? 0,
     groups: byType,
     projects: orders,
     bbox: [...SANDBOX_BBOX],
     sites,
-    phases,
-    team: {
-      core: [
-        '1 municipal project owner for the whole package',
-        '1 community liaison from Llanaditas / JAC',
-        '1 design engineer shared across cells',
-        '1 risk-management counterpart for slope safety',
-      ],
-      kickoff: '12–20 people at the first meeting (leaders, residents from targeted cells, municipal staff, designer)',
-      peakOnSite: `${sequencedPeak} people on the hillside if one works crew runs with the core team (do not mobilize every cell crew at once)`,
-      households: households,
-      note: 'Crew sizes are planning estimates for discussion, not a contract or a health-and-safety plan.',
-    },
+    pathway: sixMonthPathway(orders),
     footprint: {
-      cells: footprint.planning_cells_targeted ?? 0,
+      cells: footprint.planning_cells_targeted ?? orders.length,
       buildings: footprint.cadastral_buildings_in_targeted_cells ?? 0,
       highHazard: footprint.high_hazard_buildings_in_targeted_cells ?? 0,
       people: Math.round(footprint.population_proxy_in_targeted_cells ?? 0),
-      households,
+      households: orders.reduce((sum, item) => sum + item.households, 0),
     },
     robustness: uncertainty
       ? `In 90% of the modeled wet futures, this portfolio keeps at least ${Number(uncertainty.benefit_proxy_p10).toFixed(1)} of its planning benefit${retention != null ? ` (${retention}% of the typical outcome)` : ''}.`
       : 'Robustness has not been computed for this portfolio.',
     community: communityPlain(communityStatus),
     communityStatus,
-    nextSteps: phases.map((phase) => `${phase.title}: ${phase.body}`),
+    changeTriggers: changeTriggers(orders, costing),
+    earlyAction: EARLY_ACTION,
+    costing,
+    envelope,
+    decision: decisionText(orders, costing),
     caveats: [
       'Benefit numbers are planning proxies, not people saved or losses avoided.',
-      'Planning credits compare options; they are not Colombian pesos.',
       'Household and population figures are census-based proxies, not a current household survey.',
-      'Crew sizes are planning estimates to start a conversation with the community and the city.',
       'Technically robust does not mean community-validated.',
     ],
     technicalNote: payload?.climate_context?.source_name
       ? `Specialist annex: rainfall contexts come from the ${payload.climate_context.source_name} record for ${payload.climate_context.climatology_period?.label ?? '1991-2020'}.`
       : null,
     reproducibleId: payload?.reproducible_id ?? null,
-    mapImage: extras.mapImage ?? null,
-    figureImage: extras.figureImage ?? null,
     simulatorUrl: extras.simulatorUrl ?? simulatorBaseUrl(),
-    buildings: buildingsForFigure(extras.buildings, orders.map((item) => item.cell_id)),
-    costing: buildCosting(
-      orders,
-      payload?.budget?.spent ?? 0,
-      payload?.budget?.available ?? 0,
-    ),
+    siteImage: extras.siteImage ?? extras.mapImage ?? null,
   };
 }
