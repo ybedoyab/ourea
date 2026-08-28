@@ -126,7 +126,7 @@
     "schema_version": 1,
     "references": 3
   },
-  "file_count_excluding_manifest": 237,
+  "file_count_excluding_manifest": 261,
   "files": [
     {
       "path": ".github/workflows/ourea-pages.yml",
@@ -265,8 +265,8 @@
     },
     {
       "path": "docs/competition/demo-script.md",
-      "bytes": 3621,
-      "sha256": "537f3e151b35fde2d4189e211b303879e20d463bc03922618b5bffbdf017c216"
+      "bytes": 1982,
+      "sha256": "3061f378a183c896f67f06afd309727bf2fd480ee46b51facf68a4d7cfb79667"
     },
     {
       "path": "docs/competition/final-submission-checklist.md",
@@ -282,6 +282,36 @@
       "path": "docs/competition/office-hours-brief.md",
       "bytes": 3858,
       "sha256": "6939b323cf1a5c421350a0e2f5bb1b93e881dfbfe1e93a3a1f07bcce8f4dc16f"
+    },
+    {
+      "path": "docs/competition/screenshots/drawer-advanced-desktop.png",
+      "bytes": 861964,
+      "sha256": "5a9d5735f2cf9b6b6e600488326d5008b2cafbb36c362d0b96b300946a78521f"
+    },
+    {
+      "path": "docs/competition/screenshots/mobile-review.png",
+      "bytes": 141251,
+      "sha256": "384abf5cfcd281372407d8b278df9226b277212ebe446513911db0119787e328"
+    },
+    {
+      "path": "docs/competition/screenshots/step-1-desktop.png",
+      "bytes": 685879,
+      "sha256": "a9fdcf3cfda049c88825d6ffe90b649437274b125325ab5cad4183ea3e4bb363"
+    },
+    {
+      "path": "docs/competition/screenshots/step-2-desktop.png",
+      "bytes": 996110,
+      "sha256": "b3977cb36df7725bfd17bd279673bc5b9f90f68d8912344b74d25b0ead3e82f7"
+    },
+    {
+      "path": "docs/competition/screenshots/step-5-desktop.png",
+      "bytes": 1002869,
+      "sha256": "db979d5fa5a22a2adcbed7e164e8a5abc2010cb8c42bc216bcb55088d3d07d64"
+    },
+    {
+      "path": "docs/competition/screenshots/step-6-desktop.png",
+      "bytes": 1013468,
+      "sha256": "375ce3db6ec4907634fc6888b7105acd03fa32bbc5266e7556a28404fe582757"
     },
     {
       "path": "docs/competition/submission-draft.md",
@@ -345,8 +375,8 @@
     },
     {
       "path": "docs/product/architecture.md",
-      "bytes": 9146,
-      "sha256": "1a9162ab0254f7e637f782a5655500784715dab46e26526e67a930a96803fa7a"
+      "bytes": 9536,
+      "sha256": "835890c851180ad78c6fc81d31b0233c9fc0d093785b7083b24706cfe9be6b30"
     },
     {
       "path": "docs/product/competitive-landscape.md",
@@ -380,8 +410,8 @@
     },
     {
       "path": "docs/validation/final-user-checklist.md",
-      "bytes": 5200,
-      "sha256": "b0ccad29b8d1b196a8c317185a58526eb6cf4c1dd4eeb849c1c5c4361f608ed7"
+      "bytes": 4895,
+      "sha256": "efb317be1a9ddd140f836a145b81fcdb2d532f8a7c5e0c59dfea7d944c66d8f9"
     },
     {
       "path": "docs/validation/optimizer-crosscheck.md",
@@ -395,13 +425,13 @@
     },
     {
       "path": "frontend/e2e/errorAllowlist.js",
-      "bytes": 4053,
-      "sha256": "2407a408fb223aaa17709137e438470667a70e2df9a1fbbf5f45c3ab58d0fdf1"
+      "bytes": 4448,
+      "sha256": "707230a1b6776e38ec55e2e823df31c9fde225ee9cef7236067e41ec51931470"
     },
     {
       "path": "frontend/e2e/ourea-smoke.spec.js",
-      "bytes": 11340,
-      "sha256": "431c8be3588063f1894bc391e6f46a29c1d63a99694128a0e031e05163f4c92e"
+      "bytes": 20421,
+      "sha256": "c522886b0f68f300cf768e112270fc18ecbd6bcef049d55372676e9797e0e2a6"
     },
     {
       "path": "frontend/index.html",
@@ -785,33 +815,33 @@
     },
     {
       "path": "frontend/src/App.jsx",
-      "bytes": 8514,
-      "sha256": "348f62235bf9464c3883a0ca692e3d32f604d18496a47026135580c0d4b1263a"
+      "bytes": 6614,
+      "sha256": "243104067ac4fd9c41972ebcf60227cd0075e33f4c2fb90d75170be220fa2bf2"
     },
     {
       "path": "frontend/src/components/AlternativePortfolios.jsx",
-      "bytes": 5151,
-      "sha256": "d33df20558bbab3f69eb85cd4edf92423c85636c33a9d8be6ad0f23e4629363a"
+      "bytes": 5265,
+      "sha256": "517b052c374fcbbbc2ef68d8d7ea199d5d297f62d43f7e8a8d72463eb06cfe9a"
     },
     {
       "path": "frontend/src/components/BenchmarkPanel.jsx",
-      "bytes": 2743,
-      "sha256": "51a45d9bf3555010b1c65dd88ede44d0595c0cbdd6cc2b6964f5a1989243eb68"
+      "bytes": 2702,
+      "sha256": "532ed9cbb3ed71cf0678ca3d36793a43a9200d8cc4423b314c36e936db91370e"
     },
     {
-      "path": "frontend/src/components/CityPanel.jsx",
-      "bytes": 8252,
-      "sha256": "5d6987f677874a63e5d8e4d829ff58f2da9265becb476cb5df9781236fdca9f7"
+      "path": "frontend/src/components/ChoiceCard.jsx",
+      "bytes": 629,
+      "sha256": "2a4d330da474662ad98869f202d7446779182c70cb40a7ef486172e2776870b9"
     },
     {
       "path": "frontend/src/components/ClimateContextPanel.jsx",
-      "bytes": 4142,
-      "sha256": "4d45ac5143b67a1008d0e9f5917c1315e3f49701870e3083b506dbaf0c7136c6"
+      "bytes": 4188,
+      "sha256": "c98f1a28d6280fd540355da7ed5d4ed6c21a5e1c29fa7e556de339bea80a96ea"
     },
     {
       "path": "frontend/src/components/CommunitySafeguardsPanel.jsx",
-      "bytes": 7242,
-      "sha256": "aa232aa98d111fca6693863ad2923c19ca3849c6273fe74a8cd385cf810099ac"
+      "bytes": 6690,
+      "sha256": "e0ebc1acb663a8a29ecc3ef3b65ab1d2e004a5d77d62cadd9270cb22e8adba51"
     },
     {
       "path": "frontend/src/components/DecisionAnalysis.jsx",
@@ -829,14 +859,14 @@
       "sha256": "51394c1babcafeee82b8b5ea874074579992ad3ee98b99b0f99bfdc2876a1ba7"
     },
     {
-      "path": "frontend/src/components/LayerControls.jsx",
-      "bytes": 616,
-      "sha256": "8f686996be194b9009e3b57193899d0a1a849baff4666cc0ac6407d146aca394"
+      "path": "frontend/src/components/MapLayersControl.jsx",
+      "bytes": 897,
+      "sha256": "a6971bba608cc63a18d2ecd86972ecf0669c547552927152ce094d7d5ad25bc4"
     },
     {
       "path": "frontend/src/components/MapLegend.jsx",
-      "bytes": 1613,
-      "sha256": "6711fc71961ff924acd0980e704afefaac2eb7e54bf49a6bedda07cfd825d6e5"
+      "bytes": 1918,
+      "sha256": "315df81612993a05328878704185be703796e32ebaf784cbc74cc14917baa769"
     },
     {
       "path": "frontend/src/components/Metric.jsx",
@@ -860,18 +890,13 @@
     },
     {
       "path": "frontend/src/components/PortfolioBuilder.jsx",
-      "bytes": 7430,
-      "sha256": "15cf548ff70152618d360aa7c556f5e89bd0d1b861c04dfcb9e532b7ee04409c"
+      "bytes": 7311,
+      "sha256": "2a5ba280cd46a410cd53ef6960270b8f0d9eaa9b4aea2684e792883310588a7a"
     },
     {
       "path": "frontend/src/components/PortfolioList.jsx",
       "bytes": 5217,
       "sha256": "50c286aef4877d7bb736fa02f0911c41bff024530595fb662e1ba365345faec1"
-    },
-    {
-      "path": "frontend/src/components/SandboxPanel.jsx",
-      "bytes": 5268,
-      "sha256": "6183a1272aa31c11d5372b9eac6a6c0a9074278ec35cafb942991a2829c6d48b"
     },
     {
       "path": "frontend/src/components/ScenarioControls.jsx",
@@ -884,14 +909,29 @@
       "sha256": "0c8718436574ab8a34ba1e98e243deab9b357885218f31378f800ca07a8a3cda"
     },
     {
+      "path": "frontend/src/components/SegmentedControl.jsx",
+      "bytes": 701,
+      "sha256": "72c3d14f84b02f342942c01df3c83379c137732e86f22221bdf9093047024e70"
+    },
+    {
+      "path": "frontend/src/components/SelectField.jsx",
+      "bytes": 781,
+      "sha256": "7d316752627bb1706043f689fed597aa793e8f2b36b65982ba373b8de16a083e"
+    },
+    {
       "path": "frontend/src/components/StabilityPanel.jsx",
       "bytes": 2752,
       "sha256": "47e18a028d209955bf460270f930c1660f106e69e4987c56c22567ae327db12a"
     },
     {
+      "path": "frontend/src/components/TextField.jsx",
+      "bytes": 453,
+      "sha256": "597969353c46e6fbb13a3b89fe74c811250cb0f235681e2eae527f20d94be868"
+    },
+    {
       "path": "frontend/src/components/TopBar.jsx",
-      "bytes": 2568,
-      "sha256": "99661396b814e7784526da36ee823c396685e95c2c86ff1132e376eea788e5d5"
+      "bytes": 1903,
+      "sha256": "fda83d1d74046a9b5271c885d48a5fb2ab1e33e49b6e3c792ae90b513bae3255"
     },
     {
       "path": "frontend/src/components/TradeoffChart.jsx",
@@ -945,8 +985,8 @@
     },
     {
       "path": "frontend/src/config/uiCopy.js",
-      "bytes": 3828,
-      "sha256": "b2d007eb48524ed6c2f4ef32f79c64824b500b1ceb56dc2755357506d93bb921"
+      "bytes": 5877,
+      "sha256": "f1a00ed4e83c0df2ddbf630547fd0ab5ab4a501bb564dd69a9a9c12aa3ba0ae6"
     },
     {
       "path": "frontend/src/domain/actionFootprint.js",
@@ -1044,6 +1084,76 @@
       "sha256": "63025e3cc228ed6e7f6ae70a0c3d0116d73c6e26a752d8882e98e9cc7d2d9d01"
     },
     {
+      "path": "frontend/src/flow/DecisionFlow.jsx",
+      "bytes": 19350,
+      "sha256": "e85a4b242b813d06e6488a8f3dee4be1619573d4e29ce3f3147caa5a6edff5ae"
+    },
+    {
+      "path": "frontend/src/flow/ExploreWorkspace.jsx",
+      "bytes": 5512,
+      "sha256": "294259a1a7d74dc4cf4a8f7fb3d644d36fa0fbb1a88fb2227b952e815a3040e0"
+    },
+    {
+      "path": "frontend/src/flow/FlowActions.jsx",
+      "bytes": 728,
+      "sha256": "ee8d4ed07330e6be44879a7a2f568c73e14caf4b1791bfd95185b901634023a1"
+    },
+    {
+      "path": "frontend/src/flow/FlowOverlay.jsx",
+      "bytes": 1334,
+      "sha256": "f5f701471a757e6ed4ee3a8928f047131fb9f586dd6b82c84fa8d716c73c69e1"
+    },
+    {
+      "path": "frontend/src/flow/FlowStepper.jsx",
+      "bytes": 1499,
+      "sha256": "b4dc0ca4ddeeaff90d7e736cbe5d053d2c049886ea05002431b049d8bc05300c"
+    },
+    {
+      "path": "frontend/src/flow/StepShell.jsx",
+      "bytes": 1173,
+      "sha256": "337057f0e449fa0ae6cdc2d79e80b8ed96829bfa89e02eaa48f67939722fff4b"
+    },
+    {
+      "path": "frontend/src/flow/flowGuards.js",
+      "bytes": 1327,
+      "sha256": "0f89d7a4cc2a70f6a05695590b09cf685841447ce1216081bce00187ec0c60af"
+    },
+    {
+      "path": "frontend/src/flow/flowReducer.js",
+      "bytes": 6822,
+      "sha256": "8ae431b7ffdb348205cfc243a3a7338668496ac1011c60e4ea4cdd439471fd9f"
+    },
+    {
+      "path": "frontend/src/flow/steps/AreaStep.jsx",
+      "bytes": 4406,
+      "sha256": "65475ee96b5f805f31621a04fd7d6609f3a59888eaf97d1f7e6c0ccd7a10d88f"
+    },
+    {
+      "path": "frontend/src/flow/steps/ConditionsStep.jsx",
+      "bytes": 2593,
+      "sha256": "99373ec42ac1a549e02016a8f19d8b65572217692a1f5523f567f109ce088045"
+    },
+    {
+      "path": "frontend/src/flow/steps/PortfolioStep.jsx",
+      "bytes": 4232,
+      "sha256": "d98844edf98dc0e34b5aa9ac8f7086a1fd3da11ebd04b87e4730731dc47d88a4"
+    },
+    {
+      "path": "frontend/src/flow/steps/PrioritiesStep.jsx",
+      "bytes": 2425,
+      "sha256": "03dd0c1378f3d503de05103954b73ec65c95f54944c795a7d0611abc644ac83c"
+    },
+    {
+      "path": "frontend/src/flow/steps/ReviewStep.jsx",
+      "bytes": 7363,
+      "sha256": "8c73ab0a8d657ee095a9f33d0811bf1345995a8a5522ee9dd9b29684f7e5254d"
+    },
+    {
+      "path": "frontend/src/flow/steps/SafeguardsStep.jsx",
+      "bytes": 2919,
+      "sha256": "f391a544a2b57d3c3e4f48c2429cc800fe0770e0054f90f2241de744642281c2"
+    },
+    {
       "path": "frontend/src/hooks/useOureaData.js",
       "bytes": 536,
       "sha256": "f496e6c13a6ec524c7ff8dcc503537d81fca13ba71c53fb9ad74cb4c11e6b159"
@@ -1055,8 +1165,8 @@
     },
     {
       "path": "frontend/src/hooks/usePortfolioWorkspace.js",
-      "bytes": 15813,
-      "sha256": "6dc4645ba8cd23f3a78b2171f256512328718442d2977f50c1cffe23d4dd4ac7"
+      "bytes": 16785,
+      "sha256": "5feab6251369c7ffa3eb9132648bcf9a84717ce72cc2efc3c65bc6ce3895f629"
     },
     {
       "path": "frontend/src/main.jsx",
@@ -1075,8 +1185,8 @@
     },
     {
       "path": "frontend/src/styles/base.css",
-      "bytes": 2563,
-      "sha256": "8167d5b31d1e3f6578f8cd444b904035b1ab316a8dbbc78efd9a18630b3dd925"
+      "bytes": 2548,
+      "sha256": "d0f9e72a4a491edf769601f903220a129c5d5434c491fde0331510dce6720bd6"
     },
     {
       "path": "frontend/src/styles/city.css",
@@ -1084,9 +1194,14 @@
       "sha256": "61d68296ea68670917e16d378818f3561670f6a885be0839cd0d5ab929c6f116"
     },
     {
+      "path": "frontend/src/styles/flow.css",
+      "bytes": 9094,
+      "sha256": "6b7ed2855c6df46dc48124c113582a1b4316644ce31e6cfce0a379a6436964a7"
+    },
+    {
       "path": "frontend/src/styles/index.css",
-      "bytes": 166,
-      "sha256": "9550e015c84433bc3069baddb7a9a91ccf7746595496bc664480a42acef8d2a9"
+      "bytes": 188,
+      "sha256": "4648e6a291c4dbb105e79e6b6f5f50527c2b2356e5ddb656ee82bce98de5ced0"
     },
     {
       "path": "frontend/src/styles/layout.css",
@@ -1100,8 +1215,8 @@
     },
     {
       "path": "frontend/src/styles/responsive.css",
-      "bytes": 1629,
-      "sha256": "6d80a67810ce3f24c0d11e4fa026cccf23b83005074bb66cecaa1c35e5508a5e"
+      "bytes": 969,
+      "sha256": "c23d8141914fa3dd7718f32fe94eb1177104dafd8987f3285c2a22f0a3c24339"
     },
     {
       "path": "frontend/src/styles/sandbox.css",
@@ -1111,7 +1226,7 @@
     {
       "path": "frontend/src/styles/tokens.css",
       "bytes": 858,
-      "sha256": "ed80aefff7d0fb86fbf4ca8ae9a19d7c9753dd470e9c346e76a19cbbbc51b961"
+      "sha256": "ab5a7c9b93c4cfbbf889e4cb1d7e49270ca726ae124437c4738eb99ff510979b"
     },
     {
       "path": "frontend/src/utils/math.js",
@@ -1167,6 +1282,11 @@
       "path": "frontend/tests/errorAllowlist.test.js",
       "bytes": 1097,
       "sha256": "ada169303da58ca690e11c70a3d8114a0566f51bd583103b4d74d9045d6366f7"
+    },
+    {
+      "path": "frontend/tests/flow.test.js",
+      "bytes": 3401,
+      "sha256": "e119961b7af35c0a0236d17c4eb39655fbf21ec578b7dbba5de5d97389d8a49b"
     },
     {
       "path": "frontend/tests/model.test.js",
