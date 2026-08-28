@@ -6,6 +6,8 @@ export function useOureaMap({
   context,
   scope,
   cityLens,
+  flowStep,
+  flowMode,
   selectedBarrio,
   selectedCellId,
   layerState,
@@ -16,8 +18,6 @@ export function useOureaMap({
 }) {
   const mapNode = useRef(null);
   const mapApiRef = useRef(null);
-  const scopeRef = useRef(scope);
-  scopeRef.current = scope;
   const [mapReady, setMapReady] = useState(false);
   const [mapStatus, setMapStatus] = useState('pending');
   const [mapError, setMapError] = useState(null);
@@ -83,15 +83,30 @@ export function useOureaMap({
   useEffect(() => {
     if (!mapReady) return;
     mapApiRef.current?.setSelectedBarrio?.(selectedBarrio);
-    if (scopeRef.current === 'city' && selectedBarrio) {
-      mapApiRef.current?.focusBarrio?.(selectedBarrio);
-    }
   }, [selectedBarrio, mapReady]);
+
+  const storyRef = useRef({ flowStep, flowMode, selectedBarrio, activePlan, cells: data?.cells });
+  storyRef.current = { flowStep, flowMode, selectedBarrio, activePlan, cells: data?.cells };
+  const storySignature = `${flowMode}|${flowStep}|${selectedBarrio?.OBJECTID ?? ''}|${
+    (activePlan ?? []).map((project) => `${project.cell_id}:${project.type}`).join(',')
+  }`;
 
   useEffect(() => {
     if (!mapReady) return;
-    mapApiRef.current?.setSelectedCell?.(selectedCellId);
-  }, [selectedCellId, mapReady]);
+    const story = storyRef.current;
+    if (selectedCellId != null && story.cells) {
+      mapApiRef.current?.focusCell?.(selectedCellId, story.cells);
+      return;
+    }
+    mapApiRef.current?.setSelectedCell?.(null);
+    mapApiRef.current?.playStoryCamera?.({
+      step: story.flowStep,
+      mode: story.flowMode,
+      barrio: story.selectedBarrio,
+      projects: story.activePlan,
+      cellsGeoJson: story.cells,
+    });
+  }, [mapReady, storySignature, selectedCellId]);
 
   useEffect(() => {
     if (!mapReady || scope !== 'sandbox') return;
@@ -111,5 +126,10 @@ export function useOureaMap({
     mapApiRef.current?.updateProjects?.(activePlan, data.cells);
   }, [mapReady, context, data, activePlan, scenario, scope]);
 
-  return { mapNode, mapStatus, mapError };
+  return {
+    mapNode,
+    mapStatus,
+    mapError,
+    captureMapImage: () => mapApiRef.current?.captureImage?.() ?? null,
+  };
 }

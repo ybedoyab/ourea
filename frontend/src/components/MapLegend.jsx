@@ -3,15 +3,27 @@ import { CITY_LENSES } from '../config/uiCopy.js';
 
 export function MapLegend({ scope, cityLens = 'balanced', collapsed, onToggle }) {
   const lens = CITY_LENSES[cityLens] ?? CITY_LENSES.balanced;
+  const title = scope === 'city'
+    ? `${lens.label} lens · city priority proxy`
+    : 'Climate Stress · planning index';
 
   return (
     <div className={collapsed ? 'map-legend is-collapsed' : 'map-legend'}>
-      <button type="button" className="map-legend-toggle" data-testid="legend-toggle" onClick={onToggle}>
-        {collapsed ? 'Show legend' : 'Hide legend'}
-      </button>
+      <div className="map-legend-head">
+        <b>{collapsed ? 'Legend' : title}</b>
+        <button
+          type="button"
+          className="map-legend-toggle"
+          data-testid="legend-toggle"
+          aria-expanded={!collapsed}
+          aria-label={collapsed ? 'Show legend' : 'Hide legend'}
+          onClick={onToggle}
+        >
+          {collapsed ? 'Show' : 'Hide'}
+        </button>
+      </div>
       {!collapsed && (scope === 'city' ? (
         <>
-          <b>{lens.label} lens · city priority proxy</b>
           <span><i className="legend-swatch unmatched" /> unmatched / special polygon</span>
           <span><i className="legend-swatch low" /> lower priority proxy</span>
           <span><i className="legend-swatch medium" /> medium</span>
@@ -20,7 +32,6 @@ export function MapLegend({ scope, cityLens = 'balanced', collapsed, onToggle })
         </>
       ) : (
         <>
-          <b>Climate Stress · planning index</b>
           <span><i className="legend-swatch stress-low" /> lower</span>
           <span><i className="legend-swatch stress-med" /> medium</span>
           <span><i className="legend-swatch stress-high" /> higher</span>

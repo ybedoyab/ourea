@@ -1,6 +1,7 @@
 import { FLOW_STEPS } from '../config/uiCopy.js';
 import { canEnterStep } from './flowGuards.js';
 import { stepIndex } from './flowReducer.js';
+import { StepIcon } from '../components/FlowIcons.jsx';
 
 export function FlowStepper({ state, onGoToStep }) {
   const currentIndex = stepIndex(state.step);
@@ -27,7 +28,10 @@ export function FlowStepper({ state, onGoToStep }) {
                 data-testid={`flow-step-${step.id}`}
                 onClick={() => reachable && onGoToStep(step.id)}
               >
-                <span className="flow-stepper-index">{index + 1}</span>
+                <span className="flow-stepper-mark">
+                  <span className="flow-stepper-icon"><StepIcon id={step.id} /></span>
+                  <span className="flow-stepper-index">{index + 1}</span>
+                </span>
                 <span className="flow-stepper-label">{step.short}</span>
               </button>
             </li>

@@ -1,20 +1,13 @@
 import { observationalPresets } from '../domain/climateScenarios.js';
+import { climatologyYears, plainClimateFacts, plainPresetCaption, rainfallHeadline } from '../config/climateCopy.js';
 import { SectionHeading } from './SectionHeading.jsx';
 
 const SOURCE_LABELS = Object.freeze({
-  'https://www.chc.ucsb.edu/data/chirps': 'CHC CHIRPS landing page',
-  'https://data.chc.ucsb.edu/products/CHIRPS/v3.0/': 'CHIRPS v3.0 data archive',
-  'https://data.chc.ucsb.edu/products/CHIRPS/v3.0/README-CHIRPSv3.0.txt': 'CHIRPS v3.0 README',
-  'https://data.chc.ucsb.edu/products/CHIRPS/v3.0/pentads/latam/tifs/': 'CHIRPS v3.0 Latin America pentads',
+  'https://www.chc.ucsb.edu/data/chirps': 'Scientific rainfall source',
+  'https://data.chc.ucsb.edu/products/CHIRPS/v3.0/': 'Rainfall data archive',
+  'https://data.chc.ucsb.edu/products/CHIRPS/v3.0/README-CHIRPSv3.0.txt': 'Rainfall product notes',
+  'https://data.chc.ucsb.edu/products/CHIRPS/v3.0/pentads/latam/tifs/': 'Latin America rainfall tiles',
 });
-
-function mm(value) {
-  return Number.isFinite(Number(value)) ? `${Number(value).toFixed(1)} mm` : '—';
-}
-
-function periodLabel(period) {
-  return period?.label ?? `${period?.start ?? '—'} – ${period?.end ?? '—'}`;
-}
 
 export function ClimateContextPanel({
   climate,
@@ -32,21 +25,20 @@ export function ClimateContextPanel({
 
   return (
     <section data-testid="climate-context-panel">
-      <SectionHeading title="Observed climate context">
-        Planning rainfall contexts are anchored in the CHIRPS v3 Final gridded record for the
-        Llanaditas / upper Comuna 8 cell.
+      <SectionHeading title="Observed rainfall for this hillside">
+        {rainfallHeadline(climate)}. Ourea uses this record to compare typical, high and extreme
+        wet conditions — not to forecast the next storm.
       </SectionHeading>
 
       <p className="hint" role="note">
-        Ourea evaluates portfolio performance across observed and stress-tested rainfall contexts.
-        It supports planning decisions; it does not issue real-time forecasts.
+        Ourea evaluates portfolios across observed wet conditions. It supports planning decisions;
+        it does not issue real-time forecasts.
       </p>
 
       <div className="climate-facts" data-testid="climate-facts">
-        <span><small>Source</small><b>{climate.source_name}</b></span>
-        <span><small>Climatology</small><b>{periodLabel(climate.climatology_period)}</b></span>
-        <span><small>Spatial resolution</small><b>{climate.spatial_resolution}</b></span>
-        <span><small>Temporal resolution</small><b>{climate.temporal_resolution}</b></span>
+        {plainClimateFacts(climate).map((fact) => (
+          <span key={fact.label}><small>{fact.label}</small><b>{fact.value}</b></span>
+        ))}
       </div>
 
       {showPresets && (
@@ -63,12 +55,7 @@ export function ClimateContextPanel({
               onClick={() => onSelectPreset(preset)}
             >
               <b>{preset.label}</b>
-              <span>
-                {preset.accumulation_window_days}-day {mm(preset.precipitation_mm)} · P{preset.percentile}
-              </span>
-              <small>
-                {preset.climatology_period} · {preset.source_name}
-              </small>
+              <span>{plainPresetCaption(preset)}</span>
             </button>
           );
         })}
@@ -82,12 +69,16 @@ export function ClimateContextPanel({
           rel="noopener noreferrer"
           data-testid="climate-source-link"
         >
-          CHIRPS v3 scientific source
+          Scientific rainfall source
         </a>
       </p>
 
       <details className="method-disclosure" data-testid="climate-method">
         <summary>Method and appropriate use</summary>
+        <p data-testid="climate-source-technical">
+          Technical source: {climate.source_name} · {climatologyYears(climate)}. This is a specialist
+          annex, not the language used in the decision brief.
+        </p>
         <ul>
           <li>{climate.method?.product}</li>
           <li>{climate.method?.extract}</li>
@@ -112,7 +103,7 @@ export function ClimateContextPanel({
           {(climate.source_urls ?? []).map((url) => (
             <li key={url}>
               <a href={url} target="_blank" rel="noopener noreferrer">
-                {SOURCE_LABELS[url] ?? 'CHIRPS documentation'}
+                {SOURCE_LABELS[url] ?? 'Scientific rainfall documentation'}
               </a>
             </li>
           ))}

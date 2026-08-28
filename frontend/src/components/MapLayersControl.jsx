@@ -1,24 +1,25 @@
 import { LAYER_LABELS } from '../config/uiCopy.js';
+import { BarButton, LayersIcon } from './BarButton.jsx';
 
 export function MapLayersControl({ open, layerState, onToggleOpen, onToggleLayer }) {
   return (
     <div className="map-layers">
-      <button
-        type="button"
+      <BarButton
+        testId="map-layers"
         className="map-layers-toggle"
-        data-testid="map-layers"
-        aria-expanded={open}
+        icon={<LayersIcon />}
+        ariaExpanded={open}
         onClick={onToggleOpen}
       >
         Map layers
-      </button>
+      </BarButton>
       {open && (
         <div className="map-layers-pop" role="group" aria-label="Sandbox map layers">
           {Object.entries(layerState).map(([key, enabled]) => (
             <button
               key={key}
               type="button"
-              className={enabled ? 'on' : ''}
+              className={enabled ? 'layer-chip on' : 'layer-chip'}
               aria-pressed={enabled}
               onClick={() => onToggleLayer(key)}
             >

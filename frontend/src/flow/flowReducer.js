@@ -54,9 +54,24 @@ function staleIfPastPortfolio(state) {
 
 export function flowReducer(state, action) {
   switch (action.type) {
-    case 'START':
-    case 'RESET':
-      return { ...initialFlowState, announcement: announce('area') };
+    case 'HYDRATE_SESSION': {
+      const step = action.step && STEP_IDS.includes(action.step) ? action.step : 'safeguards';
+      return {
+        ...state,
+        mode: 'guided',
+        areaId: action.areaId ?? 'llanaditas',
+        profileId: action.profileId ?? state.profileId,
+        portfolioMode: action.portfolioMode ?? 'recommended',
+        step,
+        maxReached: withMax({ ...state, maxReached: 'safeguards' }, step),
+        recommendationStale: false,
+        drawer: null,
+        modal: null,
+        menuOpen: false,
+        sheetExpanded: false,
+        announcement: announce(step, 'Opened a planning cell from the briefing.'),
+      };
+    }
 
     case 'SELECT_AREA': {
       const next = staleIfPastPortfolio(state);
@@ -258,6 +273,9 @@ export function flowReducer(state, action) {
 
     case 'ANNOUNCE':
       return { ...state, announcement: action.message };
+
+    case 'RESET':
+      return { ...initialFlowState };
 
     default:
       return state;

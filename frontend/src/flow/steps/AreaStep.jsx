@@ -7,6 +7,7 @@ import {
 } from '../../domain/cityScreen.js';
 import { numeric } from '../../domain/numeric.js';
 import { Metric } from '../../components/Metric.jsx';
+import { LensIcon } from '../../components/FlowIcons.jsx';
 import { FlowActions } from '../FlowActions.jsx';
 import { StepShell } from '../StepShell.jsx';
 
@@ -70,6 +71,7 @@ export function AreaStep({
             className={state.cityLens === id ? 'active' : ''}
             onClick={() => onLensChange(id)}
           >
+            <span className="choice-icon"><LensIcon id={id} /></span>
             <b>{config.label}</b>
             <span>{config.question}</span>
           </button>

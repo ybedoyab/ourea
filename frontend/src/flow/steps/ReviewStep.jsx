@@ -1,3 +1,4 @@
+import { rainfallChip } from '../../config/climateCopy.js';
 import { DECISION_ENGINE_COPY, PRIORITY_CARDS } from '../../config/uiCopy.js';
 import { actionFootprint } from '../../domain/actionFootprint.js';
 import { Metric } from '../../components/Metric.jsx';
@@ -116,7 +117,7 @@ export function ReviewStep({
           </div>
 
           <div className="review-climate-chip" data-testid="climate-context-panel">
-            {climate?.source_name ?? 'CHIRPS'} · {climate?.climatology_period?.label ?? '1991-2020'}
+            {rainfallChip(climate, workspace.scenario)}
           </div>
 
           {metrics && (

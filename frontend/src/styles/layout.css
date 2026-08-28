@@ -145,9 +145,14 @@
 }
 
 .primary {
-  border-color: var(--accent) !important;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--accent) !important;
+  border-radius: 8px;
   background: var(--accent) !important;
   color: var(--bg-primary) !important;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .eyebrow {

@@ -25,12 +25,11 @@ export function ScenarioControls({
   const windowDays = scenario.climate?.accumulationWindowDays ?? 15;
   const percentile = scenario.climate?.percentile;
   const period = scenario.climate?.climatologyPeriod ?? climate?.climatology_period?.label;
-  const source = scenario.climate?.sourceName ?? climate?.source_name;
 
   return (
     <section data-testid="scenario-controls">
       <SectionHeading step={4} title="Explore rainfall context">
-        Observed presets come from CHIRPS v3 Final. Explore lets you vary the same planning
+        Start from typical, high or extreme observed wet conditions, then vary the same planning
         controls by hand.
       </SectionHeading>
 
@@ -40,10 +39,9 @@ export function ScenarioControls({
       </Guardrail>
 
       <div className="preset-kicker" data-testid="preset-mode">
-        {activePreset === EXPLORE_PRESET_ID ? 'Explore' : 'Observed preset'}
-        {percentile ? ` · P${percentile}` : ''}
-        {period ? ` · ${period}` : ''}
-        {source ? ` · ${source}` : ''}
+        {activePreset === EXPLORE_PRESET_ID ? 'Explore' : 'Observed wet conditions'}
+        {percentile ? ` · wetter than most years` : ''}
+        {period ? ` · ${String(period).replace('-', '–')}` : ''}
       </div>
 
       <label htmlFor="rain-depth">
@@ -62,8 +60,7 @@ export function ScenarioControls({
       />
       <small>
         Planning rainfall depth for the selected accumulation window.
-        {source ? ` Source: ${source}.` : ''}
-        {period ? ` Period: ${period}.` : ''}
+        {period ? ` Years used: ${String(period).replace('-', '–')}.` : ''}
       </small>
 
       <label htmlFor="antecedent-rainfall">

@@ -1,10 +1,8 @@
 import { observationalPresets } from '../../domain/climateScenarios.js';
+import { plainPresetCaption } from '../../config/climateCopy.js';
+import { RainIcon, BudgetIcon } from '../../components/FlowIcons.jsx';
 import { FlowActions } from '../FlowActions.jsx';
 import { StepShell } from '../StepShell.jsx';
-
-function mm(value) {
-  return Number.isFinite(Number(value)) ? `${Number(value).toFixed(1)} mm` : '—';
-}
 
 const GUIDED_PRESETS = ['typical_wet', 'high_rainfall', 'extreme_observed'];
 
@@ -51,17 +49,17 @@ export function ConditionsStep({
               aria-pressed={active}
               onClick={() => onSelectPreset(preset)}
             >
+              <span className="choice-icon"><RainIcon /></span>
               <b>{preset.label}</b>
-              <span>
-                {preset.accumulation_window_days}-day {mm(preset.precipitation_mm)} · P{preset.percentile}
-              </span>
+              <span>{plainPresetCaption(preset)}</span>
             </button>
           );
         })}
       </div>
 
       <label htmlFor="budget-credits">
-        Budget <b>{budgetCredits} planning credits</b>
+        <span className="label-with-icon"><BudgetIcon /> Budget</span>
+        <b>{budgetCredits} planning credits</b>
       </label>
       <input
         id="budget-credits"

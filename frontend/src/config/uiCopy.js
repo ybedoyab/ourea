@@ -153,7 +153,7 @@ export const FLOW_STEPS = Object.freeze([
     id: 'safeguards',
     short: 'Safeguards',
     title: 'Is this decision ready to discuss?',
-    instruction: 'Check evidence, community status and local alignment before export.',
+    instruction: 'Check evidence, community status and local alignment, then download a briefing.',
   },
 ]);
 

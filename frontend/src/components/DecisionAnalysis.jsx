@@ -209,11 +209,10 @@ export function DecisionAnalysis({
 
       <div className="export-row">
         <button type="button" className="primary" data-testid="export-package" onClick={onExport} disabled={!canExport}>
-          Export decision package
+          Download PDF
         </button>
         <small>
-          Includes scenario, active policy, portfolio, alternatives, uncertainty, stability,
-      sampled trade-offs, community safeguards and evidence/guardrails when available.
+          A formatted PDF proposal for the meeting: decision, map, implementation steps and crew notes.
         </small>
       </div>
     </section>

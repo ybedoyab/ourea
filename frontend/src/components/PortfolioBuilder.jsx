@@ -1,6 +1,7 @@
 import { INTERVENTIONS } from '../config/modelConfig.js';
 import { INTERVENTION_COPY } from '../config/uiCopy.js';
 import { AlternativePortfolios } from './AlternativePortfolios.jsx';
+import { CellPlaceLinks } from './CellPlaceLinks.jsx';
 import { PortfolioList } from './PortfolioList.jsx';
 import { SectionHeading } from './SectionHeading.jsx';
 import { SelectField } from './SelectField.jsx';
@@ -81,6 +82,7 @@ function CellCard({ cell, selectedType, canAdd, onAdd }) {
         {cell.high_hazard_buildings} high-hazard buildings ·{' '}
         {Number(cell.mean_slope_deg ?? 0).toFixed(1)}° mean slope
       </span>
+      <CellPlaceLinks lat={cell.lat} lng={cell.lng} />
       <div className="suits">
         <i>RWH {Math.round(Number(cell.rwh_opportunity ?? 0) * 100)}%</i>
         <i>Drain {Math.round(Number(cell.drainage_corridor_proxy ?? 0) * 100)}%</i>

@@ -26,7 +26,9 @@ function Overlay({ id, title, open, onClose, children, testId, kind }) {
       >
         <header className="flow-drawer-head">
           <h2 id={`${id}-title`} ref={headingRef} tabIndex={-1}>{title}</h2>
-          <button type="button" onClick={onClose} data-testid={`${id}-close`}>Close</button>
+          <button type="button" className="bar-button" onClick={onClose} data-testid={`${id}-close`}>
+            Close
+          </button>
         </header>
         <div className="flow-drawer-body">{children}</div>
       </div>

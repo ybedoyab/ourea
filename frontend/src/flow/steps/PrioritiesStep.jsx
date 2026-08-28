@@ -1,37 +1,8 @@
 import { PRIORITY_CARDS } from '../../config/uiCopy.js';
 import { ChoiceCard } from '../../components/ChoiceCard.jsx';
+import { PriorityGlyph } from '../../components/FlowIcons.jsx';
 import { FlowActions } from '../FlowActions.jsx';
 import { StepShell } from '../StepShell.jsx';
-
-function PriorityIcon({ id }) {
-  if (id === 'equity') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M6 18V10h3v8H6zm5 0V6h3v12h-3zm5 0v-5h3v5h-3z" fill="currentColor" />
-      </svg>
-    );
-  }
-  if (id === 'access') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M5 17l5-9 3 5 3-4 3 8H5z" fill="none" stroke="currentColor" strokeWidth="1.6" />
-      </svg>
-    );
-  }
-  if (id === 'low_regret') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 4l7 4v8l-7 4-7-4V8l7-4z" fill="none" stroke="currentColor" strokeWidth="1.6" />
-      </svg>
-    );
-  }
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M12 8v8M8 12h8" stroke="currentColor" strokeWidth="1.6" />
-    </svg>
-  );
-}
 
 export function PrioritiesStep({
   state,
@@ -72,7 +43,7 @@ export function PrioritiesStep({
               </button>
             )}
           >
-            <span className="choice-icon"><PriorityIcon id={id} /></span>
+            <span className="choice-icon"><PriorityGlyph id={id} /></span>
             <b>{card.name}</b>
             <span>{card.description}</span>
           </ChoiceCard>

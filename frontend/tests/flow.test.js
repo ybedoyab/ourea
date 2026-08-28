@@ -83,3 +83,19 @@ test('RESET returns to the first step', () => {
   assert.equal(state.areaId, null);
   assert.equal(state.mode, 'guided');
 });
+
+test('HYDRATE_SESSION opens Llanaditas at safeguards with later steps unlocked', () => {
+  const next = apply(initialFlowState, {
+    type: 'HYDRATE_SESSION',
+    areaId: 'llanaditas',
+    profileId: 'balanced',
+    step: 'safeguards',
+  });
+  assert.equal(next.areaId, 'llanaditas');
+  assert.equal(next.step, 'safeguards');
+  assert.equal(next.maxReached, 'safeguards');
+  assert.equal(next.portfolioMode, 'recommended');
+  assert.equal(mapScopeForFlow(next), 'sandbox');
+  assert.equal(canEnterStep(next, 'review'), true);
+  assert.match(next.announcement, /planning cell/i);
+});

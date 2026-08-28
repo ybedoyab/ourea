@@ -103,22 +103,19 @@ async function exportPackage(page) {
   await expect(page.getByTestId('community-status')).toHaveAttribute('data-status', 'community_reviewed');
   await page.getByTestId('community-close').click();
 
-  const downloadPromise = page.waitForEvent('download');
+  const downloads = [];
+  page.on('download', (download) => downloads.push(download));
   await page.getByTestId('export-package').click();
-  const download = await downloadPromise;
-  const downloadPath = await download.path();
+  await expect.poll(() => downloads.length).toBeGreaterThanOrEqual(1);
+  await page.waitForTimeout(700);
+  expect(downloads.some((item) => item.suggestedFilename().endsWith('.json'))).toBe(false);
+  const pdfDownload = downloads.find((item) => item.suggestedFilename().endsWith('.pdf'));
+  expect(pdfDownload).toBeTruthy();
+  const downloadPath = await pdfDownload.path();
   expect(downloadPath).toBeTruthy();
-  const payload = JSON.parse(await readFile(downloadPath, 'utf8'));
-  expect(payload.schema).toBe('ourea-decision-package');
-  expect(payload.schema_version).toBe(2);
-  expect(payload.climate_context.source_name).toMatch(/CHIRPS/i);
-  expect(payload.scenario.antecedent_rainfall_percentile).toBeGreaterThanOrEqual(0);
-  expect(payload.plan_alignment.entries.length).toBeGreaterThan(0);
-  expect(payload.community_safeguards.validation_status).toBeTruthy();
-  expect(payload.reproducible_id).toMatch(/^ourea-/);
-  expect(payload.schema_versions.climate_context).toBe(1);
-  expect(payload.action_footprint.planning_cells_targeted).toBeGreaterThan(0);
-  return payload;
+  const header = await readFile(downloadPath);
+  expect(header.subarray(0, 4).toString()).toBe('%PDF');
+  return pdfDownload;
 }
 
 async function runRecommendedJourney(page, { screenshots = false } = {}) {
@@ -366,7 +363,8 @@ test('built app serves local data without third-party APIs', async ({ page }) =>
   await page.getByTestId('open-sandbox').click();
   await page.getByTestId('how-calculated').click();
   await expect(page.getByTestId('climate-context-panel')).toBeVisible();
-  await expect(page.getByTestId('climate-facts')).toContainText('CHIRPS');
+  await expect(page.getByTestId('climate-facts')).toContainText('Observed rainfall');
+  await expect(page.getByTestId('climate-facts')).not.toContainText('CHIRPS');
 });
 
 test('falls back cleanly when WebGL2 is unavailable', async ({ page }) => {
@@ -418,6 +416,21 @@ test('published demo', async ({ page, baseURL }) => {
   await expect(page.getByTestId('climate-context-panel')).toBeVisible();
   await expect(page.getByTestId('decision-engine')).toBeVisible();
   await expect(page.getByTestId('action-footprint')).toBeVisible();
+  await assertMapSurface(page);
+  guards.assertClean();
+});
+
+test('cell hash from the briefing opens that square on the map', async ({ page }) => {
+  const guards = attachErrorGuards(page);
+  await page.goto('/#area=llanaditas&cell=35&plan=12:rwh,18:drainage');
+  await expect(page.getByTestId('step-safeguards')).toBeVisible({ timeout: 60000 });
+  await expect(page.getByTestId('flow-announcer')).toContainText(/planning cell/i);
+  await expect(page.getByTestId('package-ready')).toBeVisible();
+  await expect(page.getByTestId('hillside-fall-animation')).toBeVisible();
+  await expect(page.getByTestId('cell-place-list')).toBeVisible();
+  await expect(page.getByTestId('open-google-maps').first()).toBeVisible();
+  await expect(page.getByTestId('open-google-earth').first()).toBeVisible();
+  await expect(page).toHaveURL(/cell=35/);
   await assertMapSurface(page);
   guards.assertClean();
 });

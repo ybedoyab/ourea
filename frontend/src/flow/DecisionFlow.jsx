@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { BRAND } from '../config/brand.js';
 import { PRIORITY_CARDS, DECISION_ENGINE_COPY } from '../config/uiCopy.js';
+import { rainfallChip } from '../config/climateCopy.js';
+import { AreaIcon, ConditionsIcon, PrioritiesIcon } from '../components/FlowIcons.jsx';
 import { CITY_SCREEN_CONTRACT, countSafePopulationMatches } from '../domain/cityScreen.js';
 import { numeric } from '../domain/numeric.js';
 import { ClimateContextPanel } from '../components/ClimateContextPanel.jsx';
@@ -138,17 +140,21 @@ export function DecisionFlow({
     <div className="step-summaries" data-testid="step-summaries">
       {state.areaId && state.step !== 'area' && (
         <button type="button" className="step-summary" onClick={() => dispatch({ type: 'GO_TO_COMPLETED_STEP', step: 'area' })}>
-          <span>Area</span><b>{BRAND.provingGround}</b>
+          <span className="choice-icon"><AreaIcon /></span>
+          <span>Area</span>
+          <b>Llanaditas</b>
         </button>
       )}
       {['conditions', 'priorities', 'portfolio', 'review', 'safeguards'].includes(state.step) && state.step !== 'conditions' && (
         <button type="button" className="step-summary" onClick={() => dispatch({ type: 'GO_TO_COMPLETED_STEP', step: 'conditions' })}>
-          <span>Conditions</span>
-          <b>{workspace.budgetCredits} cr · {workspace.scenario?.presetId?.replaceAll('_', ' ') ?? 'planning rainfall'}</b>
+          <span className="choice-icon"><ConditionsIcon /></span>
+          <span>Rain</span>
+          <b>{workspace.budgetCredits} cr · {rainfallChip(data?.climateContext, workspace.scenario).split(' · ')[0]}</b>
         </button>
       )}
       {['priorities', 'portfolio', 'review', 'safeguards'].includes(state.step) && state.step !== 'priorities' && (
         <button type="button" className="step-summary" onClick={() => dispatch({ type: 'GO_TO_COMPLETED_STEP', step: 'priorities' })}>
+          <span className="choice-icon"><PrioritiesIcon /></span>
           <span>Priority</span><b>{PRIORITY_CARDS[state.profileId]?.name}</b>
         </button>
       )}
@@ -268,11 +274,14 @@ export function DecisionFlow({
           communityAssessment={workspace.communityAssessment}
           planAlignment={data?.planAlignment}
           canExport={Boolean(workspace.metrics)}
+          projects={workspace.activePlan}
+          cells={data?.cells}
           onEvidence={() => dispatch({ type: 'OPEN_DRAWER', drawer: 'evidence' })}
           onCommunity={() => dispatch({ type: 'OPEN_MODAL', modal: 'community' })}
           onAlignment={() => dispatch({ type: 'OPEN_DRAWER', drawer: 'alignment' })}
           onExport={onExport}
           onBack={() => dispatch({ type: 'GO_BACK' })}
+          onSelectCell={onSelectCell}
         />
       )}
         </>
@@ -478,7 +487,7 @@ export function DecisionFlow({
           <li>Pick what the portfolio should prioritize.</li>
           <li>Generate a recommendation or build your own.</li>
           <li>Read whether it holds up under uncertainty.</li>
-          <li>Check safeguards and export the package.</li>
+          <li>Check safeguards and download a decision brief.</li>
         </ol>
       </FlowDrawer>
 
@@ -490,8 +499,8 @@ export function DecisionFlow({
       >
         <p>
           {BRAND.name} · {BRAND.expansion}. Decision support for accountable city choices — not a
-          substitute for engineering design. Rainfall contexts are CHIRPS v3 Final gridded
-          observations, not real-time forecasts.
+          substitute for engineering design. Rainfall is based on three decades of observed wet
+          conditions for this hillside, not a real-time forecast.
         </p>
         <p>
           {DECISION_ENGINE_COPY.explanation} {DECISION_ENGINE_COPY.milpNote}

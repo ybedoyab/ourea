@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   DEFAULT_SCENARIO,
   INTERVENTIONS,
@@ -59,6 +59,7 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
   const [breakage, setBreakage] = useState(null);
   const [benchmarkBusy, setBenchmarkBusy] = useState(false);
   const [benchmarkError, setBenchmarkError] = useState(null);
+  const restoringRef = useRef(false);
 
   const context = useMemo(
     () => (data ? createScenarioContext(data.buildings, data.cells) : null),
@@ -173,11 +174,13 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
   }
 
   useEffect(() => {
+    if (restoringRef.current) return;
     setUserPlan((plan) => fitPlanToBudget(plan, budgetCredits));
     clearDerivedDecisionProducts();
   }, [budgetCredits]);
 
   useEffect(() => {
+    if (restoringRef.current) return;
     clearDerivedDecisionProducts();
   }, [scenario.rainMm, scenario.antecedentWetness, scenario.planningYear]);
 
@@ -229,6 +232,7 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     setAlternativeError(null);
     setAiPlan([]);
     window.setTimeout(() => {
+      const started = Date.now();
       try {
         const options = generateAlternativePortfolios({
           context,
@@ -248,9 +252,10 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
       } catch (error) {
         setAlternativeError(error instanceof Error ? error.message : String(error));
       } finally {
-        setAlternativeBusy(false);
+        const remain = Math.max(0, 1800 - (Date.now() - started));
+        window.setTimeout(() => setAlternativeBusy(false), remain);
       }
-    }, 0);
+    }, 40);
   }
 
   function analyzeFrontier() {
@@ -430,6 +435,31 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     setView(nextView);
   }
 
+  function restoreSession(saved) {
+    if (!saved?.plan?.length) return;
+    restoringRef.current = true;
+    if (Number.isFinite(Number(saved.budgetCredits))) {
+      setBudgetCredits(Number(saved.budgetCredits));
+    }
+    if (saved.scenario) {
+      setScenario((current) => ({
+        ...current,
+        ...saved.scenario,
+      }));
+    }
+    if (saved.view === 'user') {
+      setUserPlan(saved.plan);
+      setView('user');
+    } else {
+      setAiPlan(saved.plan);
+      setSelectedAiProfileId(saved.profileId ?? DEFAULT_AI_PROFILE);
+      setView('ai');
+    }
+    window.setTimeout(() => {
+      restoringRef.current = false;
+    }, 0);
+  }
+
   function resetWorkspace() {
     setUserPlan([]);
     setAlternatives([]);
@@ -530,6 +560,7 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     benchmarkBusy,
     benchmarkError,
     upsertSessionCommunityRecord,
+    restoreSession,
     resetWorkspace,
   };
 }

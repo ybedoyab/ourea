@@ -1,6 +1,7 @@
 import * as maplibregl from 'maplibre-gl';
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import '../styles/maplibre-theme.css';
 import { CITY_MAX_BOUNDS, MAP_VIEWS, SANDBOX_BBOX } from '../config/modelConfig.js';
 import { assetUrl } from '../config/assetUrl.js';
 
@@ -288,6 +289,33 @@ function projectPointFeature(project, cellsGeoJson, index) {
   };
 }
 
+function copyMapFrame(map) {
+  try {
+    const source = map.getCanvas();
+    if (!source?.width || !source.height) return null;
+    const copy = document.createElement('canvas');
+    copy.width = source.width;
+    copy.height = source.height;
+    const ctx = copy.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return null;
+    ctx.drawImage(source, 0, 0);
+    const sampleW = Math.min(48, copy.width);
+    const sampleH = Math.min(48, copy.height);
+    const pixels = ctx.getImageData(0, 0, sampleW, sampleH).data;
+    let luma = 0;
+    const count = pixels.length / 4;
+    for (let i = 0; i < pixels.length; i += 4) {
+      luma += pixels[i] * 0.3 + pixels[i + 1] * 0.59 + pixels[i + 2] * 0.11;
+    }
+    if (count < 1 || luma / count < 18) return null;
+    const dataUrl = copy.toDataURL('image/jpeg', 0.84);
+    if (!dataUrl.startsWith('data:image/jpeg')) return null;
+    return { dataUrl, width: copy.width, height: copy.height };
+  } catch {
+    return null;
+  }
+}
+
 export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, onReady }) {
   if (!supportsWebGL2()) {
     throw new MapUnavailableError(
@@ -298,10 +326,12 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
   let cameraGeneration = 0;
   let settleTimer = 0;
   let map;
+  let frameSnapshot = null;
 
   try {
     map = new maplibregl.Map({
     container,
+    preserveDrawingBuffer: true,
     style: {
       version: 8,
       glyphs: GLYPHS_URL,
@@ -829,6 +859,10 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
     onReady?.();
   });
 
+  map.on('idle', () => {
+    frameSnapshot = copyMapFrame(map);
+  });
+
   function setCityLens(lens) {
     if (!map.getLayer('screening-fill')) return;
     map.setPaintProperty(
@@ -854,7 +888,6 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
     }
     if (map.getTerrain()) map.setTerrain(null);
     requestResize();
-    runCamera(scope, true);
     if (!isCity) {
       setVisibility(map, 'buildings', true);
       setVisibility(map, 'sandbox-ground', true);
@@ -904,6 +937,77 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
     });
   }
 
+  function planCenter(projects, cellsGeoJson, fallback) {
+    const points = [];
+    for (const project of projects ?? []) {
+      const feature = cellsGeoJson?.features?.find(
+        (item) => Number(item.properties.cell_id) === Number(project.cell_id),
+      );
+      const bounds = geometryBounds(feature?.geometry);
+      if (!bounds) continue;
+      points.push([
+        (bounds[0][0] + bounds[1][0]) / 2,
+        (bounds[0][1] + bounds[1][1]) / 2,
+      ]);
+    }
+    if (!points.length) return fallback;
+    return [
+      points.reduce((sum, point) => sum + point[0], 0) / points.length,
+      points.reduce((sum, point) => sum + point[1], 0) / points.length,
+    ];
+  }
+
+  function easeStory(view, lockScope) {
+    const generation = ++cameraGeneration;
+    clearSettleTimer();
+    map.stop();
+    map.setMaxBounds(null);
+    map.setMinZoom(CAMERA.city.minZoom);
+    map.setMaxZoom(CAMERA.sandbox.maxZoom);
+    if (map.getTerrain()) map.setTerrain(null);
+    map.easeTo({
+      center: view.center,
+      zoom: view.zoom,
+      pitch: view.pitch,
+      bearing: view.bearing,
+      duration: view.duration ?? 1100,
+      essential: true,
+    });
+    afterSettled(generation, () => {
+      lockCamera(lockScope);
+      if (lockScope === 'sandbox') setVisibility(map, 'buildings', true);
+    });
+  }
+
+  function playStoryCamera({ step, mode, barrio, projects, cellsGeoJson }) {
+    if (mode === 'explore') {
+      runCamera('sandbox', true);
+      return;
+    }
+    if (step === 'area') {
+      if (barrio) {
+        focusBarrio(barrio);
+        return;
+      }
+      runCamera('city', true);
+      return;
+    }
+
+    const hillside = MAP_VIEWS.sandbox;
+    const frames = {
+      conditions: { center: hillside.center, zoom: 14.85, pitch: 20, bearing: -8, duration: 1700 },
+      priorities: { center: hillside.center, zoom: 15.55, pitch: 28, bearing: -10, duration: 1200 },
+      portfolio: { center: hillside.center, zoom: 16.35, pitch: 36, bearing: -12, duration: 1100 },
+      review: { center: hillside.center, zoom: 16.85, pitch: 44, bearing: -16, duration: 1100 },
+      safeguards: { center: hillside.center, zoom: 17.15, pitch: 50, bearing: -22, duration: 1100 },
+    };
+    const frame = frames[step] ?? { ...hillside, duration: 1100 };
+    if ((step === 'review' || step === 'safeguards') && projects?.length) {
+      frame.center = planCenter(projects, cellsGeoJson, hillside.center);
+    }
+    easeStory(frame, 'sandbox');
+  }
+
   function setSelectedBarrio(barrio) {
     if (!map.getLayer('screening-selected')) return;
     const objectId = Number(barrio?.OBJECTID);
@@ -913,6 +1017,29 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
         ? ['==', ['get', 'OBJECTID'], objectId]
         : ['==', ['get', 'OBJECTID'], -999999],
     );
+  }
+
+  function focusCell(cellId, cellsGeoJson) {
+    const feature = cellsGeoJson?.features?.find(
+      (item) => Number(item.properties.cell_id) === Number(cellId),
+    );
+    const bounds = geometryBounds(feature?.geometry);
+    if (!bounds) {
+      setSelectedCell(cellId);
+      return;
+    }
+    const center = [
+      (bounds[0][0] + bounds[1][0]) / 2,
+      (bounds[0][1] + bounds[1][1]) / 2,
+    ];
+    setSelectedCell(cellId);
+    easeStory({
+      center,
+      zoom: 17.7,
+      pitch: 50,
+      bearing: -20,
+      duration: 1100,
+    }, 'sandbox');
   }
 
   function setSelectedCell(cellId) {
@@ -958,11 +1085,16 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
     setScope,
     setCityLens,
     focusBarrio,
+    playStoryCamera,
     setSelectedBarrio,
     setSelectedCell,
+    focusCell,
     setLayerVisibility,
     updateBuildingStress,
     updateProjects,
+    captureImage() {
+      return frameSnapshot ?? copyMapFrame(map);
+    },
     destroy: () => {
       if (!map) return;
       clearSettleTimer();
