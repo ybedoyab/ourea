@@ -36,7 +36,7 @@ Click **Generate recommendation**.
 
 Read P10 in plain language, then **Compare on map**: No action / Ourea.
 
-Open **Advanced analysis** only if a judge wants benchmark, breakage, frontier or trade-offs.
+Open **Advanced analysis** only if a judge wants benchmark, breakage, frontier or trade-offs. Optionally click **Generate decision review** — that explains the existing result; it does not approve construction.
 
 ## 1:40–2:00 — Is this decision ready to discuss?
 

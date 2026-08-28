@@ -6,7 +6,7 @@
 
 ## Overall status
 
-Local revalidation on 2026-08-28: Node tests (98/98), data validation, source validation, USD cost context, decision-brief PDF inspection, Vite production build, CHIRPS climate context, checkpoint regeneration, MILP, full geospatial validation and manifest regeneration.
+Local revalidation on 2026-08-28: Node tests (115/115), decision-readiness API tests (9/9), data validation, source validation including production-bundle secret scan, USD cost context, decision-brief PDF inspection, Vite production build, CHIRPS climate context, checkpoint regeneration, MILP, full geospatial validation, Playwright (20, including AI review fallbacks) and manifest regeneration.
 
 MapLibre dominates the production JavaScript bundle (~1.24 MB minified). That warning is accepted; a fragile extra split is not worth the maintenance cost.
 
@@ -20,7 +20,7 @@ node --test tests/*.test.js
 ```
 
 Result:
-- **62/62 passed**;
+- **115/115 passed**;
 - 0 failed;
 - 0 skipped.
 

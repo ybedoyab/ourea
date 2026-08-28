@@ -18,7 +18,8 @@ Ourea is not:
 - an autonomous investment authority;
 - an evacuation-routing simulator;
 - a community-acceptance predictor;
-- an automatic resettlement recommender.
+- an automatic resettlement recommender;
+- a chatbot that replaces the optimizer or approves construction.
 
 ## Model status
 

@@ -15,7 +15,7 @@ Ourea separates **evidence, uncertainty, public-policy choices and UI** so the d
 ### KISS
 - transparent equations before opaque models;
 - only three physical intervention families;
-- no LLM added merely to label the product “AI”;
+- optional AI review explains an existing result and never replaces the optimizer;
 - no false house-level probabilities.
 
 ### DRY
@@ -64,6 +64,7 @@ Focused UI pieces:
 - `ClimateContextPanel`;
 - `MapLegend`;
 - `EarlyActionDiagram`;
+- `AiDecisionReviewCard`;
 
 
 ### `frontend/src/domain/`
@@ -80,6 +81,8 @@ Focused UI pieces:
 - `decisionPackage.js` — auditable export;
 - `decisionBrief.js` / `decisionBriefPdf.js` — six-page decision brief;
 - `costEstimate.js` — pre-feasibility US$ envelope from `cost_context.json`;
+- `decisionReadiness.js` — deterministic field-validation gates;
+- `aiDecisionSnapshot.js` — minimized AI request payload;
 - `earlyAction.js` — planning-safe mechanism copy for UI and PDF;
 - `communitySafeguards.js` — community evidence status without scoring;
 - `benchmark.js` — hazard-only vs deterministic vs robust comparison;
@@ -88,7 +91,8 @@ Focused UI pieces:
 ### `frontend/src/hooks/`
 - `useOureaData.js` — required and optional data loading;
 - `useOureaMap.js` — MapLibre lifecycle and view sync;
-- `usePortfolioWorkspace.js` — plans, robust options, diagnostics and session community records.
+- `usePortfolioWorkspace.js` — plans, robust options, diagnostics and session community records;
+- `useDecisionReview.js` — optional OpenAI-assisted review of an existing result.
 
 ### `frontend/src/styles/`
 Tokens, base, layout, city screen, sandbox/portfolio, map overlays, guided flow and responsive rules are split into small sheets. `index.css` imports them.
@@ -97,7 +101,10 @@ Production MapLibre is loaded through a dedicated chunk / dynamic import so the 
 
 ### `frontend/src/services/`
 - `dataService.js` — required/optional JSON loading;
-- `mapService.js` — MapLibre terrain/layers/city lens/selection/portfolio display.
+- `mapService.js` — MapLibre terrain/layers/city lens/selection/portfolio display;
+- `decisionReviewClient.js` — POST-only client for the optional decision-readiness API.
+
+Independent backend: `services/decision-readiness/` (Vercel Node 20). See `docs/product/ai-decision-review.md`.
 
 ## 4. City-scale stage
 
@@ -260,6 +267,8 @@ It can contain:
 - evidence registry;
 - community safeguards;
 - scientific guardrails.
+
+Optional AI-assisted decision review is documented in `docs/product/ai-decision-review.md`. It never writes into this package as scientific evidence.
 
 ## 16. Validation layers
 

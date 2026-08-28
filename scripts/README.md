@@ -74,7 +74,11 @@ Creates:
 
 Checksums are SHA-256 of the Git canonical form (LF text, raw binary). Working-tree CRLF checkouts on Windows therefore match Linux CI.
 
-The Ourea manifest records city-screen, policy-alternative, sampled trade-off and formal cross-check metadata.
+The Ourea manifest records city-screen, policy-alternative, sampled trade-off and formal cross-check metadata. Environment files other than `.env.example` are excluded.
+
+## `services/decision-readiness`
+
+Optional Vercel function for AI-assisted decision review. Tests use an injected OpenAI client. Local listen: `npm run dev` in that folder after copying `.env.example` to `.env.local`. See `docs/product/ai-decision-review.md`.
 
 ## `build_climate_context.py`
 

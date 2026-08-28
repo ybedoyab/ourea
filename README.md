@@ -112,6 +112,8 @@ Ourea includes:
 
 See `docs/methodology/policy-portfolios.md`.
 
+Optional **AI decision review** (Review step) turns those deterministic results into a field-validation brief. It is off unless `VITE_OUREA_AI_API_URL` is set. See `docs/product/ai-decision-review.md`.
+
 ## Observed climate context
 
 Ourea anchors planning rainfall contexts in **CHIRPS v3 Final** for the Llanaditas / upper Comuna 8 0.05° cell. The application ships `frontend/public/data/climate_context.json` and never downloads CHIRPS at runtime.

@@ -7,6 +7,7 @@ This index is the entry point. The repository root keeps only `README.md`, `CHAN
 ## Product
 
 - [Architecture](product/architecture.md)
+- [AI-assisted decision review](product/ai-decision-review.md)
 - [Model card](product/model-card.md)
 - [Competitive landscape](product/competitive-landscape.md)
 

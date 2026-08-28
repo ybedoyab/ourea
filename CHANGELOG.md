@@ -1,5 +1,11 @@
 # Ourea changelog
 
+## AI-assisted decision review — 2026-08-28
+
+- Optional Review-step card explains the existing Ourea result, lists binding gates and drafts field-visit questions.
+- Readiness badges are deterministic. OpenAI never changes rankings, US$ envelopes or evidence states.
+- The OpenAI key lives only in the serverless backend. GitHub Pages stays static.
+
 ## Financed decision brief — 2026-08-28
 
 - Decision brief is a six-page pre-feasibility package with a versioned US$ envelope, Ourea/Maps/Earth links and document metadata.
