@@ -126,7 +126,7 @@
     "schema_version": 1,
     "references": 3
   },
-  "file_count_excluding_manifest": 236,
+  "file_count_excluding_manifest": 237,
   "files": [
     {
       "path": ".github/workflows/ourea-pages.yml",
@@ -300,8 +300,8 @@
     },
     {
       "path": "docs/methodology/community-safeguards.md",
-      "bytes": 4084,
-      "sha256": "a285c3c1db05e8237ce6b48b6ffb29a79012cf42c0761955e1f7c4ad76af1421"
+      "bytes": 4240,
+      "sha256": "0e8e1fb9a83065ee9f5661de8de2dbfedb4402ac8a7fa1b6bc219e635e98bd9c"
     },
     {
       "path": "docs/methodology/cost-evidence.md",
@@ -395,13 +395,13 @@
     },
     {
       "path": "frontend/e2e/errorAllowlist.js",
-      "bytes": 3308,
-      "sha256": "386cf085c751b449fbd12de5d51aa96080f7e123e8fa5df676f622fc3ee5076c"
+      "bytes": 4053,
+      "sha256": "2407a408fb223aaa17709137e438470667a70e2df9a1fbbf5f45c3ab58d0fdf1"
     },
     {
       "path": "frontend/e2e/ourea-smoke.spec.js",
-      "bytes": 10882,
-      "sha256": "d398df7eccb0f36bbf2b9b86e2fd36a053c5c7f3e83c0e675c1e38f1a06292bb"
+      "bytes": 11340,
+      "sha256": "431c8be3588063f1894bc391e6f46a29c1d63a99694128a0e031e05163f4c92e"
     },
     {
       "path": "frontend/index.html",
@@ -434,9 +434,14 @@
       "sha256": "6eedcecf997d59ceaca1198c962993a6e01004469d3a706ed8993e6d7ffae94c"
     },
     {
+      "path": "frontend/public/data/community_evidence.json",
+      "bytes": 285,
+      "sha256": "e1b18e13c8a5717b7adacc6051e69a1a5a636081e90e5c64eb8d34b2f54f8735"
+    },
+    {
       "path": "frontend/public/data/community_evidence.template.json",
-      "bytes": 890,
-      "sha256": "a9a3c7e7ea3a1b9dfac141b5f26ca5fb20b68b94730867595011f1e57aa8f690"
+      "bytes": 943,
+      "sha256": "d29c66c6995ac423e66b45b56e86ef4c3f68e12336f0add330da7d8a29a9da3c"
     },
     {
       "path": "frontend/public/data/evidence_status.json",
@@ -470,8 +475,8 @@
     },
     {
       "path": "frontend/public/data/plan_alignment.json",
-      "bytes": 7600,
-      "sha256": "8c66b835871fa843d2dd9585d3d43706810efed1e03b6bfa38c3d43cccce5c3a"
+      "bytes": 7631,
+      "sha256": "d3274052246b1ee1ceeeb29dde23fd9b948e962d7ea647cb351fc59234641d56"
     },
     {
       "path": "frontend/public/data/planning_cells.geojson",
@@ -780,8 +785,8 @@
     },
     {
       "path": "frontend/src/App.jsx",
-      "bytes": 8450,
-      "sha256": "42276c9850bb9368574a558c231c2f82e04f88ae6cfd38daef02c38fe2409d92"
+      "bytes": 8514,
+      "sha256": "348f62235bf9464c3883a0ca692e3d32f604d18496a47026135580c0d4b1263a"
     },
     {
       "path": "frontend/src/components/AlternativePortfolios.jsx",
@@ -865,8 +870,8 @@
     },
     {
       "path": "frontend/src/components/SandboxPanel.jsx",
-      "bytes": 5247,
-      "sha256": "90fb458f7632319d59bbcdcf9d832bc558544b8741010e4e8fd6e53610d76411"
+      "bytes": 5268,
+      "sha256": "6183a1272aa31c11d5372b9eac6a6c0a9074278ec35cafb942991a2829c6d48b"
     },
     {
       "path": "frontend/src/components/ScenarioControls.jsx",
@@ -915,8 +920,8 @@
     },
     {
       "path": "frontend/src/config/communityEvidence.js",
-      "bytes": 10046,
-      "sha256": "08ad770b06f45eeb622309a0d2536d053fa2537a6e49ffee2102b5d090cca968"
+      "bytes": 10056,
+      "sha256": "4e92ded7b914cd590200aba2ecd556c288f26028a97ccd18a95bc50902631e28"
     },
     {
       "path": "frontend/src/config/dataPaths.js",
@@ -1065,13 +1070,13 @@
     },
     {
       "path": "frontend/src/services/mapService.js",
-      "bytes": 27965,
-      "sha256": "386b0bb11d0e281bc5275efc910e2288b3e7a9ce2cb4edf172ed1fc58210e9c6"
+      "bytes": 28400,
+      "sha256": "fc485024c53ed1eed69257ff3ce0ec5ca65c4451d2019fc3ebe24274e5b261b4"
     },
     {
       "path": "frontend/src/styles/base.css",
-      "bytes": 1974,
-      "sha256": "ac1d32d8123e4ae5569b0b2c5d61b25e0ec522777df02a50cc9d7c6dce84a1e3"
+      "bytes": 2563,
+      "sha256": "8167d5b31d1e3f6578f8cd444b904035b1ab316a8dbbc78efd9a18630b3dd925"
     },
     {
       "path": "frontend/src/styles/city.css",
@@ -1085,8 +1090,8 @@
     },
     {
       "path": "frontend/src/styles/layout.css",
-      "bytes": 6156,
-      "sha256": "a0b458ecf5a869c438a67944cc4c45e7be645e689c01e882c824b1eb90cbacba"
+      "bytes": 6275,
+      "sha256": "f47af56e9d5f73277e1726d55bb8b4da228050928e6b615ee68de2c8b9208a69"
     },
     {
       "path": "frontend/src/styles/map.css",
@@ -1095,8 +1100,8 @@
     },
     {
       "path": "frontend/src/styles/responsive.css",
-      "bytes": 1196,
-      "sha256": "a0c4da829b3d175781b1149037636d977b7928762044b3c8df59da0aa8f7fa3e"
+      "bytes": 1629,
+      "sha256": "6d80a67810ce3f24c0d11e4fa026cccf23b83005074bb66cecaa1c35e5508a5e"
     },
     {
       "path": "frontend/src/styles/sandbox.css",
@@ -1140,13 +1145,13 @@
     },
     {
       "path": "frontend/tests/communityEvidence.test.js",
-      "bytes": 13175,
-      "sha256": "52301c396e55c56443d22fe4018680188f6d1d655c234d23785a1d8b83511baf"
+      "bytes": 13894,
+      "sha256": "c096875bcfe08710d4478bd007d17bf57725a83ee356cb9e2b5b44e0f893ede9"
     },
     {
       "path": "frontend/tests/dataService.test.js",
-      "bytes": 3434,
-      "sha256": "9c672ffd4f8eac82b03ad8163efab78e8855d5c0ea963f10fdf2a5eb193795fe"
+      "bytes": 4163,
+      "sha256": "86ac3a374525579afc0015a03f9aafbc7c96ce8f40aa77c31151ff6aecffd961"
     },
     {
       "path": "frontend/tests/dataValidation.mjs",
@@ -1290,8 +1295,8 @@
     },
     {
       "path": "scripts/validate_project.py",
-      "bytes": 18935,
-      "sha256": "8d4a7469f45784d006bccca4f7d7266f9c4eeed2fa90b000ea5b1deccf27f401"
+      "bytes": 19349,
+      "sha256": "5c9370afbd2c856e0dd1cff0517a7e2de7cbae5ca85a21a80bce8a0809a84d9f"
     },
     {
       "path": "tests/test_chirps_stats.py",
