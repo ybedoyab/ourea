@@ -126,7 +126,7 @@
     "schema_version": 1,
     "references": 3
   },
-  "file_count_excluding_manifest": 235,
+  "file_count_excluding_manifest": 236,
   "files": [
     {
       "path": ".github/workflows/ourea-pages.yml",
@@ -395,13 +395,13 @@
     },
     {
       "path": "frontend/e2e/errorAllowlist.js",
-      "bytes": 2998,
-      "sha256": "6819001defdd6696fa06d0873b550cd4b8b1b15cd37e8ddcdc0d3e6ed9c6c749"
+      "bytes": 3308,
+      "sha256": "386cf085c751b449fbd12de5d51aa96080f7e123e8fa5df676f622fc3ee5076c"
     },
     {
       "path": "frontend/e2e/ourea-smoke.spec.js",
-      "bytes": 10820,
-      "sha256": "9de8648be4d7e74d8496c76c5fb638da38e9ae6ab716f78f3325e5b698c6bf39"
+      "bytes": 10882,
+      "sha256": "d398df7eccb0f36bbf2b9b86e2fd36a053c5c7f3e83c0e675c1e38f1a06292bb"
     },
     {
       "path": "frontend/index.html",
@@ -1157,6 +1157,11 @@
       "path": "frontend/tests/decisionPackage.test.js",
       "bytes": 2788,
       "sha256": "d3d4154f6bea7814bc4470affbaa50a770864e3d218a7eab24dbef8af9aeaaa2"
+    },
+    {
+      "path": "frontend/tests/errorAllowlist.test.js",
+      "bytes": 1097,
+      "sha256": "ada169303da58ca690e11c70a3d8114a0566f51bd583103b4d74d9045d6366f7"
     },
     {
       "path": "frontend/tests/model.test.js",
