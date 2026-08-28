@@ -37,9 +37,18 @@ Community categories and copy live in `frontend/src/config/communityEvidence.js`
 
 ## 3. Application structure
 
+### `frontend/src/flow/`
+Guided decision orchestration without a router:
+- `DecisionFlow.jsx` — six-step shell, drawers and explore mode;
+- `flowReducer.js` / `flowGuards.js` — explicit events and pure step guards;
+- `steps/` — Area, Conditions, Priorities, Portfolio, Review, Safeguards;
+- `ExploreWorkspace.jsx` — Scenario / Build / Compare / Evidence tabs.
+
 ### `frontend/src/components/`
 Focused UI pieces:
-- `CityPanel`;
+- `TopBar`;
+- `MapLayersControl`;
+- `SelectField` / `TextField` / `ChoiceCard` / `SegmentedControl`;
 - `ScenarioControls`;
 - `PortfolioBuilder`;
 - `AlternativePortfolios`;
@@ -53,11 +62,8 @@ Focused UI pieces:
 - `BenchmarkPanel`;
 - `EvidencePanel`;
 - `ClimateContextPanel`;
-- `EvidencePanel`;
 - `MapLegend`;
-- `LayerControls`.
 
-`SandboxPanel` is composition-oriented.
 
 ### `frontend/src/domain/`
 - `climateScenarios.js` — observational presets from CHIRPS context;
@@ -81,7 +87,7 @@ Focused UI pieces:
 - `usePortfolioWorkspace.js` — plans, robust options, diagnostics and session community records.
 
 ### `frontend/src/styles/`
-Tokens, base, layout, city screen, sandbox/portfolio, map overlays and responsive rules are split into small sheets. `index.css` imports them.
+Tokens, base, layout, city screen, sandbox/portfolio, map overlays, guided flow and responsive rules are split into small sheets. `index.css` imports them.
 
 Production MapLibre is loaded through a dedicated chunk / dynamic import so the initial application code can stay smaller than the map runtime.
 

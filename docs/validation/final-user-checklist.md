@@ -28,37 +28,28 @@ Open DevTools.
 - [ ] terrain tile requests succeed;
 - [ ] climate_context.json loads locally; the app does not fetch CHIRPS at runtime.
 
-## 3. City screen
+## 3. Guided decision — area
 
 On first load:
 - [ ] city map appears;
 - [ ] special/unmatched polygons appear subdued/gray;
 - [ ] Balanced is the default city lens;
 - [ ] 271 polygons / 248 population-matched figure appears.
+- [ ] only the Area step is expanded.
 
 Switch:
 - [ ] Exposure;
 - [ ] Balanced;
 - [ ] Equity.
 
-For each:
-- [ ] map colors change;
-- [ ] ranked shortlist changes consistently;
-- [ ] Llanaditas rank updates (#7 / #13 / #22 respectively).
+Click **Analyze Llanaditas**.
 
-Click a barrio:
-- [ ] polygon highlights;
-- [ ] map fits to geometry;
-- [ ] population / high hazard / hazard-weighted population / IMCV render correctly;
-- [ ] unmatched/special polygon does not show fake zero population.
+## 4. Detailed proving ground
 
-## 4. Detailed sandbox
-
-Click **Open Llanaditas proving ground**.
-
+After Analyze Llanaditas:
 - [ ] true 3D terrain appears;
 - [ ] buildings extrude correctly;
-- [ ] hazard / cells / roads toggles work;
+- [ ] Map layers popover works;
 - [ ] map remains responsive.
 
 ## 5. Climate context and explore
