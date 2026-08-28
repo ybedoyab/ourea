@@ -126,12 +126,12 @@
     "schema_version": 1,
     "references": 3
   },
-  "file_count_excluding_manifest": 226,
+  "file_count_excluding_manifest": 235,
   "files": [
     {
       "path": ".github/workflows/ourea-pages.yml",
-      "bytes": 994,
-      "sha256": "1d98be40760e468f7bc512df98002876194b33ba195531766f2d1848331ac5dc"
+      "bytes": 3200,
+      "sha256": "39e2dad624ab27cfd38f6819454beb244496a8ab4ca7298986f9e6d8997fda6c"
     },
     {
       "path": ".github/workflows/ourea-qa.yml",
@@ -180,8 +180,18 @@
     },
     {
       "path": "data/derived/city_screening_source_metadata.json",
-      "bytes": 888,
-      "sha256": "9d3aba7d15764674dc430f2617d868bdab5bc028239861b5c440618ffcfcb11e"
+      "bytes": 917,
+      "sha256": "1633da37ef24f6d83d54263f6eea61a74ead6ffb328315a8c8268420e5174034"
+    },
+    {
+      "path": "data/derived/climate/llanaditas_chirps_v3_pentads.csv",
+      "bytes": 66373,
+      "sha256": "bf82ec3ad1044a05f649b72e0969ffc45c782868038d5f2e4e3667512cdd0aa5"
+    },
+    {
+      "path": "data/derived/climate/metadata.json",
+      "bytes": 1010,
+      "sha256": "0685b80cdf986d080e2c8ed3fe0be17a38c69061ac83a33adfef741b02f869b8"
     },
     {
       "path": "data/derived/cost_reference_registry.json",
@@ -250,23 +260,23 @@
     },
     {
       "path": "docs/competition/deck-outline.md",
-      "bytes": 4413,
-      "sha256": "92a87af9018619e8be905012c49a995ca11ffca718c7bc928e1838b5982300ba"
+      "bytes": 4549,
+      "sha256": "12fdb50575d21ae1b067e65dd1088e2c15768631bdb61c486f9ececbf7818093"
     },
     {
       "path": "docs/competition/demo-script.md",
-      "bytes": 3295,
-      "sha256": "2104e9bf1915b64897a5f50d8ae3b0c25beabc676e47100ddab86f58dd1e6161"
+      "bytes": 3621,
+      "sha256": "537f3e151b35fde2d4189e211b303879e20d463bc03922618b5bffbdf017c216"
     },
     {
       "path": "docs/competition/final-submission-checklist.md",
-      "bytes": 3744,
-      "sha256": "5c803ffa0aad56a5f90efe7aff3d0622addb80e7bc13c2c35a5a5890d200f338"
+      "bytes": 3733,
+      "sha256": "da19b008a0286ab72b5e2d5f7bd5d0221268ea3d054f8199a3155b9dfdf11a2a"
     },
     {
       "path": "docs/competition/judge-qa.md",
-      "bytes": 6387,
-      "sha256": "1ffaba2f7d209a43a47e598ba7fe85847daa66a3f4cade32eae19d714d338e6f"
+      "bytes": 6588,
+      "sha256": "bc8ae1492e381b14718a6d4304bb1832fa8c6b13ce65de815fc5deefafd21f1a"
     },
     {
       "path": "docs/competition/office-hours-brief.md",
@@ -275,8 +285,8 @@
     },
     {
       "path": "docs/competition/submission-draft.md",
-      "bytes": 7876,
-      "sha256": "d05b46d394f0a1b4dfcd6447a3f6df7c1684ab1bda37df6364ec4f62de03f9a1"
+      "bytes": 7861,
+      "sha256": "444fd5d45cff767fc5a1d0bbcefcb471e53f85b48e8cf71aa4b7428f73c29708"
     },
     {
       "path": "docs/methodology/city-screen.md",
@@ -285,8 +295,8 @@
     },
     {
       "path": "docs/methodology/climate-context.md",
-      "bytes": 2504,
-      "sha256": "5a2d8597ec055cc44444f96c189a26c2fdd4fa6d1704915f24174720add40f59"
+      "bytes": 2792,
+      "sha256": "12e2f4bb8d1626036af4ab8aa1f9638324dd458fcd735362d0ca40eaf2ad1dc7"
     },
     {
       "path": "docs/methodology/community-safeguards.md",
@@ -310,8 +320,8 @@
     },
     {
       "path": "docs/methodology/policy-portfolios.md",
-      "bytes": 6375,
-      "sha256": "acd376689fe51a1800954d5ce30cb80b208b19970eea45f71a203ae4708c24e4"
+      "bytes": 6357,
+      "sha256": "8b435851d86c40ebf59fe5a259b360b819fcc43916f0541d99a573310929ad43"
     },
     {
       "path": "docs/methodology/selection-benchmark.md",
@@ -330,8 +340,8 @@
     },
     {
       "path": "docs/pilot/six-month-pilot.md",
-      "bytes": 5591,
-      "sha256": "3ecd6d961d57afc7edac48ddec7d1656b9decf4b59c944595b5e98ea62ff5dfb"
+      "bytes": 6310,
+      "sha256": "a0346f476192e9e895bbfdf60a35c5471b9b621ed11c1cf24fbf96590c971643"
     },
     {
       "path": "docs/product/architecture.md",
@@ -380,8 +390,8 @@
     },
     {
       "path": "docs/validation/qa-report.md",
-      "bytes": 7706,
-      "sha256": "76b0bb710dbf496f2813798542e73ea7028185e6acff72f4bcfb1cd1e530fd7d"
+      "bytes": 7712,
+      "sha256": "5573e0e61754ea4bd047ab5fdcdc409327d8135f68d67bcd3b3a5b52c28121e9"
     },
     {
       "path": "frontend/e2e/errorAllowlist.js",
@@ -390,8 +400,8 @@
     },
     {
       "path": "frontend/e2e/ourea-smoke.spec.js",
-      "bytes": 8245,
-      "sha256": "249a732a8db06e0014dbcbe889c8c2dc48517fb1c59731d9c7c9072d98f3bdf4"
+      "bytes": 10820,
+      "sha256": "9de8648be4d7e74d8496c76c5fb638da38e9ae6ab716f78f3325e5b698c6bf39"
     },
     {
       "path": "frontend/index.html",
@@ -410,8 +420,8 @@
     },
     {
       "path": "frontend/playwright.config.js",
-      "bytes": 690,
-      "sha256": "2e66de4d3c565ee6a2307959c43f15902ae6ce0cf428c7a5affe531a5188ae14"
+      "bytes": 759,
+      "sha256": "05f28d07c227ff28b1be54bcd8d7acc26b9ad968feb07495f982d659acff9957"
     },
     {
       "path": "frontend/public/data/buildings.geojson",
@@ -420,8 +430,8 @@
     },
     {
       "path": "frontend/public/data/climate_context.json",
-      "bytes": 8404,
-      "sha256": "95d184e93619994051e69cb8e402a87fb0ef9aa3e25712c39466926a53f11e8e"
+      "bytes": 8752,
+      "sha256": "6eedcecf997d59ceaca1198c962993a6e01004469d3a706ed8993e6d7ffae94c"
     },
     {
       "path": "frontend/public/data/community_evidence.template.json",
@@ -445,8 +455,8 @@
     },
     {
       "path": "frontend/public/data/intervention_registry.json",
-      "bytes": 2414,
-      "sha256": "c253781bba6a5c6240bb2781c4f572624e66284f6b67b2257156b36ad757fd73"
+      "bytes": 2468,
+      "sha256": "9e31f4ebe92233e409a84345b043e41fe8931add3e708a2b2b2869aab9bb85ba"
     },
     {
       "path": "frontend/public/data/medellin_city_priority_screen.geojson",
@@ -475,8 +485,8 @@
     },
     {
       "path": "frontend/public/data/summary.json",
-      "bytes": 453,
-      "sha256": "f66a034f1272f23beac08b8a6a3adc3dc47a669b2559bf65c2b944d6bd421296"
+      "bytes": 520,
+      "sha256": "4171e17ddc06bc9df2d83ad5087a5ab7f4809d7ea70eb39be8589b19f455f0f5"
     },
     {
       "path": "frontend/public/data/terrain_meta.json",
@@ -770,13 +780,13 @@
     },
     {
       "path": "frontend/src/App.jsx",
-      "bytes": 7955,
-      "sha256": "3e68ea18dc65946465585ed8a9df8a754968ee55ccccab45c61c0f2b3f4fa28b"
+      "bytes": 8450,
+      "sha256": "42276c9850bb9368574a558c231c2f82e04f88ae6cfd38daef02c38fe2409d92"
     },
     {
       "path": "frontend/src/components/AlternativePortfolios.jsx",
-      "bytes": 4441,
-      "sha256": "c594bdd10f5f90956a428a5a4481b8fe1ce75e6eb9ff5b2bfeed6474c1938905"
+      "bytes": 5151,
+      "sha256": "d33df20558bbab3f69eb85cd4edf92423c85636c33a9d8be6ad0f23e4629363a"
     },
     {
       "path": "frontend/src/components/BenchmarkPanel.jsx",
@@ -785,8 +795,8 @@
     },
     {
       "path": "frontend/src/components/CityPanel.jsx",
-      "bytes": 7991,
-      "sha256": "34a0c0e5edaf6f08b3cbf2ffffe3e574cc525c5b2d286ca9d208ca9676c4e1ce"
+      "bytes": 8252,
+      "sha256": "5d6987f677874a63e5d8e4d829ff58f2da9265becb476cb5df9781236fdca9f7"
     },
     {
       "path": "frontend/src/components/ClimateContextPanel.jsx",
@@ -800,8 +810,8 @@
     },
     {
       "path": "frontend/src/components/DecisionAnalysis.jsx",
-      "bytes": 5745,
-      "sha256": "224cb0872148395e8229e1941158c846c9f81a87fbc0c931583bfbcf759966f0"
+      "bytes": 7352,
+      "sha256": "1ca4febf04eb0b433f661cd334f61f191aa2d433328b42c21e3fd5cdfd214700"
     },
     {
       "path": "frontend/src/components/ErrorBoundary.jsx",
@@ -810,8 +820,8 @@
     },
     {
       "path": "frontend/src/components/EvidencePanel.jsx",
-      "bytes": 2279,
-      "sha256": "76283a192a96be4a777e1f0f922713262ea0910a46532c95b53a0ff688d9c7ea"
+      "bytes": 2277,
+      "sha256": "51394c1babcafeee82b8b5ea874074579992ad3ee98b99b0f99bfdc2876a1ba7"
     },
     {
       "path": "frontend/src/components/LayerControls.jsx",
@@ -820,13 +830,13 @@
     },
     {
       "path": "frontend/src/components/MapLegend.jsx",
-      "bytes": 1616,
-      "sha256": "53c8e14cbf334ceee7be3e5a9bbcd592a905b7f2266b768f1a4b6cfe6671289e"
+      "bytes": 1613,
+      "sha256": "6711fc71961ff924acd0980e704afefaac2eb7e54bf49a6bedda07cfd825d6e5"
     },
     {
       "path": "frontend/src/components/Metric.jsx",
-      "bytes": 462,
-      "sha256": "8861298323abb5bd53250a31455fb4e3396e11c70b8c26914fc56630e5e7db09"
+      "bytes": 514,
+      "sha256": "1ed1b41bb2fd6899a3213a53825660a697ac34c30b0bb622e66e3166387b8f02"
     },
     {
       "path": "frontend/src/components/OureaLogo.jsx",
@@ -855,8 +865,8 @@
     },
     {
       "path": "frontend/src/components/SandboxPanel.jsx",
-      "bytes": 5160,
-      "sha256": "f5f1fe7436d0d9b1656c81b34e8aef445839b86c89e9ed2eed4dac888985e343"
+      "bytes": 5247,
+      "sha256": "90fb458f7632319d59bbcdcf9d832bc558544b8741010e4e8fd6e53610d76411"
     },
     {
       "path": "frontend/src/components/ScenarioControls.jsx",
@@ -886,7 +896,7 @@
     {
       "path": "frontend/src/components/UncertaintyInterval.jsx",
       "bytes": 1661,
-      "sha256": "c2197ced2e2c84d6fceb4bb2406e889d78ceb0ff5c69b0a51f4a40ca0c04fae8"
+      "sha256": "145e5fbdeed595a517becae1e0713d53b6c9e346afe87199e41f954738d7eebf"
     },
     {
       "path": "frontend/src/config/assetUrl.js",
@@ -899,9 +909,14 @@
       "sha256": "9f61afdac87a647bf55c3b1e390a31b2a29ba54eb8524b30182ee5bf4aa611aa"
     },
     {
+      "path": "frontend/src/config/cityScreenContract.json",
+      "bytes": 314,
+      "sha256": "f7818bf5b9d70b8ec1f8f252c45d8cc905b9ed07b99d13cbb3a561fcd725a8ac"
+    },
+    {
       "path": "frontend/src/config/communityEvidence.js",
-      "bytes": 10044,
-      "sha256": "0c216e1c9b1b3dcdba7f894ed3b0f09a7bab17b30fb5622181d3a8215c47b298"
+      "bytes": 10046,
+      "sha256": "08ad770b06f45eeb622309a0d2536d053fa2537a6e49ffee2102b5d090cca968"
     },
     {
       "path": "frontend/src/config/dataPaths.js",
@@ -915,8 +930,8 @@
     },
     {
       "path": "frontend/src/config/modelParameters.json",
-      "bytes": 3438,
-      "sha256": "46339dd2962f0b7ddcdf7626c4588bae5d6f2bd0dde7e8b0e1a256ca4e72f8b5"
+      "bytes": 3447,
+      "sha256": "a6b3a83673142f92888841324ef945f060121cd76f42e388d2109cae83bc8692"
     },
     {
       "path": "frontend/src/config/scientificGuardrails.json",
@@ -925,8 +940,13 @@
     },
     {
       "path": "frontend/src/config/uiCopy.js",
-      "bytes": 3299,
-      "sha256": "17c5a7e9b271454888afca4f45bfa823f047364a95d54c4ec379b48340b61283"
+      "bytes": 3828,
+      "sha256": "b2d007eb48524ed6c2f4ef32f79c64824b500b1ceb56dc2755357506d93bb921"
+    },
+    {
+      "path": "frontend/src/domain/actionFootprint.js",
+      "bytes": 1472,
+      "sha256": "5bb91752a8d9572df1e381d788c1f553ec2334f234783eb75b6db5d66f4d93ed"
     },
     {
       "path": "frontend/src/domain/alternatives.js",
@@ -937,6 +957,11 @@
       "path": "frontend/src/domain/benchmark.js",
       "bytes": 5503,
       "sha256": "1fd0c33389139cd126252c1572f1cd2d6a4d34e7579073f745f1fd15b8cfb1ef"
+    },
+    {
+      "path": "frontend/src/domain/cityScreen.js",
+      "bytes": 1891,
+      "sha256": "b38f6536f829e5b6e241447e57df75a3f6411a729e6b81a30fdc076161846f9f"
     },
     {
       "path": "frontend/src/domain/climateScenarios.js",
@@ -955,8 +980,8 @@
     },
     {
       "path": "frontend/src/domain/decisionPackage.js",
-      "bytes": 9897,
-      "sha256": "e803aeba22319daa004e92f588c3a94a7864611732aae12ab20684c01db42f5f"
+      "bytes": 10095,
+      "sha256": "b139787a9d262bf54bf9a43ae0a6ce1eab6dd021d1e47801ecaaab7b76c8b187"
     },
     {
       "path": "frontend/src/domain/fingerprint.js",
@@ -972,6 +997,11 @@
       "path": "frontend/src/domain/interventionModel.js",
       "bytes": 3514,
       "sha256": "d8df5f4b0794e52963368c16b924a06be29d29f781e56e3ca322b047c14c634f"
+    },
+    {
+      "path": "frontend/src/domain/numeric.js",
+      "bytes": 256,
+      "sha256": "c4fd016c156ccf86843c53776063d1e908e47771291126784851d1864d00215c"
     },
     {
       "path": "frontend/src/domain/optimizer.js",
@@ -1015,8 +1045,8 @@
     },
     {
       "path": "frontend/src/hooks/useOureaMap.js",
-      "bytes": 2353,
-      "sha256": "a708096c93af7784238870946164d3811566344adfa54783fe27a292e71b7d57"
+      "bytes": 3198,
+      "sha256": "43cd9b0b39af387590b6beeeb7543cb9269919b78fabb206bb34a251adf0d784"
     },
     {
       "path": "frontend/src/hooks/usePortfolioWorkspace.js",
@@ -1035,13 +1065,13 @@
     },
     {
       "path": "frontend/src/services/mapService.js",
-      "bytes": 26997,
-      "sha256": "857598522a7bad94f0c5afc13efb832f0c847e9a67c185e84e7a615b15c86744"
+      "bytes": 27965,
+      "sha256": "386b0bb11d0e281bc5275efc910e2288b3e7a9ce2cb4edf172ed1fc58210e9c6"
     },
     {
       "path": "frontend/src/styles/base.css",
-      "bytes": 1602,
-      "sha256": "04b704df5fe18c957f8b66cb5878b1c3347dae22da3a141552632354bd2c18d6"
+      "bytes": 1974,
+      "sha256": "ac1d32d8123e4ae5569b0b2c5d61b25e0ec522777df02a50cc9d7c6dce84a1e3"
     },
     {
       "path": "frontend/src/styles/city.css",
@@ -1070,8 +1100,8 @@
     },
     {
       "path": "frontend/src/styles/sandbox.css",
-      "bytes": 12750,
-      "sha256": "6b37d009e688fa26337e41179187e158478e326b3439a5931b4ae81d6dc68ad0"
+      "bytes": 13354,
+      "sha256": "1c9f113cb66d918ec38803ac9b6622e0bf02d08e38dc06dbb3e44d63453f6c61"
     },
     {
       "path": "frontend/src/styles/tokens.css",
@@ -1084,6 +1114,11 @@
       "sha256": "c100d54adc05e0ead9f9e8426c2061b5b39b49695d11cb49ee54154040be1221"
     },
     {
+      "path": "frontend/tests/actionFootprint.test.js",
+      "bytes": 2200,
+      "sha256": "6eb09fa5d0bc92ef48c26bea4afc0fd899f2512d80c4d922455d05682f3940bb"
+    },
+    {
       "path": "frontend/tests/assetUrl.test.js",
       "bytes": 695,
       "sha256": "933b43138a550d68a00d3c9ef694881d70016f9c02492bb79ca88cec43f3dac7"
@@ -1092,6 +1127,11 @@
       "path": "frontend/tests/benchmark.test.js",
       "bytes": 5004,
       "sha256": "938cff68b8fe361b1d25eb685ed3079b874793dac7617cda7fa82db8c2016d35"
+    },
+    {
+      "path": "frontend/tests/cityScreen.test.js",
+      "bytes": 2281,
+      "sha256": "9798f42215f601051b41e1fd691688e70e059c2ea15e92598e9a510d5faf8d51"
     },
     {
       "path": "frontend/tests/climateScenarios.test.js",
@@ -1110,13 +1150,13 @@
     },
     {
       "path": "frontend/tests/dataValidation.mjs",
-      "bytes": 11409,
-      "sha256": "001b84950dc7d010711f23292f4f68435470dfcb5651b424070515ce74dd8852"
+      "bytes": 12065,
+      "sha256": "51c46527e3ee199cad172fd937da0fd8d1a0006aa85d766e7b803fcfced609e9"
     },
     {
       "path": "frontend/tests/decisionPackage.test.js",
-      "bytes": 2721,
-      "sha256": "a5d00aff1062f8685285716a15c29665d2de4ff36d92a04eaff4aa2cd9a10964"
+      "bytes": 2788,
+      "sha256": "d3d4154f6bea7814bc4470affbaa50a770864e3d218a7eab24dbef8af9aeaaa2"
     },
     {
       "path": "frontend/tests/model.test.js",
@@ -1185,8 +1225,8 @@
     },
     {
       "path": "scripts/build_climate_context.py",
-      "bytes": 18068,
-      "sha256": "f9bc641db36b7867d50b761e1642fcbd62a2fd2a0da5b885007b65e8ffcd2947"
+      "bytes": 23712,
+      "sha256": "f61499f92d63fbccc2902b04191ca7503892e0a83fbbc4a4b54be180ed22a940"
     },
     {
       "path": "scripts/chirps_stats.py",
@@ -1240,13 +1280,13 @@
     },
     {
       "path": "scripts/validate_climate_context.py",
-      "bytes": 3316,
-      "sha256": "7fb24e06434a62819b93f4a1b698ca4fc79b08525bc4a6d7b935768c3cbe040a"
+      "bytes": 5216,
+      "sha256": "5c1d870dc20ea3a966d5a6f32ad36cfb06ee958fc12152dacc6a71d1f02956a3"
     },
     {
       "path": "scripts/validate_project.py",
-      "bytes": 18806,
-      "sha256": "e9a09d14b9e35b44a1d351725c7ac72ebff197e3618c9260ce590b5804f072db"
+      "bytes": 18935,
+      "sha256": "8d4a7469f45784d006bccca4f7d7266f9c4eeed2fa90b000ea5b1deccf27f401"
     },
     {
       "path": "tests/test_chirps_stats.py",
@@ -1257,6 +1297,11 @@
       "path": "tests/test_climate_context.py",
       "bytes": 1058,
       "sha256": "c3199f0e1e4347ef3e7d3adbac9abd45f51d983d650676cc05e6ef85d32140b8"
+    },
+    {
+      "path": "tests/test_climate_rebuild.py",
+      "bytes": 1350,
+      "sha256": "136f7fd1a83a711f8e77727b0aba5f9e575978f98ff8a461bc026886b124e995"
     }
   ]
 }
