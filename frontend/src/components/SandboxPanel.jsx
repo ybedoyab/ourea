@@ -154,6 +154,9 @@ export function SandboxPanel({
         benchmarkBusy={benchmarkBusy}
         benchmarkError={benchmarkError}
         onAnalyzeBenchmark={onAnalyzeBenchmark}
+        cells={cells}
+        activePlan={activePlan}
+        rainMm={scenario.rainMm}
       />
 
       <EvidencePanel evidence={evidence} />

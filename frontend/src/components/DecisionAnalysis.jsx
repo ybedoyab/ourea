@@ -1,5 +1,6 @@
 import { RWH_ASSUMPTIONS } from '../config/modelConfig.js';
 import { frontierTakeaway } from '../config/uiCopy.js';
+import { actionFootprint } from '../domain/actionFootprint.js';
 import { BenchmarkPanel } from './BenchmarkPanel.jsx';
 import { Metric, MetricGroup } from './Metric.jsx';
 import { ParetoPanel } from './ParetoPanel.jsx';
@@ -34,8 +35,16 @@ export function DecisionAnalysis({
   benchmarkBusy,
   benchmarkError,
   onAnalyzeBenchmark,
+  cells,
+  activePlan,
+  rainMm,
 }) {
   const takeaway = frontierTakeaway(frontier);
+  const footprint = actionFootprint({
+    projects: activePlan,
+    cells,
+    rainMm,
+  });
 
   return (
     <section>
@@ -70,7 +79,7 @@ export function DecisionAnalysis({
         <Metric
           label="RWH captured volume"
           value={`${capturedVolumeM3.toFixed(0)} m³`}
-          hint={`Roof footprint × ${RWH_ASSUMPTIONS.runoffCoefficient} runoff coefficient and development storage/participation assumptions.`}
+          hint={`Roof footprint × ${RWH_ASSUMPTIONS.runoffCoefficient} runoff coefficient and planning storage/participation assumptions.`}
         />
       </MetricGroup>
 
@@ -85,6 +94,41 @@ export function DecisionAnalysis({
           value={metrics ? metrics.accessBenefit.toFixed(1) : '—'}
           hint="Benefit weighted toward mapped hillside access. Not an evacuation simulation."
         />
+      </MetricGroup>
+
+      <MetricGroup label="Action footprint">
+        <div className="action-footprint" data-testid="action-footprint">
+          <p>
+            Where the selected portfolio concentrates action. These are targeted planning
+            proxies, not people protected or avoided losses.
+          </p>
+          <div className="metric-group-grid">
+            <Metric
+              label="Planning cells targeted"
+              value={footprint.planning_cells_targeted.toLocaleString()}
+            />
+            <Metric
+              label="Cadastral buildings in targeted cells"
+              value={footprint.cadastral_buildings_in_targeted_cells.toLocaleString()}
+            />
+            <Metric
+              label="High-hazard buildings in targeted cells"
+              value={footprint.high_hazard_buildings_in_targeted_cells.toLocaleString()}
+            />
+            <Metric
+              label="Population proxy in targeted cells"
+              value={`~${Math.round(footprint.population_proxy_in_targeted_cells).toLocaleString()}`}
+            />
+            <Metric
+              label="Intervention families"
+              value={footprint.intervention_families.join(', ') || '—'}
+            />
+            <Metric
+              label="RWH captured volume"
+              value={`${footprint.rwh_captured_volume_m3.toFixed(0)} m³`}
+            />
+          </div>
+        </div>
       </MetricGroup>
 
       {monteCarlo ? (

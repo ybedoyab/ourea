@@ -83,4 +83,5 @@ test('exported package includes climate provenance and a stable fingerprint', ()
   assert.equal(first.reproducible_id, second.reproducible_id);
   assert.notEqual(first.generated_at, undefined);
   assert.equal(first.schema_versions.climate_context, 1);
+  assert.equal(first.action_footprint.planning_cells_targeted, 1);
 });

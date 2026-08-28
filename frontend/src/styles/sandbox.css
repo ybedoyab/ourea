@@ -526,6 +526,44 @@
   border-top: 1px solid var(--border);
 }
 
+.decision-engine {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.decision-engine ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.decision-engine p,
+.decision-engine small {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.action-footprint {
+  display: grid;
+  gap: 10px;
+  grid-column: 1 / -1;
+}
+
+.action-footprint p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .stability-summary {
   display: flex;
   justify-content: space-between;

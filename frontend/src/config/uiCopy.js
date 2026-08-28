@@ -94,3 +94,15 @@ export function frontierTakeaway(frontier) {
 
   return `Most additional robust benefit is captured by ${capture.budgetCredits} planning credits in this ensemble.`;
 }
+
+export const DECISION_ENGINE_COPY = Object.freeze({
+  title: 'Decision engine',
+  eligibleCandidates: 125,
+  uncertaintyScenarios: 80,
+  policyObjectives: 4,
+  comparisonFutures: 220,
+  explanation:
+    'Ourea searches intervention-location combinations under budget constraints, reevaluates marginal benefit as projects overlap, penalizes downside and exposes alternative policy choices.',
+  milpNote:
+    'The browser search is independently cross-checked with a binary MILP. It is not claimed to find a global optimum.',
+});

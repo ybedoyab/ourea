@@ -1,4 +1,5 @@
 import { INTERVENTIONS } from '../config/modelConfig.js';
+import { DECISION_ENGINE_COPY } from '../config/uiCopy.js';
 import { policyConsensus } from '../domain/alternatives.js';
 
 function score(value) {
@@ -25,6 +26,17 @@ export function AlternativePortfolios({
 
   return (
     <div className="alternative-box">
+      <div className="decision-engine" data-testid="decision-engine">
+        <b>{DECISION_ENGINE_COPY.title}</b>
+        <ul>
+          <li>{DECISION_ENGINE_COPY.eligibleCandidates} eligible intervention-location candidates</li>
+          <li>{DECISION_ENGINE_COPY.uncertaintyScenarios} uncertainty scenarios per optimization</li>
+          <li>{DECISION_ENGINE_COPY.policyObjectives} transparent policy objectives</li>
+          <li>{DECISION_ENGINE_COPY.comparisonFutures} common-random futures for comparison</li>
+        </ul>
+        <p>{DECISION_ENGINE_COPY.explanation}</p>
+        <small>{DECISION_ENGINE_COPY.milpNote}</small>
+      </div>
       <div className="alternative-head">
         <div>
           <b>OUREA robust options</b>
@@ -120,7 +132,7 @@ export function AlternativePortfolios({
 
       <small className="alternative-note">
         “Highest P10 in current ensemble” means strongest lower-tail benefit proxy in this
-        development draw, not universal optimality. Policy weights remain explicit settings and
+        current ensemble, not universal optimality. Policy weights remain explicit settings and
         should be co-designed with decision-makers.
       </small>
     </div>

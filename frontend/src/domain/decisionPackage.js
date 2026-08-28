@@ -1,6 +1,7 @@
 import scientificGuardrails from '../config/scientificGuardrails.json' with { type: 'json' };
 import { BRAND } from '../config/brand.js';
 import { MODEL_PARAMETERS } from '../config/modelConfig.js';
+import { actionFootprint } from './actionFootprint.js';
 import { climateSourceSummary } from './climateScenarios.js';
 import { decisionFingerprint } from './fingerprint.js';
 import { planCostCredits } from './optimizer.js';
@@ -62,6 +63,7 @@ export function buildDecisionPackage({
   breakage,
   planAlignment,
   climateContext,
+  cells,
 }) {
   const packageProjects = projects.map((project) => ({
     cell_id: Number(project.cell_id),
@@ -105,6 +107,11 @@ export function buildDecisionPackage({
       spent: planCostCredits(packageProjects),
     },
     portfolio: packageProjects,
+    action_footprint: actionFootprint({
+      projects: packageProjects,
+      cells,
+      rainMm: Number(scenario.rainMm),
+    }),
     sandbox_summary: summary,
     deterministic_metrics: metrics
       ? {
