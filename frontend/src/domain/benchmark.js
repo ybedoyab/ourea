@@ -5,6 +5,7 @@ import {
 } from '../config/modelConfig.js';
 import { planCostCredits, optimizeRobustPortfolio } from './optimizer.js';
 import { evaluatePortfolio, monteCarloPortfolio } from './scenarioEngine.js';
+import { regret, signedDelta } from './regret.js';
 
 const HAZARD_RANK = Object.freeze({ Alta: 3, Media: 2, Baja: 1 });
 const INTERVENTION_ORDER = Object.freeze(['drainage', 'rwh', 'restoration']);
@@ -113,6 +114,7 @@ function summarizeStrategy(label, selection, context, scenario, budgetCredits, r
     accessBenefit: deterministic.accessBenefit,
     overlapWithRobust: overlapShare(selection.plan, robustPlan),
     p10RegretVersusRobust: null,
+    p10DeltaVersusRobust: null,
   };
 }
 
@@ -165,14 +167,15 @@ export function compareSelectionStrategies({
 
   const robustP10 = strategies[2].p10;
   for (const item of strategies) {
-    item.p10RegretVersusRobust = Number((robustP10 - item.p10).toFixed(4));
+    item.p10RegretVersusRobust = regret(robustP10, item.p10);
+    item.p10DeltaVersusRobust = signedDelta(robustP10, item.p10);
   }
 
   return {
     budgetCredits: Number(budgetCredits),
     profile,
     seed: MODEL_PARAMETERS.scenarioUncertainty.comparisonSeed,
-    note: 'Hazard-only ranks mapped high-hazard exposure. Deterministic uses one central-scenario sample. Ourea robust uses the published uncertainty ensemble. None of these is a landslide prediction.',
+    note: 'Hazard-only ranks mapped high-hazard exposure. Deterministic uses one central-scenario sample. Ourea robust uses the published uncertainty ensemble. None of these is a landslide prediction. P10 regret is max(0, robust P10 − strategy P10). P10 delta is signed (strategy − robust).',
     strategies,
   };
 }

@@ -109,6 +109,15 @@ test('deterministic and robust comparisons are seed-stable', () => {
   assert.ok(first.strategies.every((item) => item.budgetFeasible));
   const robust = first.strategies.find((item) => item.id === 'ourea_robust');
   assert.equal(robust.p10RegretVersusRobust, 0);
+  assert.equal(robust.p10DeltaVersusRobust, 0);
+  const hazard = first.strategies.find((item) => item.id === 'hazard_only');
+  if (hazard.p10 < robust.p10) {
+    assert.ok(hazard.p10DeltaVersusRobust < 0);
+    assert.equal(
+      hazard.p10RegretVersusRobust,
+      Number((robust.p10 - hazard.p10).toFixed(4)),
+    );
+  }
   assert.ok(first.strategies.every((item) => Number.isFinite(item.median)));
   assert.ok(first.strategies.every((item) => Number.isFinite(item.p10)));
 });
@@ -142,8 +151,14 @@ test('portfolio breakage reports threshold breaches and assumption influence', (
     budgetCredits: 4,
   });
   assert.ok(breakage.breachThreshold <= breakage.referenceBenefit);
-  assert.ok(Array.isArray(breakage.breaches));
-  assert.ok(breakage.influentialAssumptions.length >= 2);
+  assert.ok(Array.isArray(breakage.scenarioCombinationsBelowThreshold));
+  assert.ok(Array.isArray(breakage.oneAtATime));
+  assert.ok(
+    breakage.oneAtATime.some((item) => item.assumption === 'rainfall'),
+  );
+  assert.ok(
+    breakage.oneAtATime.some((item) => item.assumption === 'antecedent_rainfall'),
+  );
+  assert.match(breakage.note, /scenario combinations, not spatial grid cells/i);
   assert.ok(breakage.versusAlternative);
-  assert.match(breakage.note, /Not a calibrated climate forecast/i);
 });

@@ -5,6 +5,10 @@ export function BenchmarkPanel({
   error,
   onAnalyze,
 }) {
+  const combinationCount = breakage?.scenarioCombinationsBelowThreshold?.length
+    ?? breakage?.breaches?.length
+    ?? 0;
+
   return (
     <div className="benchmark-box" data-testid="benchmark-panel">
       <div className="frontier-header">
@@ -12,7 +16,7 @@ export function BenchmarkPanel({
           <b>Selection benchmark</b>
           <span>
             Hazard-only versus a one-scenario deterministic plan versus Ourea robust, under the
-            same budget and comparison seed.
+            same budget, candidates and comparison seed.
           </span>
         </div>
         <button
@@ -40,6 +44,7 @@ export function BenchmarkPanel({
               <span>{item.projectCount} projects</span>
               <span>median {item.median.toFixed(1)}</span>
               <span>P10 {item.p10.toFixed(1)}</span>
+              <span>P10 Δ {item.p10DeltaVersusRobust.toFixed(1)}</span>
               <span>P10 regret {item.p10RegretVersusRobust.toFixed(1)}</span>
               <span>overlap {Math.round(item.overlapWithRobust * 100)}%</span>
             </div>
@@ -51,14 +56,20 @@ export function BenchmarkPanel({
         <div className="breakage-box" data-testid="breakage-panel">
           <b>What breaks this portfolio?</b>
           <span>
-            Deterministic sensitivity on rain, wetness and restoration maturity. Threshold is
+            One-at-a-time sensitivity on rainfall, antecedent rainfall, restoration maturity,
+            effect range and cost uncertainty. Threshold is
             {` ${Math.round(breakage.thresholdRatio * 100)}% `}
             of the reference benefit proxy.
           </span>
-          <span>{breakage.breaches.length} grid cells fall below the threshold.</span>
-          {breakage.influentialAssumptions.map((item) => (
+          <span data-testid="breakage-combination-count">
+            {combinationCount} scenario combinations fall below the threshold.
+          </span>
+          {(breakage.oneAtATime ?? []).map((item) => (
             <span key={item.assumption}>
-              {item.assumption.replaceAll('_', ' ')}: Δ {item.deltaBenefit.toFixed(1)}
+              {item.assumption.replaceAll('_', ' ')}
+              {item.changesComposition
+                ? ': changes portfolio composition'
+                : ': changes results only'}
             </span>
           ))}
           <small>{breakage.note}</small>
