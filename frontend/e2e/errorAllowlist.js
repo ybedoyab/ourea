@@ -90,6 +90,15 @@ export async function assertNoHorizontalOverflow(page) {
   expect(overflow, 'horizontal overflow').toBe(false);
 }
 
+export async function assertNoVerticalPageOverflow(page) {
+  const metrics = await page.evaluate(() => ({
+    scrollHeight: document.documentElement.scrollHeight,
+    clientHeight: document.documentElement.clientHeight,
+    bodyOverflow: getComputedStyle(document.body).overflowY,
+  }));
+  expect(metrics.scrollHeight, 'vertical page overflow').toBeLessThanOrEqual(metrics.clientHeight + 1);
+}
+
 export async function assertMapSurface(page) {
   const fallback = page.getByTestId('map-fallback');
   if (await fallback.isVisible()) return;
