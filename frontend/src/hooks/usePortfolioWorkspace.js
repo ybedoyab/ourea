@@ -20,6 +20,11 @@ import { assessCommunitySafeguards } from '../domain/communitySafeguards.js';
 import { compareSelectionStrategies } from '../domain/benchmark.js';
 import { diagnosePortfolioBreaks } from '../domain/sensitivity.js';
 import { INTERVENTION_TYPES, normalizeCommunityRecord } from '../config/communityEvidence.js';
+import {
+  defaultScenarioFromClimate,
+  rainStepsFromClimate,
+  scenarioFromPreset,
+} from '../domain/climateScenarios.js';
 
 const EMPTY_PLAN = Object.freeze([]);
 const DEFAULT_AI_PROFILE = 'balanced';
@@ -29,6 +34,7 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     rainMm: DEFAULT_SCENARIO.rainMm,
     antecedentWetness: DEFAULT_SCENARIO.antecedentWetness,
     planningYear: DEFAULT_SCENARIO.planningYear,
+    presetId: 'typical_wet',
   });
   const [budgetCredits, setBudgetCredits] = useState(DEFAULT_SCENARIO.budgetCredits);
   const [userPlan, setUserPlan] = useState([]);
@@ -58,6 +64,21 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     () => (data ? createScenarioContext(data.buildings, data.cells) : null),
     [data],
   );
+
+  useEffect(() => {
+    if (!data?.climateContext) return;
+    setScenario((current) => {
+      if (current.climate) return current;
+      const next = defaultScenarioFromClimate(data.climateContext, DEFAULT_SCENARIO.budgetCredits);
+      return {
+        rainMm: next.rainMm,
+        antecedentWetness: next.antecedentWetness,
+        planningYear: current.planningYear,
+        presetId: next.presetId,
+        climate: next.climate,
+      };
+    });
+  }, [data]);
 
   const activePlan = useMemo(
     () => (view === 'user' ? userPlan : view === 'ai' ? aiPlan : EMPTY_PLAN),
@@ -323,11 +344,81 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
             scenario,
             budgetCredits,
             profile: selectedAiProfileId,
+            climateRainSteps: rainStepsFromClimate(data.climateContext),
           }),
         );
       } catch (error) {
         setBenchmarkError(error instanceof Error ? error.message : String(error));
       } finally {
+        setBenchmarkBusy(false);
+      }
+    }, 0);
+  }
+
+  function applyClimatePreset(preset) {
+    setScenario((current) => scenarioFromPreset(preset, { planningYear: current.planningYear }));
+  }
+
+  function runGuidedDemo() {
+    if (!context || !data?.climateContext || alternativeBusy || benchmarkBusy) return;
+    const next = defaultScenarioFromClimate(data.climateContext, DEFAULT_SCENARIO.budgetCredits);
+    const demoScenario = {
+      rainMm: next.rainMm,
+      antecedentWetness: next.antecedentWetness,
+      planningYear: 1,
+      presetId: next.presetId,
+      climate: next.climate,
+    };
+    const demoBudget = DEFAULT_SCENARIO.budgetCredits;
+    setBudgetCredits(demoBudget);
+    setScenario(demoScenario);
+    setUserPlan([]);
+    setView('none');
+    setAlternativeBusy(true);
+    setAlternativeError(null);
+    setBenchmarkBusy(true);
+    setBenchmarkError(null);
+    window.setTimeout(() => {
+      try {
+        const options = generateAlternativePortfolios({
+          context,
+          cellsGeoJson: data.cells,
+          scenario: demoScenario,
+          budgetCredits: demoBudget,
+        });
+        setAlternatives(options);
+        const recommended = [...options].sort(
+          (a, b) =>
+            b.uncertainty.p10 - a.uncertainty.p10 || b.downsideRetention - a.downsideRetention,
+        )[0];
+        selectAlternative(recommended?.profileId ?? DEFAULT_AI_PROFILE, options);
+        const comparison = compareSelectionStrategies({
+          context,
+          cellsGeoJson: data.cells,
+          scenario: demoScenario,
+          budgetCredits: demoBudget,
+          profile: recommended?.profileId ?? DEFAULT_AI_PROFILE,
+        });
+        setBenchmark(comparison);
+        const robust = comparison.strategies.find((item) => item.id === 'ourea_robust');
+        setBreakage(
+          diagnosePortfolioBreaks({
+            context,
+            cellsGeoJson: data.cells,
+            plan: robust?.plan ?? [],
+            alternativePlan: comparison.strategies.find((item) => item.id === 'hazard_only')?.plan,
+            scenario: demoScenario,
+            budgetCredits: demoBudget,
+            profile: recommended?.profileId ?? DEFAULT_AI_PROFILE,
+            climateRainSteps: rainStepsFromClimate(data.climateContext),
+          }),
+        );
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        setAlternativeError(message);
+        setBenchmarkError(message);
+      } finally {
+        setAlternativeBusy(false);
         setBenchmarkBusy(false);
       }
     }, 0);
@@ -363,6 +454,8 @@ export function usePortfolioWorkspace({ data, selectedCellId, selectedType }) {
     context,
     scenario,
     setScenario,
+    applyClimatePreset,
+    runGuidedDemo,
     budgetCredits,
     setBudgetCredits,
     userPlan,

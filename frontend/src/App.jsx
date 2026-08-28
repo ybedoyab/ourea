@@ -86,8 +86,18 @@ export default function App() {
         benchmark: workspace.benchmark,
         breakage: workspace.breakage,
         planAlignment: data.planAlignment,
+        climateContext: data.climateContext,
       }),
     );
+  }
+
+  function runGuidedDemo() {
+    setCityLens('balanced');
+    if (llanaditas) setSelectedBarrio(llanaditas.properties);
+    setSelectedCellId(35);
+    setSelectedType('rwh');
+    setScope('sandbox');
+    workspace.runGuidedDemo();
   }
 
   if (loadError) throw loadError;
@@ -112,6 +122,8 @@ export default function App() {
         userCost={workspace.userCost}
         aiCost={workspace.aiCost}
         aiProfileLabel={workspace.aiDiagnostics?.profile?.label}
+        onRunGuidedDemo={runGuidedDemo}
+        guidedDemoBusy={workspace.alternativeBusy || workspace.benchmarkBusy}
       />
 
       <MapLegend scope={scope} cityLens={cityLens} />
@@ -130,6 +142,7 @@ export default function App() {
             onCityLensChange={setCityLens}
             onSelectBarrio={setSelectedBarrio}
             onOpenSandbox={() => setScope('sandbox')}
+            onRunGuidedDemo={runGuidedDemo}
           />
         ) : (
           <SandboxPanel
@@ -176,8 +189,8 @@ export default function App() {
             paretoError={workspace.paretoError}
             onAnalyzePareto={workspace.analyzePareto}
             evidence={data?.evidence}
-            replay={data?.replay}
-            replayContract={data?.replayContract}
+            climate={data?.climateContext}
+            onSelectClimatePreset={workspace.applyClimatePreset}
             communityAssessment={workspace.communityAssessment}
             activePlan={workspace.activePlan}
             onRecordCommunityEvidence={workspace.upsertSessionCommunityRecord}
@@ -199,8 +212,8 @@ export default function App() {
 
         <footer>
           {BRAND.name} · {BRAND.expansion}. Decision support for accountable city choices — not a
-          substitute for engineering design. SIATA historical rainfall remains the calibration
-          bridge.
+          substitute for engineering design. Rainfall contexts are CHIRPS v3 Final gridded
+          observations, not real-time forecasts.
         </footer>
       </aside>
     </div>

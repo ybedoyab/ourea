@@ -9,6 +9,8 @@ export function TopBar({
   userCost,
   aiCost,
   aiProfileLabel,
+  onRunGuidedDemo,
+  guidedDemoBusy,
 }) {
   const robustLabel = aiProfileLabel
     ? `OUREA · ${aiProfileLabel}`
@@ -43,6 +45,16 @@ export function TopBar({
           Decision sandbox
         </button>
       </nav>
+
+      <button
+        type="button"
+        className="guided-demo"
+        data-testid="run-guided-demo"
+        onClick={onRunGuidedDemo}
+        disabled={guidedDemoBusy}
+      >
+        {guidedDemoBusy ? 'Running demo…' : 'Run guided demo'}
+      </button>
 
       {scope === 'sandbox' && (
         <div className="seg" role="group" aria-label="Active portfolio comparison">

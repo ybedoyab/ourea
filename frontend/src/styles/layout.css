@@ -100,6 +100,17 @@
   margin-left: auto;
 }
 
+.guided-demo {
+  padding: 8px 11px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent-dim);
+  color: var(--text-primary);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
 .scope button,
 .seg button,
 .toggles button,

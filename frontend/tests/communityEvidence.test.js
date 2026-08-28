@@ -385,5 +385,5 @@ test('participatory export keeps only active-plan records and separate session h
   assert.equal(payload.community_safeguards.participatory_records.length, 1);
   assert.equal(payload.community_safeguards.session_history.length, 2);
   assert.match(payload.community_safeguards.privacy_warning, /personal data/i);
-  assert.match(payload.scenario.role, /not-temporal-pathway-optimization/);
+  assert.match(payload.scenario.role, /observed-or-explored-rainfall-context/);
 });

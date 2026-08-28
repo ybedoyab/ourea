@@ -54,6 +54,7 @@ export function CityPanel({
   onCityLensChange,
   onSelectBarrio,
   onOpenSandbox,
+  onRunGuidedDemo,
 }) {
   const barrioCount = screening?.features?.length ?? 0;
   const populationMatched =
@@ -69,8 +70,9 @@ export function CityPanel({
       <p className="eyebrow">{BRAND.event} · city-scale screening</p>
       <h1>Screen the city. Then test action.</h1>
       <p className="lede">
-        {BRAND.descriptor} Official hazard, 2026 population projections and socioeconomic
-        conditions shortlist where a high-resolution adaptation sandbox is warranted.
+        An evidence-backed decision sandbox that helps cities turn climate risk, budget
+        constraints, equity and community safeguards into robust portfolios of urban resilience
+        actions.
       </p>
       <Guardrail>
         This is a transparent city-prioritization screen, not a dynamic climate forecast or an
@@ -209,6 +211,13 @@ export function CityPanel({
           </p>
           <button type="button" className="primary citycta" data-testid="open-sandbox" onClick={onOpenSandbox}>
             Open the Llanaditas proving ground
+          </button>
+          <button
+            type="button"
+            data-testid="run-guided-demo-city"
+            onClick={onRunGuidedDemo}
+          >
+            Run guided demo
           </button>
         </div>
       </section>

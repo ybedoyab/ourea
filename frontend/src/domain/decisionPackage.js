@@ -1,12 +1,14 @@
 import scientificGuardrails from '../config/scientificGuardrails.json' with { type: 'json' };
 import { BRAND } from '../config/brand.js';
 import { MODEL_PARAMETERS } from '../config/modelConfig.js';
+import { climateSourceSummary } from './climateScenarios.js';
+import { decisionFingerprint } from './fingerprint.js';
 import { planCostCredits } from './optimizer.js';
 import { policyConsensus } from './alternatives.js';
 import { emptyCommunityAssessment } from './communitySafeguards.js';
 
 export const DECISION_PACKAGE_SCHEMA = 'ourea-decision-package';
-export const DECISION_PACKAGE_SCHEMA_VERSION = 1;
+export const DECISION_PACKAGE_SCHEMA_VERSION = 2;
 export const SCIENTIFIC_GUARDRAILS = Object.freeze([...scientificGuardrails.items]);
 
 function portfolioSummary(option) {
@@ -59,6 +61,7 @@ export function buildDecisionPackage({
   benchmark,
   breakage,
   planAlignment,
+  climateContext,
 }) {
   const packageProjects = projects.map((project) => ({
     cell_id: Number(project.cell_id),
@@ -74,6 +77,7 @@ export function buildDecisionPackage({
     slogan: BRAND.slogan,
     generated_at: new Date().toISOString(),
     model_status: MODEL_PARAMETERS.status,
+    uncertainty_seed: MODEL_PARAMETERS.scenarioUncertainty.comparisonSeed,
     scope: {
       city: 'Medellín',
       proving_ground: BRAND.provingGround,
@@ -82,12 +86,19 @@ export function buildDecisionPackage({
     portfolio_mode: view,
     selected_ai_policy: selectedAiProfileId ?? null,
     scenario: {
+      preset_id: scenario.presetId ?? null,
       rain_mm: Number(scenario.rainMm),
-      antecedent_wetness: Number(scenario.antecedentWetness),
+      accumulation_window_days: Number(scenario.climate?.accumulationWindowDays ?? 15),
+      historical_percentile: scenario.climate?.percentile ?? null,
+      antecedent_rainfall_percentile: Number(scenario.antecedentWetness),
       planning_year: Number(scenario.planningYear),
-      role: 'restoration-maturity-and-effect-timing-not-temporal-pathway-optimization',
-      status: 'hypothetical-development-scenario-not-SIATA-calibrated',
+      climatology_period: scenario.climate?.climatologyPeriod
+        ?? climateContext?.climatology_period?.label
+        ?? null,
+      source_name: scenario.climate?.sourceName ?? climateContext?.source_name ?? null,
+      role: 'observed-or-explored-rainfall-context-and-restoration-maturity',
     },
+    climate_context: climateSourceSummary(climateContext),
     budget: {
       unit: 'planning-credit-not-COP',
       available: Number(budgetCredits),
@@ -212,6 +223,26 @@ export function buildDecisionPackage({
       : null,
     selection_benchmark: benchmark ?? null,
     portfolio_breakage: breakage ?? null,
+    schema_versions: {
+      decision_package: DECISION_PACKAGE_SCHEMA_VERSION,
+      climate_context: climateContext?.schema_version ?? null,
+      plan_alignment: planAlignment?.schema_version ?? null,
+      evidence_registry: evidence?.schema_version ?? null,
+    },
+    reproducible_id: decisionFingerprint({
+      seed: MODEL_PARAMETERS.scenarioUncertainty.comparisonSeed,
+      budget: Number(budgetCredits),
+      profile: selectedAiProfileId ?? null,
+      scenario: {
+        presetId: scenario.presetId ?? null,
+        rainMm: Number(scenario.rainMm),
+        antecedentRainfallPercentile: Number(scenario.antecedentWetness),
+        planningYear: Number(scenario.planningYear),
+      },
+      portfolio: packageProjects,
+      climate: climateContext?.source_version ?? null,
+      schema_version: DECISION_PACKAGE_SCHEMA_VERSION,
+    }),
     guardrails: SCIENTIFIC_GUARDRAILS,
   };
 }
