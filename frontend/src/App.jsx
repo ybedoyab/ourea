@@ -32,7 +32,7 @@ export default function App() {
     selectedType,
   });
 
-  const { mapNode } = useOureaMap({
+  const { mapNode, mapStatus, mapError } = useOureaMap({
     data,
     context: workspace.context,
     scope,
@@ -87,6 +87,7 @@ export default function App() {
         breakage: workspace.breakage,
         planAlignment: data.planAlignment,
         climateContext: data.climateContext,
+        cells: data.cells,
       }),
     );
   }
@@ -104,7 +105,18 @@ export default function App() {
 
   return (
     <div className="app">
-      <div ref={mapNode} className="map" />
+      <div ref={mapNode} className="map">
+        {mapStatus === 'unavailable' && (
+          <div className="map-fallback" role="status" data-testid="map-fallback">
+            <b>3D map unavailable in this browser</b>
+            <p>
+              The decision workflow remains available. Enable WebGL2 or use a compatible
+              browser to view the spatial layers.
+            </p>
+            {mapError ? <small>{mapError}</small> : null}
+          </div>
+        )}
+      </div>
 
       {!data && (
         <div className="loading">

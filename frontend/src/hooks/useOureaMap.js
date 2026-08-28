@@ -19,62 +19,88 @@ export function useOureaMap({
   const scopeRef = useRef(scope);
   scopeRef.current = scope;
   const [mapReady, setMapReady] = useState(false);
+  const [mapStatus, setMapStatus] = useState('pending');
+  const [mapError, setMapError] = useState(null);
 
   useEffect(() => {
     if (!data || !mapNode.current) return undefined;
     let cancelled = false;
 
-    import('../services/mapService.js').then(({ createOureaMap }) => {
-      if (cancelled || !mapNode.current) return;
-      const api = createOureaMap({
-        container: mapNode.current,
-        data,
-        onSelectCell,
-        onSelectBarrio,
-        onReady: () => setMapReady(true),
+    import('../services/mapService.js')
+      .then(({ createOureaMap }) => {
+        if (cancelled || !mapNode.current) return;
+        try {
+          const api = createOureaMap({
+            container: mapNode.current,
+            data,
+            onSelectCell,
+            onSelectBarrio,
+            onReady: () => {
+              if (cancelled) return;
+              setMapReady(true);
+              setMapStatus('ready');
+            },
+          });
+          if (cancelled) {
+            api.destroy?.();
+            return;
+          }
+          mapApiRef.current = api;
+        } catch (error) {
+          if (cancelled) return;
+          mapApiRef.current = null;
+          setMapReady(false);
+          setMapStatus('unavailable');
+          setMapError(error?.message ?? String(error));
+        }
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        mapApiRef.current = null;
+        setMapReady(false);
+        setMapStatus('unavailable');
+        setMapError(error?.message ?? String(error));
       });
-      mapApiRef.current = api;
-    });
 
     return () => {
       cancelled = true;
       setMapReady(false);
-      mapApiRef.current?.destroy();
+      mapApiRef.current?.destroy?.();
       mapApiRef.current = null;
     };
   }, [data, onSelectCell, onSelectBarrio]);
 
   useEffect(() => {
     if (!mapReady) return;
-    mapApiRef.current?.setScope(scope);
+    mapApiRef.current?.setScope?.(scope);
   }, [scope, mapReady]);
 
   useEffect(() => {
     if (!mapReady) return;
-    mapApiRef.current?.setCityLens(cityLens);
+    mapApiRef.current?.setCityLens?.(cityLens);
   }, [cityLens, mapReady]);
 
   useEffect(() => {
     if (!mapReady) return;
-    mapApiRef.current?.setSelectedBarrio(selectedBarrio);
+    mapApiRef.current?.setSelectedBarrio?.(selectedBarrio);
     if (scopeRef.current === 'city' && selectedBarrio) {
-      mapApiRef.current?.focusBarrio(selectedBarrio);
+      mapApiRef.current?.focusBarrio?.(selectedBarrio);
     }
   }, [selectedBarrio, mapReady]);
 
   useEffect(() => {
     if (!mapReady) return;
-    mapApiRef.current?.setSelectedCell(selectedCellId);
+    mapApiRef.current?.setSelectedCell?.(selectedCellId);
   }, [selectedCellId, mapReady]);
 
   useEffect(() => {
     if (!mapReady || scope !== 'sandbox') return;
-    mapApiRef.current?.setLayerVisibility(layerState);
+    mapApiRef.current?.setLayerVisibility?.(layerState);
   }, [layerState, scope, mapReady]);
 
   useEffect(() => {
     if (!mapReady || !context || !data || scope !== 'sandbox') return;
-    mapApiRef.current?.updateBuildingStress(
+    mapApiRef.current?.updateBuildingStress?.(
       buildingStressGeoJson({
         context,
         projects: activePlan,
@@ -82,8 +108,8 @@ export function useOureaMap({
         originalGeoJson: data.buildings,
       }),
     );
-    mapApiRef.current?.updateProjects(activePlan, data.cells);
+    mapApiRef.current?.updateProjects?.(activePlan, data.cells);
   }, [mapReady, context, data, activePlan, scenario, scope]);
 
-  return { mapNode };
+  return { mapNode, mapStatus, mapError };
 }

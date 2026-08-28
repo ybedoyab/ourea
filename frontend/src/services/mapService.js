@@ -4,6 +4,23 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { CITY_MAX_BOUNDS, MAP_VIEWS, SANDBOX_BBOX } from '../config/modelConfig.js';
 import { assetUrl } from '../config/assetUrl.js';
 
+export class MapUnavailableError extends Error {
+  constructor(message = 'WebGL2 is required') {
+    super(message);
+    this.name = 'MapUnavailableError';
+  }
+}
+
+export function supportsWebGL2() {
+  if (typeof document === 'undefined') return false;
+  try {
+    const canvas = document.createElement('canvas');
+    return Boolean(canvas.getContext('webgl2'));
+  } catch {
+    return false;
+  }
+}
+
 maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
 const GLYPHS_URL = 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf';
@@ -271,10 +288,18 @@ function projectPointFeature(project, cellsGeoJson, index) {
 }
 
 export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, onReady }) {
+  if (!supportsWebGL2()) {
+    throw new MapUnavailableError(
+      'WebGL2 is required to render the 3D map. The decision workflow remains available.',
+    );
+  }
+
   let cameraGeneration = 0;
   let settleTimer = 0;
+  let map;
 
-  const map = new maplibregl.Map({
+  try {
+    map = new maplibregl.Map({
     container,
     style: {
       version: 8,
@@ -297,16 +322,28 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
     renderWorldCopies: false,
     fadeDuration: 120,
     cancelPendingTileRequestsWhileZooming: false,
-  });
+    });
+  } catch (error) {
+    throw new MapUnavailableError(error?.message ?? String(error));
+  }
 
-  map.dragRotate.enable();
-  map.touchPitch.enable();
-  map.keyboard.enable();
-  map.touchZoomRotate.enable();
-  map.touchZoomRotate.enableRotation();
+  if (typeof map?.dragRotate?.enable !== 'function') {
+    map?.remove?.();
+    throw new MapUnavailableError('WebGL2 is required');
+  }
 
-  map.addControl(new maplibregl.NavigationControl({ visualizePitch: true, showCompass: true }), 'bottom-right');
-  map.addControl(createViewResetControl(), 'bottom-right');
+  try {
+    map.dragRotate.enable();
+    map.touchPitch.enable();
+    map.keyboard.enable();
+    map.touchZoomRotate.enable();
+    map.touchZoomRotate.enableRotation();
+    map.addControl(new maplibregl.NavigationControl({ visualizePitch: true, showCompass: true }), 'bottom-right');
+    map.addControl(createViewResetControl(), 'bottom-right');
+  } catch (error) {
+    map?.remove?.();
+    throw new MapUnavailableError(error?.message ?? String(error));
+  }
   map.on('error', (event) => {
     const message = String(event.error?.message ?? event.error ?? '');
     const terrainFault = (
@@ -910,6 +947,7 @@ export function createOureaMap({ container, data, onSelectCell, onSelectBarrio, 
     updateBuildingStress,
     updateProjects,
     destroy: () => {
+      if (!map) return;
       clearSettleTimer();
       hoverPopup.remove();
       inspectEl.remove();
