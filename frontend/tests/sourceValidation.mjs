@@ -132,6 +132,40 @@ for (const file of sourceFiles) {
   );
 }
 
+async function walkAll(directory) {
+  const files = [];
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) files.push(...await walkAll(path));
+    else files.push(path);
+  }
+  return files;
+}
+
+const secretName = 'OPEN' + 'AI_API_KEY';
+const viteSecretName = 'VITE_OPEN' + 'AI_API_KEY';
+const keyPattern = /sk-[a-zA-Z0-9]{16,}/;
+const scanRoots = [srcRoot, join(frontendRoot, 'public')];
+const distRoot = join(frontendRoot, 'dist');
+try {
+  await access(distRoot);
+  scanRoots.push(distRoot);
+} catch {
+  // Production bundle is scanned after npm run build.
+}
+
+for (const root of scanRoots) {
+  for (const file of await walkAll(root)) {
+    if (!['.js', '.jsx', '.mjs', '.css', '.html', '.json', '.map', '.txt', '.md'].includes(extname(file))) {
+      continue;
+    }
+    const source = await readFile(file, 'utf8');
+    assert.ok(!source.includes(viteSecretName), `${file} contains a frontend OpenAI env key name`);
+    assert.ok(!source.includes(secretName), `${file} contains an OpenAI key name`);
+    assert.ok(!keyPattern.test(source), `${file} looks like it contains an API key`);
+  }
+}
+
 console.log(
   `Source validation passed: ${sourceFiles.length} JS/JSX source files; ` +
   'local imports resolve, seeded domain randomness is enforced, obsolete V1 fields are absent, and dependencies are pinned.',

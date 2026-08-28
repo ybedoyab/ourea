@@ -19,6 +19,9 @@ export function isAllowedFailedRequest(url, failureText = '') {
   if (url.includes('community_evidence.json')) {
     return 'Optional participatory file; absence means not assessed.';
   }
+  if (url.includes('/__ourea_ai') || url.includes('/api/decision-readiness')) {
+    return 'Optional AI review endpoint; deterministic analysis continues without it.';
+  }
   if (url.endsWith('/favicon.ico')) {
     return 'SVG favicon is shipped; browsers may still probe favicon.ico.';
   }

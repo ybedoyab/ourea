@@ -15,6 +15,16 @@ echo == Frontend source/DRY validation ==
 node tests\sourceValidation.mjs
 if errorlevel 1 exit /b 1
 
+echo == Decision-readiness API tests ==
+cd ..\services\decision-readiness
+if exist package.json (
+  call npm install
+  if errorlevel 1 exit /b 1
+  call npm test
+  if errorlevel 1 exit /b 1
+)
+cd ..\..\frontend
+
 if exist "node_modules\.bin\vite.cmd" (
   echo == Vite production build ==
   call npm run build

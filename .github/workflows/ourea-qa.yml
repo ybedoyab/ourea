@@ -37,9 +37,17 @@ jobs:
         working-directory: frontend
         run: npm test
 
+      - name: Decision-readiness API tests
+        working-directory: services/decision-readiness
+        run: npm ci && npm test
+
       - name: Production build
         working-directory: frontend
         run: npm run build
+
+      - name: Scan production bundle for OpenAI secrets
+        working-directory: frontend
+        run: node tests/sourceValidation.mjs
 
       - name: Confirm MapLibre remains a deferred chunk
         working-directory: frontend

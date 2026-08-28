@@ -34,6 +34,12 @@ def include(path: Path) -> bool:
         for part in relative.parts
     ):
         return False
+    if path.name.startswith(".env") and path.name != ".env.example":
+        return False
+    if path.suffix == ".local":
+        return False
+    if ".vercel" in relative.parts:
+        return False
     return path not in {MANIFEST, CHECKSUMS}
 
 

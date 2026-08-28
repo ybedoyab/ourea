@@ -111,6 +111,25 @@ test('guided decision brief PDF is a six-page document with metadata and USD', a
   assert.doesNotMatch(body.split('Specialist annex')[0], /CHIRPS/);
 });
 
+test('AI-assisted PDF section stays on six pages and does not change USD totals', async () => {
+  const { VALID_SYNTHESIS } = await import('./fixtures/aiReview.js');
+  const brief = buildDecisionBrief(guidedPayload(), {
+    cells: GUIDED_CELLS,
+    costContext,
+    aiReview: {
+      readiness: { status: 'ready_for_field_validation' },
+      synthesis: VALID_SYNTHESIS,
+      generatedAt: '2026-08-28T12:00:00Z',
+    },
+  });
+  const body = await pdfOf(brief);
+  assert.equal(pageCount(body), 6);
+  assert.match(body, /AI-assisted decision synthesis/);
+  assert.match(body, /Ready for field validation/);
+  assert.equal(brief.costing.display.total.base, 730000);
+  assert.doesNotMatch(body, /planning credit/i);
+});
+
 test('restoration portfolio PDF still has six pages and a USD envelope', async () => {
   const brief = buildDecisionBrief(guidedPayload({
     portfolio: RESTORATION_PLAN,

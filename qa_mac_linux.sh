@@ -12,6 +12,19 @@ node tests/dataValidation.mjs
 echo "== Frontend source/DRY validation =="
 node tests/sourceValidation.mjs
 
+echo "== Decision-readiness API tests =="
+if [ -f "$ROOT/services/decision-readiness/package.json" ]; then
+  (
+    cd "$ROOT/services/decision-readiness"
+    if [ -d node_modules ]; then
+      node --test tests/*.test.js
+    elif command -v npm >/dev/null; then
+      npm install
+      npm test
+    fi
+  )
+fi
+
 if [ -x "node_modules/.bin/vite" ]; then
   echo "== Vite production build =="
   npm run build
