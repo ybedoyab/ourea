@@ -71,7 +71,8 @@
 .frontier-chart-wrap,
 .pareto-chart-wrap,
 .policy-consensus,
-.replay-status,
+.climate-facts span,
+.method-disclosure,
 .evidence-item {
   border: 1px solid var(--border);
   border-radius: 10px;

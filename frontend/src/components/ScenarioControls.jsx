@@ -1,84 +1,88 @@
 import { MODEL_LIMITS } from '../config/modelConfig.js';
+import { EXPLORE_PRESET_ID, matchPresetId } from '../domain/climateScenarios.js';
 import { Guardrail, SectionHeading } from './SectionHeading.jsx';
 import { Metric } from './Metric.jsx';
 
-const HYPOTHETICAL_PRESETS = Object.freeze([
-  { label: 'Moderate', rainMm: 60, antecedentWetness: 0.25, note: 'Drier start, lighter storm' },
-  { label: 'Wet', rainMm: 95, antecedentWetness: 0.45, note: 'Default development case' },
-  { label: 'Severe', rainMm: 140, antecedentWetness: 0.75, note: 'Wet soils, deeper storm' },
-]);
+export function ScenarioControls({
+  scenario,
+  onScenarioChange,
+  climate,
+  summary,
+  metrics,
+}) {
+  const update = (field, value) =>
+    onScenarioChange({
+      ...scenario,
+      [field]: value,
+      presetId: EXPLORE_PRESET_ID,
+      climate: {
+        ...(scenario.climate ?? {}),
+        note: 'Manual explore values. Still interpreted as a planning rainfall context, not a forecast.',
+      },
+    });
 
-export function ScenarioControls({ scenario, onScenarioChange, summary, metrics }) {
-  const update = (field, value) => onScenarioChange({ ...scenario, [field]: value });
+  const activePreset = matchPresetId(climate, scenario);
+  const windowDays = scenario.climate?.accumulationWindowDays ?? 15;
+  const percentile = scenario.climate?.percentile;
+  const period = scenario.climate?.climatologyPeriod ?? climate?.climatology_period?.label;
+  const source = scenario.climate?.sourceName ?? climate?.source_name;
 
   return (
-    <section>
-      <SectionHeading step={3} title="Stress the future">
-        Hypothetical development scenarios for comparing portfolios — not SIATA return periods
-        or calibrated storm classes.
+    <section data-testid="scenario-controls">
+      <SectionHeading step={4} title="Explore rainfall context">
+        Observed presets come from CHIRPS v3 Final. Explore lets you vary the same planning
+        controls by hand.
       </SectionHeading>
 
       <Guardrail>
-        Climate Stress is a development planning index, not landslide probability. The rain and
-        wetness terms remain uncalibrated until the official SIATA series is ingested.
+        Rainfall depth is a {windowDays}-day gridded accumulation used as a planning context.
+        Antecedent rainfall percentile is not measured soil moisture and not landslide probability.
       </Guardrail>
 
-      <div className="preset-kicker">Hypothetical development scenarios</div>
-      <div className="scenario-presets" role="group" aria-label="Hypothetical development presets">
-        {HYPOTHETICAL_PRESETS.map((preset) => {
-          const active =
-            scenario.rainMm === preset.rainMm &&
-            scenario.antecedentWetness === preset.antecedentWetness;
-          return (
-            <button
-              key={preset.label}
-              type="button"
-              className={active ? 'active' : ''}
-              aria-pressed={active}
-              onClick={() =>
-                onScenarioChange({
-                  ...scenario,
-                  rainMm: preset.rainMm,
-                  antecedentWetness: preset.antecedentWetness,
-                })
-              }
-            >
-              <b>{preset.label}</b>
-              <span>{preset.rainMm} mm · {Math.round(preset.antecedentWetness * 100)}% wet</span>
-            </button>
-          );
-        })}
+      <div className="preset-kicker" data-testid="preset-mode">
+        {activePreset === EXPLORE_PRESET_ID ? 'Explore' : 'Observed preset'}
+        {percentile ? ` · P${percentile}` : ''}
+        {period ? ` · ${period}` : ''}
+        {source ? ` · ${source}` : ''}
       </div>
 
       <label htmlFor="rain-depth">
-        Hypothetical storm depth <b>{scenario.rainMm} mm</b>
+        Rainfall context <b>{scenario.rainMm} mm</b>
+        <span> {windowDays}-day accumulation</span>
       </label>
       <input
         id="rain-depth"
         type="range"
-        min="40"
-        max="180"
-        step="5"
+        min="10"
+        max="400"
+        step="1"
         value={scenario.rainMm}
         onChange={(event) => update('rainMm', Number(event.target.value))}
-        aria-valuetext={`${scenario.rainMm} millimeters`}
+        aria-valuetext={`${scenario.rainMm} millimeters over ${windowDays} days`}
       />
-      <small>Total rainfall depth used by the development climate term.</small>
+      <small>
+        Planning rainfall depth for the selected accumulation window.
+        {source ? ` Source: ${source}.` : ''}
+        {period ? ` Period: ${period}.` : ''}
+      </small>
 
-      <label htmlFor="antecedent-wetness">
-        Antecedent wetness <b>{Math.round(scenario.antecedentWetness * 100)}%</b>
+      <label htmlFor="antecedent-rainfall">
+        Antecedent rainfall percentile{' '}
+        <b>{Math.round(Number(scenario.antecedentWetness) * 100)}</b>
       </label>
       <input
-        id="antecedent-wetness"
+        id="antecedent-rainfall"
         type="range"
         min="0"
         max="1"
         step="0.05"
         value={scenario.antecedentWetness}
         onChange={(event) => update('antecedentWetness', Number(event.target.value))}
-        aria-valuetext={`${Math.round(scenario.antecedentWetness * 100)} percent`}
+        aria-valuetext={`${Math.round(Number(scenario.antecedentWetness) * 100)}th percentile antecedent rainfall`}
       />
-      <small>How wet the hillside is before the storm.</small>
+      <small>
+        Historical percentile of antecedent rainfall context, not in-situ soil wetness.
+      </small>
 
       <label htmlFor="planning-year">
         Restoration maturity <b>Year {scenario.planningYear}</b>
@@ -94,8 +98,8 @@ export function ScenarioControls({ scenario, onScenarioChange, summary, metrics 
         aria-valuetext={`Year ${scenario.planningYear}`}
       />
       <small>
-        Restoration reaches its full development-prior effect only after the maturity window.
-        This control is not a temporal investment pathway or sequencing optimizer.
+        Restoration reaches its full prior effect only after the maturity window. This control is
+        not a temporal investment pathway or sequencing optimizer.
       </small>
 
       <div className="metrics">

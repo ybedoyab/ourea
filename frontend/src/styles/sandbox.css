@@ -588,33 +588,50 @@
   background: var(--accent);
 }
 
-.replay-status {
-  padding: 11px 12px;
+.climate-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 10px 0 12px;
 }
 
-.replay-status span,
-.replay-status b {
-  display: block;
+.climate-facts span {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
 }
 
-.replay-status span {
+.climate-facts small {
   color: var(--text-muted);
   font-size: 10px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.replay-status b {
-  margin-top: 4px;
-  font-size: 13px;
+.climate-facts b {
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
-.replay-status.pending {
-  border-color: #514a39;
+.method-disclosure {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
 }
 
-.replay-status.ready {
-  border-color: var(--vegetation);
+.method-disclosure summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.method-disclosure ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
 }
 
 .feature-chips {
@@ -622,26 +639,6 @@
   flex-wrap: wrap;
   gap: 5px;
   margin: 8px 0;
-}
-
-.replay-metrics {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin-top: 8px;
-  padding: 10px;
-  border-radius: 8px;
-  background: var(--surface);
-}
-
-.replay-metrics b {
-  grid-column: 1 / -1;
-  font-size: 13px;
-}
-
-.replay-metrics span {
-  color: var(--text-muted);
-  font-size: 12px;
 }
 
 .evidence-group {

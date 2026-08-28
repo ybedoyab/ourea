@@ -1,16 +1,17 @@
+import { assetUrl } from './assetUrl.js';
+
 export const REQUIRED_DATA_FILES = Object.freeze({
-  buildings: '/data/buildings.geojson',
-  roads: '/data/roads.geojson',
-  hazard: '/data/hazard.geojson',
-  cells: '/data/planning_cells.geojson',
-  summary: '/data/summary.json',
-  screening: '/data/medellin_city_priority_screen.geojson',
-  evidence: '/data/evidence_status.json',
-  replayContract: '/data/replay_contract.json',
-  planAlignment: '/data/plan_alignment.json',
+  buildings: assetUrl('data/buildings.geojson'),
+  roads: assetUrl('data/roads.geojson'),
+  hazard: assetUrl('data/hazard.geojson'),
+  cells: assetUrl('data/planning_cells.geojson'),
+  summary: assetUrl('data/summary.json'),
+  screening: assetUrl('data/medellin_city_priority_screen.geojson'),
+  evidence: assetUrl('data/evidence_status.json'),
+  climateContext: assetUrl('data/climate_context.json'),
+  planAlignment: assetUrl('data/plan_alignment.json'),
 });
 
 export const OPTIONAL_DATA_FILES = Object.freeze({
-  replay: '/data/replay_timeline.json',
-  communityEvidence: '/data/community_evidence.json',
+  communityEvidence: assetUrl('data/community_evidence.json'),
 });

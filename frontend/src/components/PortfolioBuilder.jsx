@@ -120,7 +120,7 @@ export function PortfolioBuilder({
   return (
     <>
       <section>
-        <SectionHeading step={4} title="Test action">
+        <SectionHeading step={5} title="Test action">
           Place rainwater harvesting, drainage or restoration on a planning cell. Planning credits
           are not COP.
         </SectionHeading>
@@ -192,7 +192,7 @@ export function PortfolioBuilder({
       </section>
 
       <section>
-        <SectionHeading step={5} title="Compare robust portfolios">
+        <SectionHeading step={6} title="Compare robust portfolios">
           Your plan versus OUREA robust options under the same data, budget and rainfall ensemble.
         </SectionHeading>
 

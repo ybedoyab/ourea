@@ -1,5 +1,5 @@
 {
-  "status": "development-priors-not-calibrated",
+    "status": "planning-priors-explicit",
   "stress": {
     "threshold": 0.75,
     "hazardScores": {

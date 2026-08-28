@@ -25,15 +25,15 @@ export const CITY_LENSES = Object.freeze({
 export const INTERVENTION_COPY = Object.freeze({
   rwh: {
     mechanism: 'Capture roof runoff before it reaches the hillside.',
-    evidence: 'Local household-system precedent; effect remains a development prior.',
+    evidence: 'Local household-system precedent; effect remains an explicit planning prior.',
   },
   drainage: {
     mechanism: 'Move concentrated water away from exposed hillside cells.',
-    evidence: 'Official drainage-corridor spatial proxy; effect remains a development prior.',
+    evidence: 'Official drainage-corridor spatial proxy; effect remains an explicit planning prior.',
   },
   restoration: {
     mechanism: 'Stabilize slopes with vegetation and bioengineering.',
-    evidence: 'Spatial opportunity proxy; effect remains a development prior and matures over 3 years.',
+    evidence: 'Spatial opportunity proxy; effect remains an explicit planning prior and matures over 3 years.',
   },
 });
 
@@ -47,7 +47,7 @@ export const EVIDENCE_GROUPS = Object.freeze([
   {
     id: 'observed',
     label: 'Observed / official',
-    ids: ['terrain', 'hazard', 'buildings', 'city_population_2026', 'city_imcv_2023'],
+    ids: ['terrain', 'hazard', 'buildings', 'city_population_2026', 'city_imcv_2023', 'climate'],
   },
   {
     id: 'proxies',
@@ -56,12 +56,12 @@ export const EVIDENCE_GROUPS = Object.freeze([
   },
   {
     id: 'priors',
-    label: 'Development priors',
-    ids: ['climate', 'intervention_effects'],
+    label: 'Explicit model assumptions',
+    ids: ['intervention_effects'],
   },
   {
-    id: 'placeholders',
-    label: 'Placeholders',
+    id: 'budget',
+    label: 'Budget unit',
     ids: ['cost'],
   },
 ]);

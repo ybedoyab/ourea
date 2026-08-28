@@ -48,6 +48,10 @@
 }
 
 @media (max-width: 620px) {
+  .climate-facts {
+    grid-template-columns: 1fr;
+  }
+
   .topbar {
     left: 8px;
     right: 8px;

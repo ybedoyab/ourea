@@ -34,20 +34,13 @@ export async function loadOureaData(signal) {
     ]),
   );
   const required = Object.fromEntries(requiredEntries);
-  const [replay, communityEvidence] = await Promise.all([
-    fetchJson(OPTIONAL_DATA_FILES.replay, signal, {
-      optional: true,
-      optionalParse: 'absent',
-    }),
-    fetchJson(OPTIONAL_DATA_FILES.communityEvidence, signal, {
-      optional: true,
-      optionalParse: 'invalid',
-    }),
-  ]);
+  const communityEvidence = await fetchJson(OPTIONAL_DATA_FILES.communityEvidence, signal, {
+    optional: true,
+    optionalParse: 'invalid',
+  });
 
   return {
     ...required,
-    replay,
     communityEvidence: communityEvidence?.__absent ? null : communityEvidence,
     evidence: {
       ...required.evidence,

@@ -8,8 +8,8 @@ const STATUS_LABELS = {
   'census-based-proxy': 'Census proxy',
   'official-spatial-proxy': 'Official spatial proxy',
   'official-network-proxy': 'Official network proxy',
-  'development-prior': 'Development prior',
-  'development-priors': 'Development priors',
+  'explicit-planning-priors': 'Explicit planning priors',
+  'observed-gridded-climatology': 'Observed gridded climatology',
   'planning-credits': 'Planning credits',
   'official-projection': 'Official projection',
   'official-social-index': 'Official social index',
@@ -34,7 +34,7 @@ export function EvidencePanel({ evidence }) {
 
   return (
     <section>
-      <SectionHeading step={7} title="Inspect evidence">
+      <SectionHeading step={8} title="Inspect evidence">
         Observed layers, planning proxies and uncalibrated priors stay explicitly labeled.
       </SectionHeading>
 

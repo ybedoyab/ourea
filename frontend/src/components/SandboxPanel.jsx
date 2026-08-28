@@ -5,7 +5,7 @@ import { EvidencePanel } from './EvidencePanel.jsx';
 import { LayerControls } from './LayerControls.jsx';
 import { PlanAlignmentPanel } from './PlanAlignmentPanel.jsx';
 import { PortfolioBuilder } from './PortfolioBuilder.jsx';
-import { ReplayPanel } from './ReplayPanel.jsx';
+import { ClimateContextPanel } from './ClimateContextPanel.jsx';
 import { ScenarioControls } from './ScenarioControls.jsx';
 import { SectionHeading } from './SectionHeading.jsx';
 
@@ -53,8 +53,8 @@ export function SandboxPanel({
   paretoError,
   onAnalyzePareto,
   evidence,
-  replay,
-  replayContract,
+  climate,
+  onSelectClimatePreset,
   communityAssessment,
   activePlan,
   onRecordCommunityEvidence,
@@ -72,8 +72,8 @@ export function SandboxPanel({
       <p className="eyebrow">{BRAND.event} · hillside proving ground</p>
       <h1>From climate risk to robust action.</h1>
       <p className="lede">
-        Compare physical adaptation portfolios across uncertain futures, budgets and transparent
-        public-policy priorities.
+        Compare physical adaptation portfolios across observed rainfall contexts, budgets and
+        transparent public-policy priorities.
       </p>
 
       <section className="proving-ground-strip">
@@ -88,9 +88,16 @@ export function SandboxPanel({
         </div>
       </section>
 
+      <ClimateContextPanel
+        climate={climate}
+        scenario={scenario}
+        onSelectPreset={onSelectClimatePreset}
+      />
+
       <ScenarioControls
         scenario={scenario}
         onScenarioChange={onScenarioChange}
+        climate={climate}
         summary={summary}
         metrics={metrics}
       />
@@ -156,7 +163,6 @@ export function SandboxPanel({
         onRecord={onRecordCommunityEvidence}
       />
       <PlanAlignmentPanel alignment={planAlignment} />
-      <ReplayPanel replay={replay} contract={replayContract} />
       <LayerControls layerState={layerState} onToggleLayer={onToggleLayer} />
     </>
   );

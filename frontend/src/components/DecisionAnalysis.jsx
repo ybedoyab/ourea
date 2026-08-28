@@ -39,7 +39,7 @@ export function DecisionAnalysis({
 
   return (
     <section>
-      <SectionHeading step={6} title="Understand trade-offs">
+      <SectionHeading step={7} title="Understand trade-offs">
         Residual exposure, robust benefit, public-value proxies and sampled non-dominated portfolios.
       </SectionHeading>
 

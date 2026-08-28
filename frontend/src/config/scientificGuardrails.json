@@ -3,6 +3,7 @@
   "schema_version": 1,
   "items": [
     "Climate Stress is not landslide probability.",
+    "CHIRPS v3 Final is a 0.05° gridded climatology used to anchor planning rainfall contexts, not station intensity and not a real-time forecast.",
     "The city screen is a prioritization proxy, not a dynamic climate forecast or investment recommendation.",
     "The city hazard-exposure proxy assumes projected population is uniformly distributed inside each barrio.",
     "The 2023 IMCV/AMPI socioeconomic component is comuna-level and therefore coarse within individual barrios.",
