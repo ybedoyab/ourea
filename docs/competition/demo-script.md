@@ -14,7 +14,7 @@ Open **City screen**.
 
 Switch lenses: **Exposure → Balanced → Equity**.
 
-“Same official hazard, 2026 population and IMCV layers. Three planning weights — not three datasets.”
+“Same official hazard, 2026 population and IMCV layers. Three planning weights — not three datasets. 271 spatial polygons, 249 official urban records, 248/249 population matches. Rankings start at #1, not unmatched sites.”
 
 Click Llanaditas.
 
@@ -36,7 +36,7 @@ Add one project: “This is Your plan.”
 
 Click **Generate robust options**.
 
-“Balanced, Equity-first, Access-first and Low-regret use the same budget, candidates and seed.”
+“Balanced, Equity-first, Access-first and Low-regret use the same budget, candidates and seed. The decision engine searches 125 eligible candidates, 80 uncertainty scenarios, four policy objectives and 220 comparison futures. The MILP is an independent cross-check, not a claim of global optimality.”
 
 Point to **Highest P10 in current ensemble** — strongest lower-tail benefit in this draw, not universal optimality.
 

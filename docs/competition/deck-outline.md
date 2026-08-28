@@ -120,7 +120,7 @@ Show four Ourea options:
 - Low-regret.
 
 Current 10-credit example:
-- Low-regret currently has highest P10 in the development ensemble;
+- Low-regret currently has highest P10 in the current ensemble;
 - two projects are selected by all four named policy lenses.
 
 Caption:
@@ -157,11 +157,11 @@ Left:
 evidence/provenance labels and community safeguards.
 
 Right:
-6-month pilot timeline with co-design, without invented partners.
+6-month pilot timeline: governance, territorial validation, local typologies, policy deliberation, user testing and a provenance-complete decision package.
 
 Mention:
-- SIATA hindcast;
-- intervention/cost calibration;
+- optional station comparison only if an entity supplies a series;
+- intervention/cost localization;
 - stakeholder policy-weight co-design;
 - Moravia as a participation lesson, not a second proving ground;
 - structured decision-workflow testing.

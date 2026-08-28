@@ -143,13 +143,13 @@ Instead of hiding political choices inside one “optimal” plan, OUREA can sho
 - Access-first;
 - Low-regret.
 
-The UI highlights **highest P10** in the current development ensemble, not “the correct plan”.
+The UI highlights **highest P10** in the current ensemble, not “the correct plan”.
 
 At the current 10-credit checkpoint, Low-regret produces the strongest lower-tail P10 while using four projects instead of six.
 
 Ourea also exposes **policy consensus**: in the current checkpoint, cell 35 RWH and cell 35 drainage are selected by all four named policy lenses. That is shown as cross-policy decision stability, not universal optimality.
 
-These numbers are development benefit proxies, not calibrated impact estimates.
+These numbers are planning benefit proxies, not calibrated impact estimates.
 
 ## Explainability
 

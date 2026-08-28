@@ -72,7 +72,7 @@ This makes stacked projects exhibit diminishing returns rather than unlimited ad
 All weights live only in:
 `frontend/src/config/modelParameters.json`
 
-The values below are the **current 10-credit development checkpoint** evaluated with the same 220 comparison futures. They are planning benefit proxies, not calibrated impact estimates.
+The values below are the **current 10-credit checkpoint** evaluated with the same 220 comparison futures. They are planning benefit proxies, not calibrated impact estimates.
 
 ### Balanced
 
@@ -135,7 +135,7 @@ Current result:
 - median **81.90**;
 - strongest lower-tail P10 among the named profiles in the current checkpoint.
 
-Purpose: strongly penalize lower-tail uncertainty and favor projects whose marginal benefit remains defensible under adverse development draws.
+Purpose: strongly penalize lower-tail uncertainty and favor projects whose marginal benefit remains defensible under adverse uncertainty-ensemble draws.
 
 The UI labels this **“highest P10”**, not “the optimal plan”.
 
@@ -147,14 +147,14 @@ Current all-policy core:
 - cell 35 — drainage (4/4 profiles)
 - cell 35 — rwh (4/4 profiles)
 
-This is **policy consensus under the current development model**, not proof of real-world optimality.
+This is **policy consensus under the current model**, not proof of real-world optimality.
 
 ## Selection stability
 
 For the active policy profile, Ourea reruns the optimizer across independent uncertainty resamples.
 
 The reported selection frequency means:
-> how often a project remains selected under repeated development uncertainty draws.
+> how often a project remains selected under repeated uncertainty-ensemble draws.
 
 It does **not** mean:
 > probability that the project is truly optimal.

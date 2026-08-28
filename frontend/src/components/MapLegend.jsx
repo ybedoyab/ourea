@@ -19,7 +19,7 @@ export function MapLegend({ scope, cityLens = 'balanced' }) {
 
   return (
     <div className="map-legend">
-      <b>Climate Stress · development index</b>
+      <b>Climate Stress · planning index</b>
       <span><i className="legend-swatch stress-low" /> lower</span>
       <span><i className="legend-swatch stress-med" /> medium</span>
       <span><i className="legend-swatch stress-high" /> higher</span>

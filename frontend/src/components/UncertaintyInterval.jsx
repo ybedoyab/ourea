@@ -36,7 +36,7 @@ export function UncertaintyInterval({ p10, median, p90, runs }) {
           <span>Downside retention</span>
           <b>{retention}%</b>
           <small>
-            P10 ÷ median. Higher means less downside sensitivity within this development ensemble.
+            P10 ÷ median. Higher means less downside sensitivity within this uncertainty ensemble.
           </small>
         </div>
       )}

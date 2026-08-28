@@ -1,27 +1,27 @@
 {
-  "status": "development evidence registry; numerical model parameters live only in src/config/modelParameters.json",
+  "status": "versioned evidence registry; numerical model parameters live only in src/config/modelParameters.json",
   "parameter_source": "frontend/src/config/modelParameters.json",
   "interventions": {
     "rainwater_harvesting": {
       "label": "Rainwater harvesting",
       "mechanism": "Capture roof runoff before it reaches hillside streets or uncontrolled drainage paths.",
-      "v2_model_role": "Physical opportunity uses roof footprint; hazard-weighted exposure enters separately in the decision objective.",
+      "model_role": "Physical opportunity uses roof footprint; hazard-weighted exposure enters separately in the decision objective.",
       "confidence": "medium for first-principles captured-volume accounting; low for translation to slope-risk benefit",
-      "needs_before_submission": "Local tank sizes, unit/project costs, participation assumptions, and calibration of runoff-to-risk effects."
+      "pilot_localization_requirements": "Local tank sizes, unit/project costs, participation assumptions, and locally appropriate runoff-to-risk effect ranges."
     },
     "drainage_upgrade": {
       "label": "Drainage / water management",
       "mechanism": "Increase controlled conveyance and reduce uncontrolled surface-water concentration.",
-      "v2_model_role": "Current opportunity proxy uses mapped access-corridor length only. It is not a drainage-capacity map.",
-      "confidence": "low until asset-level drainage data and engineering assumptions are available",
-      "needs_before_submission": "Define concrete intervention typologies and local cost/effect distributions."
+      "model_role": "Current opportunity proxy uses mapped access-corridor length only. It is not a drainage-capacity map.",
+      "confidence": "explicit planning prior until asset-level drainage data and engineering assumptions are supplied locally",
+      "pilot_localization_requirements": "Define concrete intervention typologies and local cost/effect distributions."
     },
     "restoration_bioengineering": {
       "label": "Restoration / soil bioengineering",
       "mechanism": "Vegetation and soil-bioengineering can reduce erosion and add root reinforcement; hydrological effects are site-specific.",
-      "v2_model_role": "Opportunity uses open-space and slope proxies; hazard-weighted exposure enters separately.",
-      "confidence": "low for a universal effect size; maturity and site dependence must remain explicit",
-      "needs_before_submission": "Locally appropriate techniques/species, maturity assumptions, and uncertainty distributions."
+      "model_role": "Opportunity uses open-space and slope proxies; hazard-weighted exposure enters separately.",
+      "confidence": "explicit planning prior for effect size; maturity and site dependence remain explicit",
+      "pilot_localization_requirements": "Locally appropriate techniques/species, maturity assumptions, and uncertainty distributions."
     }
   },
   "optimizer": {

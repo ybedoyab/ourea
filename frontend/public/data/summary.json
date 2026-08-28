@@ -13,5 +13,5 @@
   "high_hazard_buildings": 1445,
   "stratum_1_buildings": 1540,
   "median_slope_deg": 25.4,
-  "note": "Population is a DANE census-block planning proxy allocated to buildings; baseline stress is an uncalibrated visualization preview."
+  "note": "Population is a DANE census-block planning proxy allocated to buildings. Climate stress is a dimensionless planning index evaluated across observed rainfall contexts; it is not failure probability."
 }

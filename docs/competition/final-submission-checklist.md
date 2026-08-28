@@ -32,8 +32,8 @@ Recommended:
 
 ### Demonstration
 - [x] Interactive demonstration prepared.
-- [ ] Final production Vite build passes locally.
-- [ ] Final deployed URL/repository included if available.
+- [x] Public demo: https://ybedoyab.github.io/ourea/
+- [x] GitHub Actions build and Pages deploy.
 - [ ] 2–3 minute screen recording created as fallback.
 
 ### Pilot plan

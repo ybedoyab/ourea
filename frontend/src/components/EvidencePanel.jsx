@@ -35,7 +35,7 @@ export function EvidencePanel({ evidence }) {
   return (
     <section>
       <SectionHeading step={8} title="Inspect evidence">
-        Observed layers, planning proxies and uncalibrated priors stay explicitly labeled.
+        Observed layers, planning proxies and explicit priors remain separately labeled.
       </SectionHeading>
 
       {grouped.map((group) => (

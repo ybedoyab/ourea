@@ -2,7 +2,7 @@
 
 ## Pilot objective
 
-Validate whether OUREA improves **adaptation prioritization and decision transparency** for vulnerable urban hillsides.
+Ourea already ships an observed CHIRPS v3 Final climate context and a working decision engine. The pilot **validates utility, governance, localization and adoption**. It is not a stage to invent the climate driver or to finish a missing product.
 
 The pilot is not designed to prove that software can replace:
 - geotechnical studies;
@@ -10,60 +10,63 @@ The pilot is not designed to prove that software can replace:
 - SIATA / emergency-warning systems;
 - accountable public/community decision-making.
 
-## Month 1 — Decision co-design and governance
+A local station comparison can be added if an entity supplies a series. That comparison is optional. It is not a dependency, not a required deliverable and not a replacement for the shipped gridded climate context.
+
+## Month 1 — Decision, governance and co-design
 
 Activities:
 - identify community organizations and legitimate representatives for the pilot area; do not invent partners;
 - agree data governance: who may record, review, contest and approve community evidence;
 - map concerns, priorities and veto criteria without converting them into optimizer weights;
-- validate the language used to explain uncertainty;
-- confirm the real planning/approval workflow with city/community/technical stakeholders;
+- validate the language used to explain uncertainty, P10/median/P90 and planning proxies;
+- confirm the real planning/approval workflow with city, community and technical stakeholders;
 - define the decision questions Ourea should and should not answer;
 - review the four policy profiles;
-- confirm data ownership/provenance expectations;
-- agree on pilot success metrics;
-- verify the June 2022 event timestamp and relevant SIATA stations.
+- confirm data ownership and provenance expectations;
+- agree on measurable pilot success metrics.
 
 Deliverable:
 **pilot decision charter + governance/evidence matrix**.
 
-## Month 2 — SIATA calibration and historical validation
+## Month 2 — Territorial validation and evidence triangulation
 
 Activities:
-- ingest raw station data with QA;
-- quantify missingness and rolling-window coverage;
-- derive 1 h / 6 h / 24 h / 3 d / 7 d / 15 d rainfall features;
-- reconstruct the verified June 2022 event window;
-- replace the hypothetical dynamic climate term;
-- test hindcast behavior and sensitivity;
-- test additional historical events if defensible data exist.
+- walk the proving-ground cells with local counterparts;
+- triangulate cadastral, hazard, access and opportunity layers in the field;
+- record where planning proxies diverge from observed site conditions;
+- optionally compare CHIRPS pentad context with a supplied station series, if one exists;
+- keep any station comparison labeled as intensity triangulation, not a new failure model.
 
 Deliverable:
-**historical hindcast report + calibrated dynamic-driver candidate**.
+**territorial validation note + evidence triangulation log**.
 
-## Months 3 and 4 — Intervention, cost, policy and co-design
+## Month 3 — Local typologies, comparable costs and effect ranges
 
-Month 3 activities:
+Activities:
 - finalize local intervention typologies with residents and technical experts;
 - evaluate possible impacts on everyday mobility, work, care and maintenance;
-- separate RWH capacities/specifications;
+- specify RWH capacities with local procurement evidence;
 - define drainage/water-management project classes;
 - define locally appropriate restoration/bioengineering classes;
-- convert evidence into effect distributions;
-- convert comparable procurement/project evidence into cost distributions;
-- separate direct cost, supervision, logistics, maintenance and contingency.
+- convert comparable evidence into effect distributions and cost distributions;
+- separate direct cost, supervision, logistics, maintenance and contingency;
+- keep planning credits until comparable COP distributions exist.
 
-Month 4 activities:
-- run calibrated uncertainty ensembles;
-- review equity/access/low-regret objective definitions with stakeholders;
-- convert **only agreed** criteria into transparent constraints; keep disagreements and alternatives visible instead of averaging incompatible positions;
-- compare browser marginal optimizer and formal MILP alternatives;
+Deliverable:
+**versioned local typology, cost and effect registry**.
+
+## Month 4 — Policy deliberation and portfolios
+
+Activities:
+- review equity, access and low-regret objective definitions with stakeholders;
+- convert **only agreed** criteria into transparent constraints; keep disagreements visible;
+- compare browser marginal search and formal MILP alternatives under the same budget;
 - produce budget robustness curves;
-- identify stable/unstable project decisions;
+- identify which assumption changes alter portfolio composition versus results only;
 - surface near-performing alternatives rather than only a winner.
 
-Deliverables:
-**versioned intervention/effect/cost registry** and **calibrated robust decision-engine beta**.
+Deliverable:
+**deliberated portfolio set + documented policy weights**.
 
 ## Month 5 — Structured user testing
 
@@ -75,66 +78,58 @@ Participants:
 
 No organizations are named as confirmed partners.
 
-Compare baseline planning workflow vs Ourea on:
-- time required to compare alternatives;
-- ability to understand uncertainty;
-- ability to identify evidence gaps;
-- ability to explain why a project is selected;
-- confidence in distinguishing proxy/model output from engineering evidence;
-- agreement/disagreement with policy weights;
+Compare the baseline planning workflow versus Ourea on:
+- time required to compare three portfolios;
+- ability to explain P10, median and P90;
+- ability to distinguish observation, proxy and prior;
+- ability to identify evidence gaps and safeguards before investment;
+- agreement or disagreement with policy weights;
 - usability of city → hotspot → portfolio workflow;
-- percentage of projects reviewed with community evidence;
-- open livelihood, accessibility or displacement concerns;
-- portfolio changes after deliberation;
-- confidence in data provenance;
+- share of selected projects with an explicit community-evidence status;
 - difference between the initial technical recommendation and the deliberated result.
 
 Deliverable:
 **user-testing report + product revisions**.
 
-## Month 6 — Decision package and replication
+## Month 6 — Decision package, evaluation and replication
 
 Activities:
-- produce one pilot-area adaptation decision package;
-- include uncertainty, provenance, alternative policies and unresolved engineering questions;
+- export one pilot-area adaptation decision package with complete provenance;
+- include uncertainty, climate percentile and source, alternatives and unresolved engineering questions;
 - run city screen → hotspot → detailed planning workflow end-to-end;
-- define scale-up data contract;
-- test replication checklist for another Medellín hillside or partner city.
+- evaluate the measurable pilot metrics below;
+- define a scale-up data contract for another hillside or partner city.
 
 Deliverable:
-**pilot decision package + scale-up roadmap**.
+**pilot decision package + evaluation + replication checklist**.
 
-## Pilot metrics
+## Measurable pilot metrics
 
-Use decision-quality metrics rather than exaggerated hazard claims:
-- % of model parameters with evidence/confidence classification;
-- SIATA data coverage/quality;
-- historical hindcast behavior;
-- number of futures evaluated;
-- P10/median/P90 portfolio benefit proxies;
-- project-selection stability;
-- number of near-performing alternatives surfaced;
-- user decision time;
-- stakeholder ability to explain trade-offs;
-- number of recommendations explicitly requiring engineering/geotechnical follow-up;
-- reproducibility of exported decision packages;
-- share of selected projects with community review;
-- number of safeguards still open after deliberation.
+Use decision-quality metrics. Do not promise unobserved physical impact.
+
+- 100% of exported packages carry complete provenance (portfolio, budget, climate percentile and source, P10/P50/P90, benchmark, sensitivity, documentary alignment, community-evidence status, schema versions and a reproducible identifier);
+- 100% of selected projects have an explicit community-evidence status, including `not assessed`;
+- reduction in the time needed to compare three portfolios versus the baseline workflow;
+- percentage of users who can explain P10, median and P90;
+- percentage of users who can distinguish observation, proxy and prior;
+- number of decisions that remain stable when rainfall, antecedent rainfall, restoration maturity, effect range or cost uncertainty change;
+- number of livelihood, access or displacement safeguards detected before investment;
+- documented difference between the initial technical recommendation and the deliberated result.
 
 ## Pilot team structure
 
 Solo-builder core can be extended through pilot partners rather than pretending one person can supply all disciplines.
 
 Suggested roles:
-- product/AI/geospatial lead;
+- product/decision-intelligence lead;
 - city risk/planning counterpart;
-- hydrometeorological/SIATA data counterpart;
+- optional hydrometeorological counterpart if a station series is supplied;
 - geotechnical/drainage reviewer;
 - community liaison/representative;
 - evaluation/research advisor.
 
 ## Governance principle
 
-OUREA remains **decision support**.
+Ourea remains **decision support**.
 
 Final infrastructure decisions remain with responsible public authorities, qualified professionals and affected communities.

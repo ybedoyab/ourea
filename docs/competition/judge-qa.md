@@ -29,7 +29,7 @@ The decision problem is combinatorial and uncertain:
 
 Ourea performs uncertainty-aware portfolio search, stability analysis and multi-objective trade-off exploration.
 
-Important mentor question remains: what judges specifically regard as sufficiently **AI-driven** versus conventional optimization/decision science.
+The visible decision engine searches 125 eligible intervention-location candidates under budget constraints, using 80 uncertainty scenarios per optimization, four transparent policy objectives and 220 common-random futures for comparison. A binary MILP independently cross-checks the browser search. Neither method is claimed to find a global optimum.
 
 ## “Why not just use SIATA?”
 
@@ -89,7 +89,7 @@ The user can compare how project selection changes instead of accepting one supp
 
 ## “Which plan do you recommend?”
 
-The UI can highlight the current **highest-P10** plan—the strongest lower-tail benefit under the current development ensemble.
+The UI can highlight the current **highest-P10** plan—the strongest lower-tail benefit under the current uncertainty ensemble.
 
 That is not universal optimality.
 
@@ -97,7 +97,7 @@ A real pilot should co-design policy weights and costs with decision-makers/comm
 
 ## “What is P10?”
 
-The 10th percentile of the current development benefit-proxy distribution across sampled uncertain futures.
+The 10th percentile of the current planning benefit-proxy distribution across sampled uncertain futures.
 
 It is useful as a lower-tail robustness diagnostic.
 

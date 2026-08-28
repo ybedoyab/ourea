@@ -80,14 +80,14 @@ export const COMMUNITY_COPY = Object.freeze({
   title: 'Community evidence & safeguards',
   heading: 'Technically robust does not mean community-validated.',
   incomplete:
-    'Community evidence is currently incomplete. Final implementation requires deliberation with affected residents, technical experts and responsible authorities.',
+    'No community review is asserted for these projects. Use this section to record evidence from a documented deliberation.',
   notAPrediction:
     'These records are evidence and safeguards. They are not a prediction of community acceptance.',
   participatoryLabel: 'Participatory scenario input',
   participatoryHint:
     'Values entered here are session notes from co-design, not official observations unless a source is attached.',
   missingFile:
-    'No community-evidence file is loaded. Every project is treated as not assessed.',
+    'This demonstration starts with no preloaded community records. Every selected project is explicitly marked not assessed.',
   invalidFile:
     'The community-evidence file is invalid. It is not treated as absent, support, or low risk.',
   requiresDeliberation: 'Requires deliberation',
