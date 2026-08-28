@@ -67,6 +67,21 @@ assert.equal(
   'planning credit, NOT COP',
 );
 assert.equal(model.status, 'planning-priors-explicit');
+assert.equal(registry.status.includes('versioned evidence registry'), true);
+assert.ok(!JSON.stringify(registry).includes('v2_model_role'));
+assert.ok(!JSON.stringify(registry).includes('needs_before_submission'));
+assert.match(
+  summary.note,
+  /Climate stress is a dimensionless planning index/,
+);
+
+const cityContract = JSON.parse(
+  await readFile(join(root, 'src', 'config', 'cityScreenContract.json'), 'utf8'),
+);
+assert.equal(cityContract.spatial_polygons, 271);
+assert.equal(cityContract.official_urban_records, 249);
+assert.equal(cityContract.safe_population_matches, 248);
+assert.equal(screening.features.length, cityContract.spatial_polygons);
 
 const buildingIds = new Set();
 for (const feature of buildings.features) {

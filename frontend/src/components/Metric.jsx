@@ -1,6 +1,10 @@
-export function Metric({ label, value, hint, tone }) {
+export function Metric({ label, value, hint, tone, testId }) {
   return (
-    <div className={tone ? `metric metric-${tone}` : 'metric'} title={hint || undefined}>
+    <div
+      className={tone ? `metric metric-${tone}` : 'metric'}
+      title={hint || undefined}
+      data-testid={testId}
+    >
       <span>{label}</span>
       <strong>{value}</strong>
     </div>

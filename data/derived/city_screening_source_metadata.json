@@ -3,7 +3,8 @@
     "url": "https://www.medellin.gov.co/es/wp-content/uploads/2022/08/5.-Proyecciones-poblacionales-a-nivel-Barrios-y-Veredas-Medellin-2018-%E2%80%93-2030.xlsx",
     "sha256_downloaded_source": "0a18bccd5ed25aa43bd8d017733cd16b42251967d2761e1fb4a07128a828d9fe",
     "urban_barrio_records": 249,
-    "matched_to_current_polygon_export": 248
+    "matched_to_current_polygon_export": 248,
+    "spatial_polygons": 271
   },
   "imcv_2023": {
     "url": "https://www.medellin.gov.co/es/wp-content/uploads/2022/08/socializacionIMCV2023.xlsx",

@@ -1,26 +1,14 @@
 import { BRAND } from '../config/brand.js';
 import { CITY_LENSES } from '../config/uiCopy.js';
+import {
+  CITY_SCREEN_CONTRACT,
+  countSafePopulationMatches,
+  countSpatialPolygons,
+  topScreening,
+} from '../domain/cityScreen.js';
+import { numeric } from '../domain/numeric.js';
 import { Guardrail, SectionHeading } from './SectionHeading.jsx';
 import { Metric } from './Metric.jsx';
-
-function numeric(value) {
-  const number = Number(value);
-  return Number.isFinite(number) ? number : null;
-}
-
-function topScreening(screening, lens, limit = 8) {
-  if (!screening?.features?.length) return [];
-  const rankField = CITY_LENSES[lens]?.rankField ?? CITY_LENSES.balanced.rankField;
-
-  return [...screening.features]
-    .filter((feature) => numeric(feature.properties[rankField]) != null)
-    .sort(
-      (a, b) =>
-        Number(a.properties[rankField]) -
-        Number(b.properties[rankField]),
-    )
-    .slice(0, limit);
-}
 
 function populationText(properties) {
   const population = numeric(properties.population_2026);
@@ -56,11 +44,8 @@ export function CityPanel({
   onOpenSandbox,
   onRunGuidedDemo,
 }) {
-  const barrioCount = screening?.features?.length ?? 0;
-  const populationMatched =
-    screening?.features?.filter(
-      (feature) => numeric(feature.properties.population_2026) != null,
-    ).length ?? 0;
+  const spatialPolygons = countSpatialPolygons(screening);
+  const populationMatched = countSafePopulationMatches(screening);
   const lens = CITY_LENSES[cityLens] ?? CITY_LENSES.balanced;
   const top = topScreening(screening, cityLens);
   const llanaditasRank = numeric(llanaditas?.properties?.[lens.rankField]);
@@ -104,13 +89,20 @@ export function CityPanel({
 
         <div className="metrics">
           <Metric
-            label="Official barrio polygons"
-            value={barrioCount.toLocaleString()}
+            label="Spatial polygons"
+            value={spatialPolygons.toLocaleString()}
+            hint="Total barrio and special polygons in the current city export, including unmatched sites."
           />
           <Metric
-            label="2026 population-matched"
-            value={`${populationMatched}/249`}
-            hint="Official urban barrio population records safely matched to the current polygon export."
+            label="Official urban records"
+            value={CITY_SCREEN_CONTRACT.official_urban_records.toLocaleString()}
+            hint="Official urban barrio population records in the 2026 projection workbook."
+          />
+          <Metric
+            label="Population matches"
+            value={`${populationMatched}/${CITY_SCREEN_CONTRACT.official_urban_records}`}
+            hint="Safe matches of official urban records onto the current polygon export. Special polygons stay out of population rankings."
+            testId="population-matches"
           />
           <Metric
             label="Detailed proving ground"
@@ -123,7 +115,7 @@ export function CityPanel({
           />
         </div>
 
-        <div className="screening-list" role="list">
+        <div className="screening-list" role="list" data-testid="city-top-list">
           {top.map((feature) => {
             const properties = feature.properties;
             const rank = numeric(properties[lens.rankField]);
@@ -136,6 +128,8 @@ export function CityPanel({
                 key={properties.OBJECTID}
                 type="button"
                 className={active ? 'screening-row active' : 'screening-row'}
+                data-testid="screening-row"
+                data-rank={rank}
                 onClick={() => onSelectBarrio?.(properties)}
               >
                 <b>#{rank}</b>
@@ -178,7 +172,11 @@ export function CityPanel({
               </span>
               <span>
                 <small>High-hazard area</small>
-                <b>{Math.round(Number(selectedBarrio.high_share ?? 0) * 100)}%</b>
+                <b>
+                  {numeric(selectedBarrio.high_share) == null
+                    ? '—'
+                    : `${Math.round(numeric(selectedBarrio.high_share) * 100)}%`}
+                </b>
               </span>
               <span>
                 <small>Hazard-weighted population proxy</small>

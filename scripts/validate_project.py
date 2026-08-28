@@ -183,6 +183,10 @@ require(
     "Population/polygon safe-match count changed",
 )
 ok("City-screening source metadata records official 249-to-248 safe-match provenance")
+require(
+    source_meta["population_projection"]["spatial_polygons"] == 271,
+    "City-screen spatial polygon count changed",
+)
 
 require(
     registry["optimizer"]["budget_unit"] == "planning credit, NOT COP",
