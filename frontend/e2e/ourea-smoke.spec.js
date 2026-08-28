@@ -210,6 +210,7 @@ test('published demo', async ({ page, baseURL }) => {
   await assertNoHorizontalOverflow(page);
 
   const origin = new URL(page.url());
+  if (!origin.pathname.endsWith('/')) origin.pathname += '/';
   const climate = await page.request.get(new URL('data/climate_context.json', origin).href);
   expect(climate.ok(), `climate_context.json ${climate.status()}`).toBeTruthy();
   const geojson = await page.request.get(new URL('data/medellin_city_priority_screen.geojson', origin).href);

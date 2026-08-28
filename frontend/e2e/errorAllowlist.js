@@ -28,14 +28,17 @@ export function isAllowedFailedRequest(url, failureText = '') {
   return null;
 }
 
-export function isAllowedConsoleError(text) {
-  if (text.includes('basemaps.cartocdn.com')) return true;
-  if (text.includes('demotiles.maplibre.org')) return true;
-  if (/terrain\/\d+\/\d+\/\d+\.png/.test(text) && /404|AJAXError|Failed to fetch/.test(text)) {
-    return true;
-  }
-  if (text.includes('community_evidence.json') && /404/.test(text)) return true;
-  if (text.includes('favicon.ico')) return true;
+const CHROMIUM_URLLESS_404 = new Set([
+  'Failed to load resource: the server responded with a status of 404 ()',
+  'Failed to load resource: the server responded with a status of 404 (Not Found)',
+]);
+
+export function isAllowedConsoleError(text, resourceUrl = '') {
+  if (resourceUrl && isAllowedFailedRequest(resourceUrl, text)) return true;
+  if (isAllowedFailedRequest(text, text)) return true;
+  // Chromium often logs sparse DEM / favicon 404s without the resource URL.
+  // Unexpected own-resource 404s still fail via requestfailed and response.
+  if (CHROMIUM_URLLESS_404.has(text.trim())) return true;
   return false;
 }
 
@@ -50,8 +53,9 @@ export function attachErrorGuards(page) {
   page.on('console', (message) => {
     if (message.type() !== 'error') return;
     const text = message.text();
-    if (isAllowedConsoleError(text)) return;
-    consoleErrors.push(text);
+    const resourceUrl = message.location()?.url ?? '';
+    if (isAllowedConsoleError(text, resourceUrl)) return;
+    consoleErrors.push(resourceUrl ? `${text} [${resourceUrl}]` : text);
   });
   page.on('requestfailed', (request) => {
     const url = request.url();
