@@ -1,6 +1,7 @@
 ﻿import { createPdf, jpegSofSize } from './pdfDocument.js';
 import { assetUrl } from '../config/assetUrl.js';
 import { formatUsd } from './costEstimate.js';
+import { AI_REVIEW_COPY, READINESS_LABELS } from '../config/aiReview.js';
 import { EARLY_ACTION } from './earlyAction.js';
 import { cellSimulatorUrl } from './sessionLink.js';
 
@@ -487,6 +488,20 @@ function pageDecision(pdf, brief) {
   pdf.fillRect(40, y, 515, pdf.measure(brief.decision, { size: 11, maxWidth: 490 }) + 20, DARK);
   pdf.text(brief.decision, 52, y + 10, { size: 11, color: WHITE, maxWidth: 490 });
   y += pdf.measure(brief.decision, { size: 11, maxWidth: 490 }) + 36;
+  if (brief.aiReview?.synthesis) {
+    const badge = READINESS_LABELS[brief.aiReview.readiness?.status] ?? '';
+    pdf.text(AI_REVIEW_COPY.pdfSection, 40, y, { size: 12, bold: true, color: INK });
+    y += 14;
+    pdf.text(`${badge}. ${brief.aiReview.synthesis.headline}`, 40, y, { size: 9, color: INK, maxWidth: 515 });
+    y += pdf.measure(`${badge}. ${brief.aiReview.synthesis.headline}`, { size: 9, maxWidth: 515 }) + 8;
+    const cannot = (brief.aiReview.synthesis.cannot_conclude ?? []).slice(0, 2).join(' ');
+    if (cannot) {
+      pdf.text(cannot, 40, y, { size: 8, color: MUTED, maxWidth: 515 });
+      y += pdf.measure(cannot, { size: 8, maxWidth: 515 }) + 10;
+    }
+    pdf.text(AI_REVIEW_COPY.assisted, 40, y, { size: 8, color: MUTED, maxWidth: 515 });
+    y += 16;
+  }
   pdf.text('Sources', 40, y, { size: 12, bold: true, color: INK });
   y += 16;
   const sources = [];
@@ -497,7 +512,7 @@ function pageDecision(pdf, brief) {
     seen.add(key);
     sources.push(source);
   }
-  sources.slice(0, 10).forEach((source) => {
+  sources.slice(0, brief.aiReview?.synthesis ? 6 : 10).forEach((source) => {
     const line = `${source.id}  ·  ${source.source_date ?? ''}  ·  ${source.url}`;
     const height = pdf.measure(line, { size: 8, maxWidth: 515 });
     pdf.text(line, 40, y, { size: 8, color: INK, maxWidth: 515 });

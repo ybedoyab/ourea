@@ -5,6 +5,11 @@ import { rainfallChip } from '../config/climateCopy.js';
 import { AreaIcon, ConditionsIcon, PrioritiesIcon } from '../components/FlowIcons.jsx';
 import { CITY_SCREEN_CONTRACT, countSafePopulationMatches } from '../domain/cityScreen.js';
 import { numeric } from '../domain/numeric.js';
+import { actionFootprint } from '../domain/actionFootprint.js';
+import { estimatePortfolioCost } from '../domain/costEstimate.js';
+import { assessDecisionReadiness } from '../domain/decisionReadiness.js';
+import { buildAiDecisionSnapshot } from '../domain/aiDecisionSnapshot.js';
+import { useDecisionReview } from '../hooks/useDecisionReview.js';
 import { ClimateContextPanel } from '../components/ClimateContextPanel.jsx';
 import { ScenarioControls } from '../components/ScenarioControls.jsx';
 import { EvidencePanel } from '../components/EvidencePanel.jsx';
@@ -103,6 +108,97 @@ export function DecisionFlow({
     const matches = countSafePopulationMatches(data?.screening);
     return { rank, matches };
   }, [data, llanaditas, state.cityLens]);
+
+  const costing = useMemo(
+    () => estimatePortfolioCost({
+      portfolio: workspace.activePlan,
+      cells: data?.cells,
+      costContext: data?.costContext,
+    }),
+    [workspace.activePlan, data?.cells, data?.costContext],
+  );
+
+  const footprint = useMemo(
+    () => actionFootprint({
+      projects: workspace.activePlan,
+      cells: data?.cells,
+      rainMm: workspace.scenario?.rainMm,
+    }),
+    [workspace.activePlan, data?.cells, workspace.scenario?.rainMm],
+  );
+
+  const readiness = useMemo(
+    () => assessDecisionReadiness({
+      portfolio: workspace.activePlan,
+      recommendationStale: state.recommendationStale,
+      metrics: workspace.metrics,
+      monteCarlo: workspace.monteCarlo,
+      benchmark: workspace.benchmark,
+      breakage: workspace.breakage,
+      climateContext: data?.climateContext,
+      costing,
+      evidence: data?.evidence,
+      communityAssessment: workspace.communityAssessment,
+      planAlignment: data?.planAlignment,
+      profileId: state.profileId,
+      scenario: workspace.scenario,
+    }),
+    [
+      workspace.activePlan,
+      state.recommendationStale,
+      workspace.metrics,
+      workspace.monteCarlo,
+      workspace.benchmark,
+      workspace.breakage,
+      data?.climateContext,
+      costing,
+      data?.evidence,
+      workspace.communityAssessment,
+      data?.planAlignment,
+      state.profileId,
+      workspace.scenario,
+    ],
+  );
+
+  const snapshot = useMemo(
+    () => buildAiDecisionSnapshot({
+      language: 'en',
+      portfolio: workspace.activePlan,
+      profileId: state.profileId,
+      scenario: workspace.scenario,
+      climateContext: data?.climateContext,
+      monteCarlo: workspace.monteCarlo,
+      metrics: workspace.metrics,
+      benchmark: workspace.benchmark,
+      breakage: workspace.breakage,
+      costing,
+      actionFootprint: footprint,
+      evidence: data?.evidence,
+      communityAssessment: workspace.communityAssessment,
+      planAlignment: data?.planAlignment,
+      recommendationStale: state.recommendationStale,
+      readiness,
+    }),
+    [
+      workspace.activePlan,
+      state.profileId,
+      workspace.scenario,
+      data?.climateContext,
+      workspace.monteCarlo,
+      workspace.metrics,
+      workspace.benchmark,
+      workspace.breakage,
+      costing,
+      footprint,
+      data?.evidence,
+      workspace.communityAssessment,
+      data?.planAlignment,
+      state.recommendationStale,
+      readiness,
+    ],
+  );
+
+  const review = useDecisionReview({ snapshot });
 
   function analyzeLlanaditas() {
     if (llanaditas) onSelectBarrio(llanaditas.properties);
@@ -260,6 +356,8 @@ export function DecisionFlow({
           workspace={workspace}
           cells={data?.cells}
           climate={data?.climateContext}
+          readiness={readiness}
+          review={review}
           onCompare={workspace.changeView}
           onAdvanced={() => dispatch({ type: 'OPEN_DRAWER', drawer: 'advanced' })}
           onRefresh={generateRecommendation}
@@ -276,10 +374,16 @@ export function DecisionFlow({
           canExport={Boolean(workspace.metrics)}
           projects={workspace.activePlan}
           cells={data?.cells}
+          readiness={readiness}
+          review={review}
           onEvidence={() => dispatch({ type: 'OPEN_DRAWER', drawer: 'evidence' })}
           onCommunity={() => dispatch({ type: 'OPEN_MODAL', modal: 'community' })}
           onAlignment={() => dispatch({ type: 'OPEN_DRAWER', drawer: 'alignment' })}
-          onExport={onExport}
+          onExport={() => onExport({
+            aiReview: review.status === 'success'
+              ? { readiness, synthesis: review.synthesis, generatedAt: review.generatedAt }
+              : null,
+          })}
           onBack={() => dispatch({ type: 'GO_BACK' })}
           onSelectCell={onSelectCell}
         />

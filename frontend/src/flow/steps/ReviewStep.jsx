@@ -1,6 +1,7 @@
 import { rainfallChip } from '../../config/climateCopy.js';
 import { DECISION_ENGINE_COPY, PRIORITY_CARDS } from '../../config/uiCopy.js';
 import { actionFootprint } from '../../domain/actionFootprint.js';
+import { AiDecisionReviewCard } from '../../components/AiDecisionReviewCard.jsx';
 import { Metric } from '../../components/Metric.jsx';
 import { UncertaintyInterval } from '../../components/UncertaintyInterval.jsx';
 import { SegmentedControl } from '../../components/SegmentedControl.jsx';
@@ -25,6 +26,8 @@ export function ReviewStep({
   workspace,
   cells,
   climate,
+  readiness,
+  review,
   onCompare,
   onAdvanced,
   onRefresh,
@@ -173,6 +176,10 @@ export function ReviewStep({
           <button type="button" className="flow-tertiary" data-testid="open-advanced" onClick={onAdvanced}>
             Advanced analysis
           </button>
+
+          {readiness && review && (
+            <AiDecisionReviewCard readiness={readiness} review={review} />
+          )}
         </>
       )}
     </StepShell>

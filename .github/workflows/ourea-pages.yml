@@ -29,6 +29,7 @@ jobs:
         working-directory: frontend
         env:
           OUREA_BASE: /ourea/
+          VITE_OUREA_AI_API_URL: ${{ vars.OUREA_AI_API_URL }}
         run: |
           npm ci
           npm run build

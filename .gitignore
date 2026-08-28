@@ -38,3 +38,7 @@ Thumbs.db
 .cursor/
 *.log
 npm-debug.log*
+
+# Serverless
+.vercel/
+

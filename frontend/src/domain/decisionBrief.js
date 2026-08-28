@@ -271,5 +271,6 @@ export function buildDecisionBrief(payload, extras = {}) {
     reproducibleId: payload?.reproducible_id ?? null,
     simulatorUrl: extras.simulatorUrl ?? simulatorBaseUrl(),
     siteImage: extras.siteImage ?? extras.mapImage ?? null,
+    aiReview: extras.aiReview ?? null,
   };
 }

@@ -147,7 +147,7 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
-  async function exportDecisionPackage() {
+  async function exportDecisionPackage(extras = {}) {
     if (!data || !workspace.metrics || !workspace.baseline) return;
     const payload = buildDecisionPackage({
       scenario: workspace.scenario,
@@ -191,6 +191,7 @@ export default function App() {
       cells: data.cells,
       costContext: data.costContext,
       simulatorUrl: simulatorBaseUrl(),
+      aiReview: extras.aiReview ?? null,
     });
     const session = {
       plan: workspace.activePlan,

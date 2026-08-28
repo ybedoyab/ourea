@@ -948,6 +948,74 @@
   line-height: 1.35;
 }
 
+.ai-review-card,
+.ai-review-summary {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.ai-review-card header b,
+.ai-review-card section b {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.ai-review-card header p,
+.ai-review-card small,
+.ai-review-card li,
+.ai-review-summary p,
+.ai-review-summary li {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ai-review-card ul,
+.ai-review-card ol,
+.ai-review-summary ul {
+  margin: 0 0 10px;
+  padding-left: 18px;
+}
+
+.ai-review-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ai-review-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--accent-dim);
+  color: var(--accent-soft);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ai-review-badge.is-needs_evidence_review {
+  background: rgba(180, 80, 60, 0.16);
+  color: #d9a39a;
+}
+
+.ai-review-skeleton {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.ai-review-skeleton span {
+  display: block;
+  height: 10px;
+  border-radius: 6px;
+  background: var(--border);
+}
+
 @media (max-width: 720px) {
   .early-action-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

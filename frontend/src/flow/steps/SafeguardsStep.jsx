@@ -1,6 +1,7 @@
 import { EVIDENCE_GROUPS } from '../../config/uiCopy.js';
 import { COMMUNITY_COPY } from '../../config/communityEvidence.js';
 import { INTERVENTIONS } from '../../config/modelConfig.js';
+import { AiDecisionReviewSummary } from '../../components/AiDecisionReviewCard.jsx';
 import { CellPlaceLinks } from '../../components/CellPlaceLinks.jsx';
 import { EarlyActionDiagram } from '../../components/EarlyActionDiagram.jsx';
 import { EvidenceIcon, CommunityIcon, AlignmentIcon, DownloadIcon } from '../../components/FlowIcons.jsx';
@@ -23,6 +24,8 @@ export function SafeguardsStep({
   projects,
   cells,
   canExport,
+  readiness,
+  review,
   onEvidence,
   onCommunity,
   onAlignment,
@@ -51,6 +54,7 @@ export function SafeguardsStep({
       )}
     >
       <p className="flow-banner" data-testid="package-ready">Ready to take this decision to a meeting</p>
+      <AiDecisionReviewSummary readiness={readiness} review={review} />
       <p className="hint">
         <span className="label-with-icon"><DownloadIcon /> Downloads a formatted PDF proposal for the meeting.</span>
       </p>
