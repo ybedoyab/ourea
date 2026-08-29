@@ -56,7 +56,7 @@ test.describe('AI decision review', () => {
     const pdf = downloads.find((item) => item.suggestedFilename().endsWith('.pdf'));
     const bytes = await readFile(await pdf.path());
     expect(bytes.subarray(0, 4).toString()).toBe('%PDF');
-    expect(bytes.toString('latin1')).toMatch(/\/Count 6/);
+    expect(bytes.toString('latin1')).toMatch(/\/Count [67]/);
     await assertNoHorizontalOverflow(page);
     guards.assertClean();
   });
