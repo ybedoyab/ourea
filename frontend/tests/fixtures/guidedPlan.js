@@ -7,6 +7,15 @@ export const RESTORATION_PLAN = Object.freeze([
   { cell_id: 7, type: 'restoration' },
 ]);
 
+export const SIX_PLAN = Object.freeze([
+  { cell_id: 12, type: 'rwh' },
+  { cell_id: 1, type: 'rwh' },
+  { cell_id: 18, type: 'drainage' },
+  { cell_id: 2, type: 'drainage' },
+  { cell_id: 7, type: 'restoration' },
+  { cell_id: 28, type: 'restoration' },
+]);
+
 export const GUIDED_CELLS = {
   type: 'FeatureCollection',
   features: [
@@ -53,6 +62,75 @@ export const GUIDED_CELLS = {
           [-75.53824, 6.25254],
           [-75.53824, 6.25182],
           [-75.53751, 6.25182],
+        ]],
+      },
+    },
+    {
+      type: 'Feature',
+      properties: {
+        cell_id: 1,
+        buildings: 8,
+        households_proxy: 6,
+        population_proxy: 18,
+        mean_slope_deg: 22,
+        high_hazard_buildings: 5,
+        vehicular_access_m: 60,
+        pedestrian_access_m: 40,
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [[
+          [-75.53600, 6.25040],
+          [-75.53600, 6.25112],
+          [-75.53673, 6.25112],
+          [-75.53673, 6.25040],
+          [-75.53600, 6.25040],
+        ]],
+      },
+    },
+    {
+      type: 'Feature',
+      properties: {
+        cell_id: 2,
+        buildings: 11,
+        households_proxy: 9,
+        population_proxy: 24,
+        mean_slope_deg: 24,
+        high_hazard_buildings: 8,
+        vehicular_access_m: 70,
+        pedestrian_access_m: 40,
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [[
+          [-75.53673, 6.25040],
+          [-75.53673, 6.25112],
+          [-75.53746, 6.25112],
+          [-75.53746, 6.25040],
+          [-75.53673, 6.25040],
+        ]],
+      },
+    },
+    {
+      type: 'Feature',
+      properties: {
+        cell_id: 28,
+        buildings: 16,
+        households_proxy: 12,
+        population_proxy: 40,
+        mean_slope_deg: 27,
+        high_hazard_buildings: 9,
+        vehicular_access_m: 90,
+        pedestrian_access_m: 50,
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [[
+          [-75.53960, 6.25220],
+          [-75.53960, 6.25292],
+          [-75.54033, 6.25292],
+          [-75.54033, 6.25220],
+          [-75.53960, 6.25220],
         ]],
       },
     },

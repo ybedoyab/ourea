@@ -86,6 +86,77 @@ function nextDecision(status) {
   return 'Fund site validation and 30% design, then return with a bill of quantities before construction approval.';
 }
 
+function gateById(gates, id) {
+  return (gates ?? []).find((item) => item.id === id) ?? null;
+}
+
+function dimensionStatus(gate, passedLabel, pendingLabel, blockedLabel) {
+  if (!gate) return pendingLabel;
+  if (gate.status === 'blocked') return blockedLabel ?? 'Blocked';
+  if (gate.status === 'passed') return passedLabel;
+  if (gate.status === 'conditional') return 'Conditional';
+  return pendingLabel;
+}
+
+export function feasibilityMatrix(gates = []) {
+  const drainage = gateById(gates, 'drainage_survey');
+  const envelope = gateById(gates, 'usd_envelope');
+  const community = gateById(gates, 'community_review');
+  const alignment = gateById(gates, 'local_alignment');
+  const design = gateById(gates, 'thirty_percent_design');
+  const evidence = gateById(gates, 'evidence_registry');
+  return [
+    {
+      dimension: 'Technical',
+      status: dimensionStatus(drainage, 'Screening only', 'Conditional', 'Blocked'),
+      evidence: drainage?.reason ?? 'Terrain and building model only.',
+      nextGate: drainage?.evidence_required ?? 'Field and hydraulic survey',
+      owner: 'Engineering team',
+      gate_id: 'drainage_survey',
+    },
+    {
+      dimension: 'Financial',
+      status: envelope?.status === 'passed' ? 'Pre-feasibility' : dimensionStatus(envelope, 'Pre-feasibility', 'Incomplete', 'Not estimable'),
+      evidence: envelope?.reason ?? 'Source-backed envelope pending.',
+      nextGate: envelope?.evidence_required ?? 'BOQ and comparable bids',
+      owner: 'Ourea team',
+      gate_id: 'usd_envelope',
+    },
+    {
+      dimension: 'Social',
+      status: dimensionStatus(community, 'Recorded', 'Not assessed', 'Blocked'),
+      evidence: community?.reason ?? 'No completed community review.',
+      nextGate: community?.evidence_required ?? 'Co-design',
+      owner: 'Community representatives',
+      gate_id: 'community_review',
+    },
+    {
+      dimension: 'Institutional',
+      status: dimensionStatus(alignment, 'Documentary alignment', 'Not documented', 'Blocked'),
+      evidence: alignment?.reason ?? 'Comuna 8 references pending.',
+      nextGate: alignment?.evidence_required ?? 'Municipal sponsor',
+      owner: 'Municipal planning',
+      gate_id: 'local_alignment',
+    },
+    {
+      dimension: 'Operational',
+      status: dimensionStatus(design, 'Design ready', 'Conditional', 'Blocked'),
+      evidence: design?.reason ?? 'Intervention logic only.',
+      nextGate: design?.evidence_required ?? 'Maintenance owner and 30% design',
+      owner: 'Engineering team',
+      gate_id: 'thirty_percent_design',
+    },
+    {
+      dimension: 'Environmental',
+      status: evidence?.status === 'passed' ? 'Screening only' : dimensionStatus(evidence, 'Screening only', 'Incomplete', 'Blocked'),
+      evidence: evidence?.reason ?? 'Existing evidence layers only.',
+      nextGate: evidence?.evidence_required ?? 'Site assessment',
+      owner: 'Municipal planning',
+      gate_id: 'evidence_registry',
+    },
+  ];
+}
+
 function rollup(gates) {
   if (gates.some((item) => item.status === 'blocked')) return READINESS_STATUS.EVIDENCE;
   const extra = gates.filter((item) => {
@@ -324,6 +395,7 @@ export function assessDecisionReadiness({
     status,
     construction_readiness: CONSTRUCTION_READINESS,
     gates,
+    feasibility: feasibilityMatrix(gates),
     next_decision: nextDecision(status),
     deterministic_fingerprint: fingerprint,
   };

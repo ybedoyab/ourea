@@ -113,3 +113,12 @@ test('low, base and high remain ordered in the costing used by readiness', () =>
   assert.equal(costing.display.total.low < costing.display.total.base, true);
   assert.equal(costing.display.total.base < costing.display.total.high, true);
 });
+
+test('feasibility matrix is deterministic and has no total score', () => {
+  const result = assessDecisionReadiness(base());
+  assert.equal(result.feasibility.length, 6);
+  assert.equal(result.feasibility.find((row) => row.dimension === 'Social').status, 'Not assessed');
+  assert.equal(result.feasibility.find((row) => row.dimension === 'Financial').status, 'Pre-feasibility');
+  assert.equal(result.feasibility.find((row) => row.dimension === 'Environmental').status, 'Screening only');
+  assert.equal('score' in result, false);
+});

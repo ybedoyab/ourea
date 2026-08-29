@@ -14,7 +14,7 @@ import {
   parseSessionHash,
   sessionHash,
 } from '../src/domain/sessionLink.js';
-import { GUIDED_CELLS, GUIDED_PLAN, RESTORATION_PLAN, guidedPayload } from './fixtures/guidedPlan.js';
+import { GUIDED_CELLS, GUIDED_PLAN, RESTORATION_PLAN, SIX_PLAN, guidedPayload } from './fixtures/guidedPlan.js';
 
 const costContext = JSON.parse(
   await readFile(fileURLToPath(new URL('../public/data/cost_context.json', import.meta.url)), 'utf8'),
@@ -51,11 +51,14 @@ test('decision brief stays in plain language and keeps a specialist annex', () =
   assert.doesNotMatch(brief.recommendation, /planning credit/i);
   assert.doesNotMatch(brief.rainfall, /CHIRPS/i);
   assert.match(brief.pathway[0].title, /Ourea deployment/i);
-  assert.match(brief.decision, /US\$0\.33–1\.39 million/);
-  assert.match(brief.decision, /US\$0\.73 million/);
+  assert.match(brief.decision, /to be priced after survey/i);
+  assert.match(brief.decision, /US\$/);
+  assert.equal(brief.immediateAsk.status, 'to_be_priced_after_survey');
   assert.match(brief.technicalNote, /CHIRPS/);
   assert.match(brief.simulatorUrl, /ourea/);
-  assert.equal(brief.costing.display.total.base, 730000);
+  assert.equal(brief.costing.display.total.base, brief.costing.implementationEnvelope.base);
+  assert.ok(brief.citations.length >= 1);
+  assert.ok(brief.feasibility.some((row) => row.dimension === 'Financial'));
 });
 
 test('decision brief names hillside cells and costing quantities', () => {
@@ -63,19 +66,20 @@ test('decision brief names hillside cells and costing quantities', () => {
   assert.match(brief.projects[0].place, /Llanaditas No\. 2/);
   assert.match(brief.projects[1].place, /Llanaditas No\. 2/);
   assert.equal(brief.projects[0].quantity, 1);
-  assert.match(brief.projects[1].quantityLabel, /40 \/ 60 \/ 80 m/);
+  assert.match(brief.projects[1].quantityLabel, /package/);
   assert.match(brief.projects[0].mapsUrl, /maps\/search/);
   assert.match(brief.projects[1].earthUrl, /earth\.google\.com/);
 });
 
-test('guided decision brief PDF is a six-page document with metadata and USD', async () => {
+test('guided decision brief PDF is a 7-page document with metadata and USD', async () => {
   const brief = buildDecisionBrief(guidedPayload(), { cells: GUIDED_CELLS, costContext });
   const blob = buildDecisionBriefPdf(brief);
   const bytes = new Uint8Array(await blob.arrayBuffer());
   assert.equal(new TextDecoder().decode(bytes.slice(0, 8)).startsWith('%PDF-1.'), true);
   const body = pdfText(bytes);
-  assert.equal(pageCount(body), 6);
-  assert.match(body, /\/Title/);
+  const pages = pageCount(body);
+  assert.ok(pages >= 6 && pages <= 8, `pages=${pages}`);
+  assert.match(body, /\/Title \(Ourea decision brief - /);
   assert.match(body, /\/Author \(Ourea\)/);
   assert.match(body, /\/Subject/);
   assert.match(body, /\/Keywords/);
@@ -83,10 +87,13 @@ test('guided decision brief PDF is a six-page document with metadata and USD', a
   assert.match(body, /\/Lang \(en-US\)/);
   assert.match(body, /Executive decision/);
   assert.match(body, /Where and what/);
-  assert.match(body, /Cost envelope/);
-  assert.match(body, /Six-month implementation pathway/);
+  assert.match(body, /Cost build-up/);
+  assert.match(body, /Implementation pathway/);
   assert.match(body, /Why early action matters/);
   assert.match(body, /Decision requested/);
+  assert.match(body, /Immediate decision-preparation ask/);
+  assert.match(body, /Future implementation envelope/);
+  assert.match(body, /To be priced after survey/);
   assert.match(body, /US\$/);
   assert.match(body, /pre-feasibility/);
   assert.match(body, /2026-08-28/);
@@ -98,20 +105,27 @@ test('guided decision brief PDF is a six-page document with metadata and USD', a
   assert.match(body, /ybedoyab\.github\.io\/ourea/);
   assert.match(body, /maps\/search/);
   assert.match(body, /earth\.google\.com/);
-  assert.match(body, /Page 6 of 6/);
-  assert.doesNotMatch(body, /Page 7 of/);
+  assert.match(body, new RegExp(`Page ${pages} of ${pages}`));
+  assert.doesNotMatch(body, /Page 9 of/);
   assert.doesNotMatch(body, /\(Contents\)/);
   assert.doesNotMatch(body, /\(credit/i);
   assert.doesNotMatch(body, /planning credit/i);
   assert.doesNotMatch(body, /houses fall/i);
   assert.doesNotMatch(body, /houses lean/i);
-  assert.doesNotMatch(body, /collapse/i);
+  assert.doesNotMatch(body, /collapse expected/i);
   assert.doesNotMatch(body, /failure year/i);
+  assert.match(body, /not a site-specific collapse forecast/i);
   assert.doesNotMatch(body, /GIF/i);
+  assert.doesNotMatch(body, /fx_banrep_trm/);
   assert.doesNotMatch(body.split('Specialist annex')[0], /CHIRPS/);
+  for (const match of body.matchAll(/\/Rect \[([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)\]/g)) {
+    const nums = match.slice(1).map(Number);
+    assert.ok(nums.every((value) => value >= -0.01 && value <= 842));
+    assert.ok(nums[0] >= 0 && nums[2] <= 595.28 + 0.05);
+  }
 });
 
-test('AI-assisted PDF section stays on six pages and does not change USD totals', async () => {
+test('AI-assisted PDF section stays within eight pages and does not change USD totals', async () => {
   const { VALID_SYNTHESIS } = await import('./fixtures/aiReview.js');
   const brief = buildDecisionBrief(guidedPayload(), {
     cells: GUIDED_CELLS,
@@ -123,14 +137,15 @@ test('AI-assisted PDF section stays on six pages and does not change USD totals'
     },
   });
   const body = await pdfOf(brief);
-  assert.equal(pageCount(body), 6);
+  const pages = pageCount(body);
+  assert.ok(pages >= 6 && pages <= 8);
   assert.match(body, /AI-assisted decision synthesis/);
   assert.match(body, /Ready for field validation/);
-  assert.equal(brief.costing.display.total.base, 730000);
+  assert.equal(brief.costing.display.total.base, brief.costing.implementationEnvelope.base);
   assert.doesNotMatch(body, /planning credit/i);
 });
 
-test('restoration portfolio PDF still has six pages and a USD envelope', async () => {
+test('restoration portfolio PDF stays within eight pages and a USD envelope', async () => {
   const brief = buildDecisionBrief(guidedPayload({
     portfolio: RESTORATION_PLAN,
     budget: { spent: 2, available: 10 },
@@ -143,7 +158,8 @@ test('restoration portfolio PDF still has six pages and a USD envelope', async (
     community_safeguards: { validation_status: 'community_reviewed' },
   }), { cells: GUIDED_CELLS, costContext });
   const body = await pdfOf(brief);
-  assert.equal(pageCount(body), 6);
+  const pages = pageCount(body);
+  assert.ok(pages >= 6 && pages <= 8);
   assert.match(body, /Restoration/);
   assert.match(body, /US\$/);
   assert.match(body, /project-scale/);
@@ -199,4 +215,37 @@ test('place links point at Google Maps and Google Earth', () => {
   const earth = googleEarthLookUrl(6.2542, -75.5408);
   assert.match(maps, /google\.com\/maps\/search/);
   assert.match(earth, /earth\.google\.com\/web/);
+});
+
+test('six-intervention and many-reference briefs stay within eight pages', async () => {
+  const extra = structuredClone(costContext);
+  extra.sources.push({
+    id: 'long_url_fixture',
+    reader_label: 'Alcaldía de Medellín - hydraulic works',
+    title: 'Informe extraordinariamente largo de obras hidráulicas',
+    source_date: null,
+    access_date: '2026-08-28',
+    source_type: 'municipal public-works report',
+    url: `https://example.test/${'section/'.repeat(40)}doc.pdf`,
+    comparability_warning: 'wrap',
+    location: 'Medellín',
+    quantity_basis: 'n/a',
+    inflation_method: 'none',
+    fx_method: 'none',
+    inclusions: [],
+    exclusions: [],
+    evidence_tier: 'fixture',
+  });
+  extra.interventions.drainage.source_ids.push('long_url_fixture');
+  const many = buildDecisionBrief(guidedPayload(), { cells: GUIDED_CELLS, costContext: extra });
+  assert.ok(many.citations.length > 6);
+  assert.equal(many.citations.find((item) => item.id === 'long_url_fixture').date, null);
+  const manyBody = await pdfOf(many);
+  assert.ok(pageCount(manyBody) <= 8);
+  assert.match(manyBody, /date not stated/);
+  assert.doesNotMatch(manyBody, /fx_banrep_trm/);
+  const six = buildDecisionBrief(guidedPayload({ portfolio: SIX_PLAN }), { cells: GUIDED_CELLS, costContext });
+  const sixBody = await pdfOf(six);
+  assert.ok(pageCount(sixBody) <= 8);
+  assert.match(sixBody, /Restoration/);
 });

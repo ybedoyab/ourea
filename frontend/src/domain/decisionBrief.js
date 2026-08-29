@@ -4,8 +4,10 @@ import { INTERVENTIONS, RWH_ASSUMPTIONS, SANDBOX_BBOX } from '../config/modelCon
 import { BRAND } from '../config/brand.js';
 import { estimatePortfolioCost, formatUsd, formatUsdMillionRange, formatUsdMillions, rwhParticipatingSystems } from './costEstimate.js';
 import { EARLY_ACTION } from './earlyAction.js';
+import { MECHANISM_COPY } from './hillsideMechanism.js';
 import { googleEarthLookUrl, googleMapsSearchUrl, ringCentroid, ringOf } from './placeLinks.js';
 import { simulatorBaseUrl } from './sessionLink.js';
+import { assessDecisionReadiness, feasibilityMatrix } from './decisionReadiness.js';
 
 function joinCells(ids) {
   const cells = [...new Set(ids.map(Number))].filter(Number.isFinite);
@@ -76,9 +78,9 @@ function quantityFor(project, cell) {
   }
   if (project.type === 'drainage') {
     return {
-      quantity: 60,
-      quantityLabel: '40 / 60 / 80 m corridor scenarios',
-      quantityBasis: 'Planning-cell width is 80 m. Length is inferred for pre-feasibility, not surveyed geometry.',
+      quantity: 1,
+      quantityLabel: '1 hillside corridor package (ROM)',
+      quantityBasis: 'ROM package from comparable 2026 Medellín hydraulic works. 40 / 60 / 80 m remains a named survey scenario, not a USD/m multiplier.',
     };
   }
   return {
@@ -136,7 +138,7 @@ function sixMonthPathway(orders) {
     },
     {
       title: 'Topographic and hydraulic survey',
-      body: 'Survey corridor length and drainage catchments. Scenario lengths of 40, 60 and 80 m convert into a bill of quantities only after this survey.',
+      body: 'Survey corridor length and drainage catchments. Named 40 / 60 / 80 m scenarios become a bill of quantities only after this survey. They are not used as a unit-rate multiplier.',
     },
     {
       title: '30% design',
@@ -165,7 +167,7 @@ function changeTriggers(orders, costing) {
     'A rainfall context or policy priority that changes the robust portfolio, not only the score.',
   ];
   if (orders.some((item) => item.type === 'drainage')) {
-    triggers.unshift('A surveyed drainage length outside the 40–80 m pre-feasibility scenarios.');
+    triggers.unshift('A surveyed drainage scope that is not comparable to the ROM hillside corridor packages.');
   }
   if (costing?.complete === false) {
     triggers.unshift('An intervention in the portfolio that still has no estimable cost scenario.');
@@ -175,11 +177,48 @@ function changeTriggers(orders, costing) {
 
 function decisionText(orders, costing) {
   const cellPhrase = joinCells(orders.map((item) => item.cell_id));
+  const ask = 'Immediate decision-preparation (visit, survey, co-design, 30% design and BOQ) is to be priced after survey.';
   if (!costing?.complete || !costing.display?.total) {
-    return `Decision requested: Fund site validation and 30% design for ${cellPhrase}, then return with a bill of quantities before construction approval. A complete US$ envelope cannot be shown until every selected intervention has an estimable scenario. Surveyed drainage length and community review are mandatory decision gates. Ourea identifies where to investigate and which portfolio remains robust; it does not predict which house will fail.`;
+    return `Decision requested: Fund site validation and 30% design for ${cellPhrase}, then return with a bill of quantities before construction approval. ${ask} A complete future implementation envelope cannot be shown until every selected intervention has an estimable scenario. Community review is a mandatory decision gate. Ourea identifies where to investigate and which portfolio remains robust; it does not predict which house will fail.`;
   }
   const { low, base, high } = costing.display.total;
-  return `Decision requested: Fund site validation and 30% design for ${cellPhrase}, then return with a bill of quantities before construction approval. Current evidence places the package at a preliminary ${formatUsdMillionRange(low, high)} implementation envelope, with a ${formatUsdMillions(base)} base scenario. Surveyed drainage length and community review are mandatory decision gates. Ourea identifies where to investigate and which portfolio remains robust; it does not predict which house will fail.`;
+  return `Decision requested: Fund site validation and 30% design for ${cellPhrase}, then return with a bill of quantities before construction approval. ${ask} Current evidence places the future implementation envelope at a preliminary ${formatUsdMillionRange(low, high)}, with a ${formatUsdMillions(base)} base scenario. Community review is a mandatory decision gate. Ourea identifies where to investigate and which portfolio remains robust; it does not predict which house will fail.`;
+}
+
+function citationList(costing) {
+  const sources = [];
+  const seen = new Set();
+  for (const source of costing?.sources ?? []) {
+    const key = source.url || source.id;
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    sources.push(source);
+  }
+  return sources.map((source, index) => ({
+    n: index + 1,
+    id: source.id,
+    label: source.reader_label || source.title || 'Source',
+    title: source.title || source.reader_label || 'Source',
+    institution: source.reader_label || source.location || '',
+    date: source.source_date || null,
+    accessed: source.access_date || null,
+    type: source.source_type || source.evidence_tier || 'source',
+    url: source.url || null,
+    warning: source.comparability_warning || null,
+  }));
+}
+
+function riskRegister(feasibility) {
+  return (feasibility ?? [])
+    .filter((row) => row.status !== 'Documentary alignment' && row.status !== 'Pre-feasibility' && row.status !== 'Recorded')
+    .slice(0, 5)
+    .map((row) => ({
+      risk: row.dimension,
+      status: row.status,
+      evidence: row.evidence,
+      owner: row.owner,
+      next: row.nextGate,
+    }));
 }
 
 export function buildDecisionBrief(payload, extras = {}) {
@@ -209,6 +248,29 @@ export function buildDecisionBrief(payload, extras = {}) {
     cells,
     costContext: extras.costContext,
   });
+  const monteCarlo = extras.monteCarlo ?? (uncertainty
+    ? {
+        p10: uncertainty.benefit_proxy_p10 ?? uncertainty.p10,
+        median: uncertainty.median,
+        p90: uncertainty.benefit_proxy_p90 ?? uncertainty.p90,
+      }
+    : null);
+  const readiness = extras.readiness ?? assessDecisionReadiness({
+    portfolio: projects,
+    costing,
+    evidence: payload?.evidence ?? extras.evidence,
+    communityAssessment: payload?.community_safeguards,
+    planAlignment: extras.planAlignment ?? payload?.plan_alignment,
+    climateContext: payload?.climate_context,
+    metrics: extras.metrics ?? monteCarlo,
+    monteCarlo,
+    benchmark: extras.benchmark ?? payload?.benchmark ?? null,
+    breakage: extras.breakage ?? payload?.breakage ?? null,
+    profileId,
+    scenario: payload?.scenario,
+  });
+  const feasibility = readiness.feasibility ?? feasibilityMatrix(readiness.gates);
+  const citations = citationList(costing);
 
   const envelope = costing.complete && costing.display?.total
     ? `${formatUsd(costing.display.total.low)}–${formatUsd(costing.display.total.high)} (base ${formatUsd(costing.display.total.base)})`
@@ -257,8 +319,22 @@ export function buildDecisionBrief(payload, extras = {}) {
     communityStatus,
     changeTriggers: changeTriggers(orders, costing),
     earlyAction: EARLY_ACTION,
+    mechanismCaption: MECHANISM_COPY.caption,
+    animationUrl: extras.animationUrl ?? 'https://ybedoyab.github.io/ourea/',
     costing,
     envelope,
+    immediateAsk: costing.immediateAsk ?? null,
+    citations,
+    feasibility,
+    risks: riskRegister(feasibility),
+    mustBeTrue: [
+      'Community review is recorded for the selected cells.',
+      'A topographic and hydraulic survey exists where drainage is proposed.',
+      'A 30% design and BOQ exist before a construction decision.',
+      'A municipal owner is identified for maintenance.',
+    ],
+    fundingStage: 'Decision preparation / pre-feasibility',
+    confidence: costing.confidence ?? 'pre-feasibility',
     decision: decisionText(orders, costing),
     caveats: [
       'Benefit numbers are planning proxies, not people saved or losses avoided.',
