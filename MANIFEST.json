@@ -129,8 +129,13 @@
     "fx_date": "2026-08-28",
     "cop_per_usd": 3144.28
   },
-  "file_count_excluding_manifest": 310,
+  "file_count_excluding_manifest": 313,
   "files": [
+    {
+      "path": ".env.example",
+      "bytes": 389,
+      "sha256": "7b39f0022f4087a41a330484568d1d0034d4ca77c33e4bc893d5cf1edbce0039"
+    },
     {
       "path": ".github/workflows/ourea-pages.yml",
       "bytes": 3262,
@@ -138,8 +143,8 @@
     },
     {
       "path": ".github/workflows/ourea-qa.yml",
-      "bytes": 3308,
-      "sha256": "5477b3b5b019a1a593a7df62690a4ce15b2d33340d4c0c49870cf3ba0b8e216d"
+      "bytes": 3305,
+      "sha256": "453f502331204e00877872835fa292220732c0762dcdaf5cff097a3a831ac990"
     },
     {
       "path": ".gitignore",
@@ -147,9 +152,14 @@
       "sha256": "e184f720d81feaefca024b0c47ae00597af49bc8c2479acade3aee2a558e5974"
     },
     {
+      "path": ".vercelignore",
+      "bytes": 89,
+      "sha256": "dd7df01646b0bad5ade46536c5fde13c9e709504a8494c2721fae818ec7752ca"
+    },
+    {
       "path": "CHANGELOG.md",
-      "bytes": 6917,
-      "sha256": "7fed75e0739e054c49b7567de01800cefd310be0bfc88a1479632adbeb100433"
+      "bytes": 7040,
+      "sha256": "8155bc305b0ad1c5fc0cba0388541cb7ed8502f7d7fce26a936928efa691babd"
     },
     {
       "path": "README.md",
@@ -378,13 +388,13 @@
     },
     {
       "path": "docs/product/ai-decision-review.md",
-      "bytes": 4828,
-      "sha256": "7204d23ebc78b8c38a82335de0d7b216e0dbff2da0bed829fbec0ba0bbe0ca24"
+      "bytes": 4994,
+      "sha256": "9312295603d6e2529303180f283acff8bcbf4bac6d5a844eef93a255205bf5d7"
     },
     {
       "path": "docs/product/architecture.md",
-      "bytes": 10402,
-      "sha256": "d082fa1c4a0accaea9002f3ca14e60a97d983c55c8ba58b02740efe88ce6109b"
+      "bytes": 10452,
+      "sha256": "25fa6af40fcc272fcad3adb1c2f6abcfb7f623c9cab78f924b88162111891f56"
     },
     {
       "path": "docs/product/competitive-landscape.md",
@@ -432,11 +442,6 @@
       "sha256": "1c35e2bffbd5429cfb82db23357895d10d12a785128febbbd88b542b3c7bb6ff"
     },
     {
-      "path": "frontend/.env.example",
-      "bytes": 123,
-      "sha256": "95ed5575754bb3e68010f3b705dd833992a65271dbc8e0a6b48699048878a7e2"
-    },
-    {
       "path": "frontend/e2e/ai-decision-review.spec.js",
       "bytes": 6633,
       "sha256": "019a3e6997d0e43b74b0781c6fcba24ea6bcab9805af0becd75bab30b446035d"
@@ -473,8 +478,8 @@
     },
     {
       "path": "frontend/playwright.config.js",
-      "bytes": 759,
-      "sha256": "05f28d07c227ff28b1be54bcd8d7acc26b9ad968feb07495f982d659acff9957"
+      "bytes": 882,
+      "sha256": "72a3bd09652911a110fc2aff81dc80fde874c8faabc964db0d530237acb5bb5c"
     },
     {
       "path": "frontend/public/data/buildings.geojson",
@@ -1018,8 +1023,8 @@
     },
     {
       "path": "frontend/src/config/aiReview.js",
-      "bytes": 1980,
-      "sha256": "2445513c5baeaf9cd246decb92c148503493e366cb708dd2d4285e5803d64227"
+      "bytes": 1978,
+      "sha256": "2304cb9844be0d713da4c325b59bff3f52851710a032bc30c8049cf4f265a510"
     },
     {
       "path": "frontend/src/config/assetUrl.js",
@@ -1458,8 +1463,8 @@
     },
     {
       "path": "frontend/tests/fixtures/aiReview.js",
-      "bytes": 2330,
-      "sha256": "242352d8ae3a6436d6ff1e3eac1cf07155034c24e5875ac385e9eba485357bf1"
+      "bytes": 4877,
+      "sha256": "84b2b0b02e99cca83df7b9e50654f0e9ca8c1318ce2fe28925a75fcb4956826f"
     },
     {
       "path": "frontend/tests/fixtures/guidedPlan.js",
@@ -1493,8 +1498,8 @@
     },
     {
       "path": "frontend/vite.config.js",
-      "bytes": 1448,
-      "sha256": "76abb9ac9ce23eb48ce875ecc830e973129986517ddebb4680521959dbd6ed10"
+      "bytes": 1942,
+      "sha256": "78c0ac91bd6133ab9bffc2bdb6c63e4cc4533700bba92ac7a6c27394f269ab26"
     },
     {
       "path": "qa_mac_linux.sh",
@@ -1507,14 +1512,9 @@
       "sha256": "bfb855e9738b7d3273aa50b699445c78be5c5eac5048c5787e298ad35dd26836"
     },
     {
-      "path": "requirements-climate.txt",
-      "bytes": 159,
-      "sha256": "d711fa4b73fb73045f4876d93ea52b72858a8b280ab77b1d43a9e5337984f288"
-    },
-    {
-      "path": "requirements-qa.txt",
-      "bytes": 317,
-      "sha256": "bbf76be1ea014943a1142d6ddda7d24a5f0c85e322e77da7f5f982ecbbf17121"
+      "path": "requirements.txt",
+      "bytes": 354,
+      "sha256": "eece0919b41de69b337f59bb747c7e3e97cf5b74049827f577941512a0345ea4"
     },
     {
       "path": "run_mac_linux.sh",
@@ -1528,8 +1528,8 @@
     },
     {
       "path": "scripts/README.md",
-      "bytes": 4222,
-      "sha256": "a086cfda045f6e36c87377804264e385db34f4ac819631f416844f32818b664b"
+      "bytes": 4225,
+      "sha256": "a0bfaf4a5551a63a2ea5aa3025095827a391207b5eb2f448f55709b39b86b0f2"
     },
     {
       "path": "scripts/build_city_screen.py",
@@ -1612,9 +1612,9 @@
       "sha256": "3b953e4452bb2c0140d90f4ad2b93a242d91660d66191503fed5eea8ad193907"
     },
     {
-      "path": "services/decision-readiness/.env.example",
-      "bytes": 174,
-      "sha256": "222a4f3cc36a310f8d7a86ef29193e32ca6e8024e9bf3701540d1272a8f4fa5f"
+      "path": "services/decision-readiness/.gitignore",
+      "bytes": 8,
+      "sha256": "56537ebe03160a28fdb6e59ae18f408d6f8aba609df73c45917c9358fd3bad52"
     },
     {
       "path": "services/decision-readiness/api/decision-readiness.js",
@@ -1623,8 +1623,13 @@
     },
     {
       "path": "services/decision-readiness/lib/handler.js",
-      "bytes": 6314,
-      "sha256": "1326b516ca1237b804087d11453e86f28bb71c88a29423e87c596a7a11b0d54a"
+      "bytes": 6368,
+      "sha256": "6d67a30958ef158bdfe03979a7920d2af122744b00d7d8eac6a3330f9f3f4ffd"
+    },
+    {
+      "path": "services/decision-readiness/lib/loadEnv.js",
+      "bytes": 1026,
+      "sha256": "6d25e16919f6662125a46bfd5e8505b7e9c8782e0111481f129101a0a9fc92b0"
     },
     {
       "path": "services/decision-readiness/lib/rateLimit.js",
@@ -1643,23 +1648,33 @@
     },
     {
       "path": "services/decision-readiness/package.json",
-      "bytes": 326,
-      "sha256": "8701cd8f43e3ceca14f46f7309b633d58bf898251db3a7c8ab70d807e651ba5d"
+      "bytes": 369,
+      "sha256": "5930de3ea9f612a3caa41b4a9f7313b7bcd7c55a9f4837feaf0300e4a9438842"
     },
     {
       "path": "services/decision-readiness/scripts/localServer.mjs",
-      "bytes": 1176,
-      "sha256": "0bf334cf2678df74efa56c005a35b28301b57c0d14d3bfc9a4905458eda11090"
+      "bytes": 595,
+      "sha256": "ecf182268619e0e628ebdacb3da21ca0c1ef60a081c8602fbbed2dc53e11b4c0"
+    },
+    {
+      "path": "services/decision-readiness/scripts/smoke.mjs",
+      "bytes": 1298,
+      "sha256": "74d6122a3d05b814974a02117d516794db36bc270b4e7d4b5aa1c32231d27955"
     },
     {
       "path": "services/decision-readiness/tests/handler.test.js",
-      "bytes": 7436,
-      "sha256": "611868f78a5f6e59a4eef1383200606fd94cadc9885e8959d48ba7dfba4eb651"
+      "bytes": 4975,
+      "sha256": "e229cd312dc05c61b1ef255f62176e5008f8b7ff6d04b798eafb3196ce3ea528"
+    },
+    {
+      "path": "services/decision-readiness/tests/loadEnv.test.js",
+      "bytes": 983,
+      "sha256": "567ef9c7172233831eeb0dde974bbde71388e4cc8baf7d64324f033dccca3f82"
     },
     {
       "path": "services/decision-readiness/vercel.json",
-      "bytes": 168,
-      "sha256": "6af40289f44d03db63843656ea1a061beecd08623b3b6ad13ceef82f11e435ff"
+      "bytes": 146,
+      "sha256": "abf1a33db193ecd4dbd72aa7b439aba3aa7d7f0d849cc3623d07fda47631916a"
     },
     {
       "path": "tests/test_chirps_stats.py",
