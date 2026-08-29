@@ -1,5 +1,12 @@
 # Ourea changelog
 
+## Public AI, ROM costs and decision brief — 2026-08-28
+
+- Published AI reviews explain only pending gates, raise the output budget from evidence, and return a safe `request_id` on failure.
+- Decision brief is a 7-page investment package: immediate ask versus future envelope, numbered citations, ROM drainage packages, and a compact AI section.
+- Hillside mechanism animation is restored as a controlled illustration, not a collapse forecast.
+- Civil works use DANE ICOCIV; household RWH equipment keeps DANE IPC. Drainage is no longer a USD/m multiplier.
+
 ## AI-assisted decision review — 2026-08-28
 
 - Optional Review-step card explains the existing Ourea result, lists binding gates and drafts field-visit questions.
