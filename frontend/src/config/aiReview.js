@@ -24,7 +24,10 @@ export const AI_REVIEW_COPY = Object.freeze({
   timeout: 'The decision review timed out. Deterministic analysis remains available.',
   busy: 'The review service is busy. Try again in a moment.',
   unavailable: 'The review service is unavailable. Deterministic analysis remains available.',
-  rejected: 'The review request was rejected. Deterministic analysis remains available.',
+  rejected: 'The review request was invalid. Deterministic analysis remains available.',
+  incomplete: 'The review was cut off before a complete brief. Try again. Deterministic analysis remains available.',
+  schema: 'The review did not match the required brief schema. Try again. Deterministic analysis remains available.',
+  refused: 'The model declined this review. Deterministic analysis remains available.',
   unreachable: 'The review service could not be reached. Deterministic analysis remains available.',
   cooldown: 'Wait a few seconds before generating again.',
 });

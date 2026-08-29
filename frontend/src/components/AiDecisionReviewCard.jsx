@@ -49,7 +49,7 @@ export function AiDecisionReviewCard({ readiness, review }) {
 
       {review.status === 'loading' && (
         <div>
-          <p className="hint" role="status">{AI_REVIEW_COPY.generating}</p>
+          <p className="hint" role="status" aria-live="polite">{AI_REVIEW_COPY.generating}</p>
           <Skeleton />
           <button type="button" className="flow-tertiary" data-testid="cancel-decision-review" onClick={review.cancel}>
             {AI_REVIEW_COPY.cancel}
@@ -59,7 +59,10 @@ export function AiDecisionReviewCard({ readiness, review }) {
 
       {review.status === 'error' && (
         <div>
-          <p className="flow-banner warning" role="alert" data-testid="ai-review-error">{review.error?.message}</p>
+          <p className="flow-banner warning" role="alert" data-testid="ai-review-error">
+            {review.error?.message}
+            {review.error?.request_id ? ` Request ${review.error.request_id}.` : ''}
+          </p>
           <button type="button" className="primary" data-testid="generate-decision-review" onClick={() => review.generate()}>
             {AI_REVIEW_COPY.generate}
           </button>

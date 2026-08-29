@@ -175,13 +175,23 @@ export function buildAiDecisionSnapshot({
       status: assessed.status,
       construction_readiness: assessed.construction_readiness,
       next_decision: assessed.next_decision,
-      gates: assessed.gates.map((item) => ({
-        id: item.id,
-        status: item.status,
-        label: item.label,
-        reason: item.reason,
-        evidence_required: item.evidence_required,
-      })),
+      gates: assessed.gates.map((item) => (
+        item.status === 'passed'
+          ? {
+              id: item.id,
+              status: item.status,
+              label: item.label,
+              reason: 'Passed.',
+              evidence_required: 'None.',
+            }
+          : {
+              id: item.id,
+              status: item.status,
+              label: item.label,
+              reason: item.reason,
+              evidence_required: item.evidence_required,
+            }
+      )),
     },
     guardrails: SNAPSHOT_GUARDRAILS,
   };

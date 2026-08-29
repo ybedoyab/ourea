@@ -89,9 +89,9 @@ Unset `VITE_OUREA_AI_API_URL` / `OUREA_AI_API_URL` and rebuild Pages, or remove 
 
 Implemented token budget (`frontend/src/config/aiDecisionContract.json`):
 
-- estimated input ≈ 2,200 tokens;
-- `max_output_tokens` = 900;
-- typical output ≈ 650 tokens.
+- estimated input ≈ 1,800 tokens;
+- `max_output_tokens` = 1,600;
+- typical output ≈ 900 tokens.
 
 Official short-context rates for `gpt-5.6-terra` as of 2026-08-28 ([OpenAI pricing](https://developers.openai.com/api/docs/pricing)):
 
@@ -100,11 +100,13 @@ Official short-context rates for `gpt-5.6-terra` as of 2026-08-28 ([OpenAI prici
 
 Typical request:
 
-`(2200 / 1e6) * 2 + (650 / 1e6) * 12 ≈ US$0.012`
+`(1800 / 1e6) * 2 + (900 / 1e6) * 12 ≈ US$0.014`
 
 Upper bound at the output cap:
 
-`(2200 / 1e6) * 2 + (900 / 1e6) * 12 ≈ US$0.015`
+`(1800 / 1e6) * 2 + (1600 / 1e6) * 12 ≈ US$0.023`
+
+GitHub Actions live smoke posts two snapshots (tiny fixture + published guided example) against the public endpoint. It does not use an OpenAI key.
 
 These are API token charges, not Ourea project costs.
 

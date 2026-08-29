@@ -57,7 +57,9 @@ test('valid request uses injected OpenAI client with store:false', async () => {
   assert.equal(captured.model, 'gpt-5.6-terra');
   assert.equal(captured.reasoning.effort, 'low');
   assert.equal('tools' in captured, false);
+  assert.ok(!JSON.parse(captured.input).readiness.gates.some((item) => item.status === 'passed'));
   assert.deepEqual(res.payload.synthesis.headline, VALID_SYNTHESIS.headline);
+  assert.ok(res.payload.request_id);
   assert.equal(JSON.stringify(res.payload).includes('sk-'), false);
 });
 
@@ -122,12 +124,14 @@ test('invalid schema is rejected', async () => {
 
 test('refusal, timeout, 429 and 500 map to safe errors', async () => {
   const cases = [
-    [{ refusal: 'cannot' }, 422],
-    [Object.assign(new Error('timed out'), { name: 'AbortError' }), 408],
-    [Object.assign(new Error('rate'), { status: 429 }), 429],
-    [Object.assign(new Error('boom'), { status: 500 }), 502],
+    [{ refusal: 'cannot' }, 422, 'refused'],
+    [{ status: 'incomplete' }, 422, 'incomplete'],
+    [{ output_parsed: { headline: 'x' } }, 422, 'schema'],
+    [Object.assign(new Error('timed out'), { name: 'AbortError' }), 408, 'timeout'],
+    [Object.assign(new Error('rate'), { status: 429 }), 429, 'busy'],
+    [Object.assign(new Error('boom'), { status: 500 }), 502, 'unavailable'],
   ];
-  for (const [result, status] of cases) {
+  for (const [result, status, code] of cases) {
     const openai = {
       responses: {
         parse: async () => {
@@ -139,6 +143,8 @@ test('refusal, timeout, 429 and 500 map to safe errors', async () => {
     const res = mockRes();
     await handlerWith(openai)(mockReq(), res);
     assert.equal(res.statusCode, status);
+    assert.equal(res.payload.error.code, code);
+    assert.ok(res.payload.error.request_id);
     assert.equal(JSON.stringify(res.payload).includes('stack'), false);
     assert.equal(JSON.stringify(res.payload).includes('cannot'), false);
   }

@@ -28,6 +28,21 @@ function configuredOrigins() {
   return fromEnv.length ? fromEnv : DEFAULT_ORIGINS;
 }
 
+function requestId() {
+  return `ourea-${crypto.randomUUID().slice(0, 8)}`;
+}
+
+function compactSnapshotForModel(snapshot) {
+  return {
+    ...snapshot,
+    readiness: {
+      ...snapshot.readiness,
+      gates: snapshot.readiness.gates.filter((item) => item.status !== 'passed').slice(0, 6),
+    },
+    guardrails: snapshot.guardrails.slice(0, 4),
+  };
+}
+
 function json(res, status, payload) {
   res.statusCode = status;
   res.setHeader('content-type', 'application/json; charset=utf-8');
@@ -35,17 +50,25 @@ function json(res, status, payload) {
   res.end(JSON.stringify(payload));
 }
 
-function fail(res, status, code) {
+function fail(res, status, code, id) {
   const messages = {
     method: 'POST only',
     origin: 'Origin not allowed',
-    payload: 'Request rejected',
+    payload: 'The review request was invalid.',
     busy: 'The review service is busy. Try again in a moment.',
     timeout: 'The decision review timed out.',
     unavailable: 'The review service is unavailable.',
-    refused: 'The review could not be completed.',
+    refused: 'The model declined to complete this review.',
+    incomplete: 'The review output was cut off. Try again.',
+    schema: 'The review output did not match the required brief schema.',
   };
-  json(res, status, { error: { code, message: messages[code] ?? messages.unavailable } });
+  json(res, status, {
+    error: {
+      code,
+      message: messages[code] ?? messages.unavailable,
+      request_id: id,
+    },
+  });
 }
 
 function applyCors(req, res, origins) {
@@ -101,11 +124,12 @@ export function createDecisionReadinessHandler({
   model = process.env.OPENAI_MODEL || CONTRACT.default_model,
 } = {}) {
   return async function handler(req, res) {
+    const id = requestId();
     try {
       const cors = applyCors(req, res, origins);
       if (req.method === 'OPTIONS') {
         if (cors === 'blocked') {
-          fail(res, 403, 'origin');
+          fail(res, 403, 'origin', id);
           return;
         }
         res.statusCode = 204;
@@ -113,15 +137,15 @@ export function createDecisionReadinessHandler({
         return;
       }
       if (req.method !== 'POST') {
-        fail(res, 405, 'method');
+        fail(res, 405, 'method', id);
         return;
       }
       if (cors === 'blocked') {
-        fail(res, 403, 'origin');
+        fail(res, 403, 'origin', id);
         return;
       }
       if (!rateLimiter.allow()) {
-        fail(res, 429, 'busy');
+        fail(res, 429, 'busy', id);
         return;
       }
 
@@ -130,14 +154,14 @@ export function createDecisionReadinessHandler({
         raw = await readRawBody(req);
       } catch (error) {
         if (error?.code === 'too_large') {
-          fail(res, 413, 'payload');
+          fail(res, 413, 'payload', id);
           return;
         }
-        fail(res, 400, 'payload');
+        fail(res, 400, 'payload', id);
         return;
       }
       if (!raw || Buffer.byteLength(raw, 'utf8') > CONTRACT.snapshot_max_bytes + 256) {
-        fail(res, 413, 'payload');
+        fail(res, 413, 'payload', id);
         return;
       }
 
@@ -145,24 +169,24 @@ export function createDecisionReadinessHandler({
       try {
         parsedJson = JSON.parse(raw);
       } catch {
-        fail(res, 400, 'payload');
+        fail(res, 400, 'payload', id);
         return;
       }
       const request = RequestSchema.safeParse(parsedJson);
       if (!request.success) {
-        fail(res, 400, 'payload');
+        fail(res, 400, 'payload', id);
         return;
       }
       const snapshotCheck = SnapshotSchema.safeParse(request.data.snapshot);
       if (!snapshotCheck.success) {
-        fail(res, 400, 'payload');
+        fail(res, 400, 'payload', id);
         return;
       }
 
       const client = openai ?? createOpenAi(openaiFactory);
       if (!client) {
         console.error('decision-readiness missing_key');
-        fail(res, 503, 'unavailable');
+        fail(res, 503, 'unavailable', id);
         return;
       }
 
@@ -172,7 +196,7 @@ export function createDecisionReadinessHandler({
           model,
           store: false,
           instructions: SYSTEM_INSTRUCTIONS,
-          input: JSON.stringify(snapshotCheck.data),
+          input: JSON.stringify(compactSnapshotForModel(snapshotCheck.data)),
           text: { format: zodTextFormat(SynthesisSchema, 'decision_synthesis') },
           reasoning: { effort: 'low' },
           max_output_tokens: CONTRACT.token_budget.max_output_tokens,
@@ -180,31 +204,35 @@ export function createDecisionReadinessHandler({
       } catch (error) {
         const status = Number(error?.status ?? error?.statusCode);
         if (error?.name === 'AbortError' || error?.code === 'ETIMEDOUT' || status === 408) {
-          fail(res, 408, 'timeout');
+          fail(res, 408, 'timeout', id);
           return;
         }
         if (status === 429) {
-          fail(res, 429, 'busy');
+          fail(res, 429, 'busy', id);
           return;
         }
         if (status === 401 || status === 403) {
           console.error('decision-readiness upstream_auth');
-          fail(res, 503, 'unavailable');
+          fail(res, 503, 'unavailable', id);
           return;
         }
         console.error('decision-readiness upstream');
-        fail(res, 502, 'unavailable');
+        fail(res, 502, 'unavailable', id);
         return;
       }
 
+      if (completion?.status === 'incomplete' || (!completion?.output_parsed && !completion?.refusal)) {
+        fail(res, 422, 'incomplete', id);
+        return;
+      }
       if (completion?.refusal) {
-        fail(res, 422, 'refused');
+        fail(res, 422, 'refused', id);
         return;
       }
 
-      const synthesized = SynthesisSchema.safeParse(completion?.output_parsed);
+      const synthesized = SynthesisSchema.safeParse(completion.output_parsed);
       if (!synthesized.success) {
-        fail(res, 422, 'refused');
+        fail(res, 422, 'schema', id);
         return;
       }
 
@@ -212,9 +240,10 @@ export function createDecisionReadinessHandler({
         schema_version: 1,
         synthesis: synthesized.data,
         generated_at: new Date().toISOString(),
+        request_id: id,
       });
     } catch {
-      fail(res, 500, 'unavailable');
+      fail(res, 500, 'unavailable', id);
     }
   };
 }

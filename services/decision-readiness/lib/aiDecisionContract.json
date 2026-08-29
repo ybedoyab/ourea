@@ -19,9 +19,9 @@
     "context": "short-context standard"
   },
   "token_budget": {
-    "max_output_tokens": 900,
-    "estimated_input_tokens": 2200,
-    "estimated_output_tokens": 650
+    "max_output_tokens": 1600,
+    "estimated_input_tokens": 1800,
+    "estimated_output_tokens": 900
   },
   "owners": [
     "Ourea team",
@@ -32,7 +32,7 @@
   "limits": {
     "headline": 160,
     "portfolio_rationale": { "max": 4, "item": 220 },
-    "gate_explanations": { "max": 8, "explanation": 220, "evidence_needed": 160 },
+    "gate_explanations": { "max": 4, "explanation": 180, "evidence_needed": 140 },
     "field_visit_questions": { "max": 5, "item": 160 },
     "next_actions": { "max": 5, "action": 160, "timing": 80 },
     "cannot_conclude": { "max": 5, "item": 180 },

@@ -155,4 +155,7 @@ Rules:
 - Do not produce the overall badge or status; those are already decided.
 - Keep executive, direct language.
 - Reply in the snapshot.language locale.
-- Keep every string within the schema limits.`;
+- Keep every string within the schema limits.
+- Write at most four gate_explanations, and only for gates whose status is pending, conditional or blocked.
+- Do not explain passed gates.
+- Prefer two short portfolio_rationale bullets.`;
