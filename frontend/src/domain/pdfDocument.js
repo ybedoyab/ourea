@@ -21,7 +21,7 @@ function normalizePdfText(value) {
     .replace(/â†’/g, '->')
     .replace(/→/g, '->')
     .replace(/←/g, '<-')
-    .replace(/\u00a0/g, ' ');
+    .replace(/[\u2013\u2014\u2212]/g, '-');
 }
 
 function pdfString(value) {
@@ -90,17 +90,46 @@ function widthOf(text, size, bold = false) {
   return width;
 }
 
-function wrapLine(text, maxWidth, size, bold = false) {
-  const words = String(text ?? '').split(/\s+/).filter(Boolean);
+export function wrapLine(text, maxWidth, size, bold = false) {
+  const tokens = [];
+  for (const token of String(text ?? '').split(/\s+/).filter(Boolean)) {
+    const pieces = token.split(/(?<=[/_\-?&=])/);
+    let chunk = '';
+    for (const piece of pieces) {
+      const next = chunk + piece;
+      if (chunk && widthOf(next, size, bold) > maxWidth) {
+        tokens.push(chunk);
+        chunk = piece;
+      } else chunk = next;
+    }
+    if (chunk) tokens.push(chunk);
+  }
   const lines = [];
   let current = '';
-  for (const word of words) {
-    const next = current ? `${current} ${word}` : word;
-    if (current && widthOf(next, size, bold) > maxWidth) {
+  for (const word of tokens) {
+    if (widthOf(word, size, bold) > maxWidth) {
+      if (current) {
+        lines.push(current);
+        current = '';
+      }
+      let rest = word;
+      while (widthOf(rest, size, bold) > maxWidth && rest.length > 1) {
+        let cut = rest.length - 1;
+        while (cut > 1 && widthOf(rest.slice(0, cut), size, bold) > maxWidth) cut -= 1;
+        lines.push(rest.slice(0, cut));
+        rest = rest.slice(cut);
+      }
+      current = rest;
+      continue;
+    }
+    const glued = !current
+      ? word
+      : (/[/_\-?&=]$/.test(current) || /^[/_\-?&=]/.test(word) ? current + word : `${current} ${word}`);
+    if (current && widthOf(glued, size, bold) > maxWidth) {
       lines.push(current);
       current = word;
     } else {
-      current = next;
+      current = glued;
     }
   }
   if (current) lines.push(current);
@@ -169,16 +198,23 @@ export function createPdf(options = {}) {
     color = [28, 36, 40],
     maxWidth = null,
     lineHeight = null,
+    align = 'left',
+    width = null,
   } = {}) {
     const font = bold ? 'F2' : 'F1';
     const leading = lineHeight ?? size * 1.35;
-    const lines = maxWidth ? wrapLine(value, maxWidth, size, bold) : [String(value ?? '')];
+    const wrapWidth = maxWidth ?? width;
+    const lines = wrapWidth ? wrapLine(value, wrapWidth, size, bold) : [String(value ?? '')];
     lines.forEach((line, index) => {
+      const lineWidth = widthOf(line, size, bold);
+      let drawX = x;
+      if (align === 'right') drawX = x - lineWidth;
+      if (align === 'right' && width != null) drawX = x + width - lineWidth;
       const baseline = yFromTop(y + size * 0.8 + index * leading);
       ops.push('BT');
       ops.push(`/${font} ${size} Tf`);
       ops.push(`${rgb(color)} rg`);
-      ops.push(`${x.toFixed(2)} ${baseline.toFixed(2)} Td`);
+      ops.push(`${drawX.toFixed(2)} ${baseline.toFixed(2)} Td`);
       ops.push(`${pdfString(line)} Tj`);
       ops.push('ET');
     });
@@ -186,14 +222,22 @@ export function createPdf(options = {}) {
   }
 
   function addLink(x, y, width, height, dest) {
-    if (width <= 0 || height <= 0) return;
+    const boxed = {
+      x: Math.max(0, x),
+      y: Math.max(0, y),
+      width,
+      height,
+    };
+    boxed.width = Math.min(boxed.width, pageSize.width - boxed.x);
+    boxed.height = Math.min(boxed.height, pageSize.height - boxed.y);
+    if (boxed.width <= 0.5 || boxed.height <= 0.5) return;
     if (typeof dest === 'string' && dest.length) {
-      annots.push({ x, y, width, height, uri: dest });
+      annots.push({ ...boxed, uri: dest });
       return;
     }
     const page = Number(dest);
     if (!Number.isFinite(page) || page < 1) return;
-    annots.push({ x, y, width, height, destPage: page });
+    annots.push({ ...boxed, destPage: page });
   }
 
   function addJpeg({ bytes, width, height, x, y, displayWidth, displayHeight }) {
@@ -210,12 +254,14 @@ export function createPdf(options = {}) {
 
   function strokePath(points, { color = [238, 232, 220], lineWidth = 1.2 } = {}) {
     if (!points.length) return;
-    const commands = points.map((point, index) => {
-      const x = point[0];
+    const parts = points.map((point, index) => {
+      const x = Number(point[0]);
       const y = yFromTop(point[1]);
-      return `${index === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)}`;
-    });
-    ops.push(`${lineWidth.toFixed(2)} w 1 J 1 j ${rgb(color)} RG ${commands.join(' ')} S`);
+      if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+      return `${x.toFixed(2)} ${y.toFixed(2)} ${index === 0 ? 'm' : 'l'}`;
+    }).filter(Boolean);
+    if (!parts.length) return;
+    ops.push(`${lineWidth.toFixed(2)} w 1 J 1 j ${rgb(color)} RG ${parts.join(' ')} S`);
   }
 
   function strokeCommands(commands, { color = [238, 232, 220], lineWidth = 1.2 } = {}) {
@@ -274,6 +320,21 @@ export function createPdf(options = {}) {
     addJpeg,
     pageCount() {
       return pages.length + (ops.length || annots.length ? 1 : 0);
+    },
+    stamp(fn) {
+      if (ops.length || annots.length) pages.push({ ops, annots });
+      ops = [];
+      annots = [];
+      const total = pages.length;
+      pages.forEach((page, index) => {
+        ops = page.ops;
+        annots = page.annots;
+        fn(index + 1, total);
+        page.ops = ops;
+        page.annots = annots;
+      });
+      ops = [];
+      annots = [];
     },
     toBlob() {
       const pageRecords = (ops.length || annots.length)
