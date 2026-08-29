@@ -1,4 +1,4 @@
-# Versions used for the Ourea geospatial/MILP QA environment.
+# Ourea Python dependencies. rasterio is only required to rebuild CHIRPS extracts.
 numpy==2.3.5
 pandas==2.2.3
 scipy==1.17.0
@@ -7,3 +7,4 @@ shapely==2.1.2
 pyproj==3.7.2
 # geopandas remains required for GeoDataFrame construction. Local GeoJSON QA uses
 # scripts/geojson_io.py (JSON + from_features) to avoid native Fiona/pyogrio readers.
+rasterio==1.4.3

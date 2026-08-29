@@ -78,7 +78,7 @@ The Ourea manifest records city-screen, policy-alternative, sampled trade-off an
 
 ## `services/decision-readiness`
 
-Optional Vercel function for AI-assisted decision review. Tests use an injected OpenAI client. Local listen: `npm run dev` in that folder after copying `.env.example` to `.env.local`. See `docs/product/ai-decision-review.md`.
+Optional Vercel function for AI-assisted decision review. Tests use an injected OpenAI client. Local listen: `npm run dev` in that folder after copying the root `.env.example` to `.env`. See `docs/product/ai-decision-review.md`.
 
 ## `build_climate_context.py`
 

@@ -36,10 +36,9 @@ export const READINESS_LABELS = Object.freeze({
 });
 
 export function resolveAiApiUrl() {
-  const fromEnv = String(import.meta.env?.VITE_OUREA_AI_API_URL ?? '').trim();
-  if (fromEnv) return fromEnv;
   if (typeof window !== 'undefined') {
-    return String(window.__OUREA_AI_API_URL__ ?? '').trim();
+    const fromWindow = String(window.__OUREA_AI_API_URL__ ?? '').trim();
+    if (fromWindow) return fromWindow;
   }
-  return '';
+  return String(import.meta.env?.VITE_OUREA_AI_API_URL ?? '').trim();
 }

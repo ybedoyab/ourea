@@ -5,6 +5,7 @@
 - Optional Review-step card explains the existing Ourea result, lists binding gates and drafts field-visit questions.
 - Readiness badges are deterministic. OpenAI never changes rankings, US$ envelopes or evidence states.
 - The OpenAI key lives only in the serverless backend. GitHub Pages stays static.
+- Local secrets use a single gitignored `.env` at the repository root. Python dependencies live in one `requirements.txt`.
 
 ## Financed decision brief — 2026-08-28
 

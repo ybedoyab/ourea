@@ -54,7 +54,7 @@ jobs:
         run: node -e "const fs=require('fs'); const files=fs.readdirSync('dist/assets'); if(!files.some(f=>f.startsWith('maplibre-')&&f.endsWith('.js'))) throw new Error('MapLibre chunk missing'); const app=files.filter(f=>f.endsWith('.js')&&!f.startsWith('maplibre-')); const initial=app.map(f=>'dist/assets/'+f).map(p=>fs.statSync(p).size); if(Math.max(...initial)>500000) throw new Error('Initial JS exceeded 500 kB'); console.log(files.join('\\n'));"
 
       - name: Install Python QA dependencies
-        run: python -m pip install --upgrade pip && pip install -r requirements-qa.txt
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
 
       - name: Compile Python
         run: python -m compileall -q scripts tests

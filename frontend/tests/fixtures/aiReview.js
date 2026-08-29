@@ -56,3 +56,86 @@ export const VALID_SYNTHESIS = Object.freeze({
     'Ourea cannot approve construction or declare the hillside safe.',
   ],
 });
+
+export const VALID_SNAPSHOT = Object.freeze({
+  schema_version: 1,
+  snapshot_id: 'ourea-testhash',
+  language: 'en',
+  profile: { id: 'balanced', label: 'Balanced' },
+  interventions: [
+    { cell_id: 12, type: 'rwh' },
+    { cell_id: 18, type: 'drainage' },
+  ],
+  rainfall: {
+    preset_id: 'typical_wet',
+    source_name: 'CHIRPS v3.0 Final',
+    climatology_period: '1991-2020',
+    percentile: 75,
+  },
+  uncertainty: {
+    runs: 40,
+    p10: 8.2,
+    median: 10,
+    p90: 12,
+    downside_retention: 0.82,
+    label: 'Planning-benefit proxies under modeled wet futures, not people saved.',
+  },
+  benchmark: {
+    robust_p10: 8.2,
+    hazard_p10: 6.1,
+    deterministic_p10: 7.4,
+    robust_holds_lower_tail: true,
+  },
+  breakage: {
+    combinations_below_threshold: 2,
+    note: 'Counts are scenario combinations, not spatial grid cells and not a failure forecast.',
+  },
+  cost: {
+    complete: true,
+    currency: 'USD',
+    low: 328000,
+    base: 730000,
+    high: 1390000,
+    confidence: 'pre-feasibility',
+    main_driver: 'Drainage corridor length.',
+    label: 'Pre-feasibility implementation envelope, not an offer, contract or engineering estimate.',
+  },
+  action_footprint: {
+    planning_cells_targeted: 2,
+    cadastral_buildings: 51,
+    high_hazard_buildings: 51,
+    population_proxy: 34,
+    label: 'Targeted planning proxies, not people protected or avoided losses.',
+  },
+  evidence: { valid: true, layer_count: 11, statuses: ['official'] },
+  community: {
+    validation_status: 'not_assessed',
+    not_assessed_count: 2,
+    documented_count: 0,
+    incomplete_count: 0,
+    safeguards_activated_count: 0,
+    interpretation: 'not_assessed is not support, opposition or low social risk',
+  },
+  local_alignment: {
+    entry_count: 3,
+    status: 'documentary-alignment-not-community-support',
+    interpretation: 'Documentary alignment, not community endorsement.',
+  },
+  readiness: {
+    status: 'ready_for_field_validation',
+    construction_readiness: 'not_assessed_by_ourea',
+    next_decision: 'Fund site validation and 30% design, then return with a bill of quantities before construction approval.',
+    gates: [
+      {
+        id: 'community_review',
+        status: 'pending',
+        label: 'Community review',
+        reason: 'Community review is not assessed.',
+        evidence_required: 'Record community evidence.',
+      },
+    ],
+  },
+  guardrails: [
+    'USD figures in the decision brief are a pre-feasibility implementation envelope, not an offer, contract or engineering estimate.',
+  ],
+});

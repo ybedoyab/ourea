@@ -12,6 +12,8 @@ const DEFAULT_ORIGINS = [
   'https://ybedoyab.github.io',
   'http://localhost:5173',
   'http://127.0.0.1:5173',
+  'http://localhost:4173',
+  'http://127.0.0.1:4173',
 ];
 
 export function allowedOrigins(source = process.env.ALLOWED_ORIGINS) {

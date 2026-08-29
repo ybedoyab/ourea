@@ -1,6 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
+
+const frontendRoot = path.dirname(fileURLToPath(import.meta.url));
 
 function missingTerrainTile404() {
   return {
@@ -35,7 +38,23 @@ function missingTerrainTile404() {
   };
 }
 
+function e2eClearsAiUrl() {
+  return {
+    name: 'e2e-clears-ai-url',
+    config() {
+      if (process.env.OUREA_E2E !== '1') return {};
+      process.env.VITE_OUREA_AI_API_URL = '';
+      return {
+        define: {
+          'import.meta.env.VITE_OUREA_AI_API_URL': JSON.stringify(''),
+        },
+      };
+    },
+  };
+}
+
 export default defineConfig({
+  envDir: path.resolve(frontendRoot, '..'),
   base: process.env.OUREA_BASE || '/',
   optimizeDeps: {
     exclude: ['maplibre-gl'],
@@ -49,5 +68,5 @@ export default defineConfig({
       },
     },
   },
-  plugins: [missingTerrainTile404()],
+  plugins: [e2eClearsAiUrl(), missingTerrainTile404()],
 });

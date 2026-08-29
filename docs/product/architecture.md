@@ -104,7 +104,7 @@ Production MapLibre is loaded through a dedicated chunk / dynamic import so the 
 - `mapService.js` — MapLibre terrain/layers/city lens/selection/portfolio display;
 - `decisionReviewClient.js` — POST-only client for the optional decision-readiness API.
 
-Independent backend: `services/decision-readiness/` (Vercel Node 20). See `docs/product/ai-decision-review.md`.
+Independent backend: `services/decision-readiness/` (Vercel Node 20). Local secrets live in the repository-root `.env`. See `docs/product/ai-decision-review.md`.
 
 ## 4. City-scale stage
 

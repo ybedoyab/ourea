@@ -21,9 +21,14 @@ export default defineConfig({
   webServer: process.env.OUREA_DEMO_URL
     ? undefined
     : {
-        command: 'npx vite preview --host 127.0.0.1 --port 4173',
+        command: 'npx vite build && npx vite preview --host 127.0.0.1 --port 4173',
         url: 'http://127.0.0.1:4173',
-        reuseExistingServer: !process.env.CI,
+        reuseExistingServer: false,
         timeout: 120000,
+        env: {
+          ...process.env,
+          OUREA_E2E: '1',
+          VITE_OUREA_AI_API_URL: '',
+        },
       },
 });

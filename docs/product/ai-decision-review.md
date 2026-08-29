@@ -48,21 +48,16 @@ The six-step flow and PDF remain complete.
 
 ## Local configuration
 
-Frontend (`frontend/.env.example`):
-
-```
-VITE_OUREA_AI_API_URL=http://127.0.0.1:8787/api/decision-readiness
-```
-
-Backend (`services/decision-readiness/.env.example`):
+One file at the repository root: copy `.env.example` to `.env` (gitignored). Vite loads `VITE_` values from that file. The Node service loads the same file. Never prefix the OpenAI key with `VITE_`.
 
 ```
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-5.6-terra
 ALLOWED_ORIGINS=https://ybedoyab.github.io,http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173
+VITE_OUREA_AI_API_URL=http://127.0.0.1:8787/api/decision-readiness
 ```
 
-Put the real key only in `services/decision-readiness/.env.local` (gitignored). Use an OpenAI **Project** API key exclusive to Ourea, with a budget cap and rate limits in the OpenAI dashboard. The in-memory limiter in the function is per instance, not a global serverless guarantee.
+Use an OpenAI **Project** API key exclusive to Ourea, with a budget cap and rate limits in the OpenAI dashboard. The in-memory limiter in the function is per instance, not a global serverless guarantee.
 
 ```
 cd services/decision-readiness
@@ -71,12 +66,18 @@ npm test
 npm run dev
 ```
 
+Live check against a running endpoint (does not run in CI):
+
+```
+npm run smoke -- http://127.0.0.1:8787/api/decision-readiness
+```
+
 ## Deploy the endpoint
 
 1. Create a Vercel project from `services/decision-readiness/`.
 2. Set secrets `OPENAI_API_KEY` and `OPENAI_MODEL=gpt-5.6-terra`.
 3. Set `ALLOWED_ORIGINS` to the GitHub Pages origin plus local preview origins.
-4. Note the public URL, for example `https://<project>.vercel.app/api/decision-readiness`.
+4. Note the public URL, for example `https://ourea-decision-readiness.vercel.app/api/decision-readiness`.
 5. Store that URL as repository variable `OUREA_AI_API_URL` (not a secret).
 6. GitHub Pages injects it as `VITE_OUREA_AI_API_URL` at build time.
 
