@@ -63,7 +63,7 @@ Focused UI pieces:
 - `EvidencePanel`;
 - `ClimateContextPanel`;
 - `MapLegend`;
-- `EarlyActionDiagram`;
+- `HillsideMechanismAnimation`;
 - `AiDecisionReviewCard`;
 
 
