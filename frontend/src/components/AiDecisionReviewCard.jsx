@@ -3,7 +3,7 @@ import { AI_REVIEW_COPY, READINESS_LABELS } from '../config/aiReview.js';
 
 function Skeleton() {
   return (
-    <div className="ai-review-skeleton" data-testid="ai-review-loading" aria-hidden="true">
+    <div className="ai-review-skeleton" aria-hidden="true">
       <span />
       <span />
       <span />
@@ -48,7 +48,7 @@ export function AiDecisionReviewCard({ readiness, review }) {
       )}
 
       {review.status === 'loading' && (
-        <div>
+        <div data-testid="ai-review-loading">
           <p className="hint" role="status" aria-live="polite">{AI_REVIEW_COPY.generating}</p>
           <Skeleton />
           <button type="button" className="flow-tertiary" data-testid="cancel-decision-review" onClick={review.cancel}>

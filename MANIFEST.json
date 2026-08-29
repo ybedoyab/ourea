@@ -443,8 +443,8 @@
     },
     {
       "path": "frontend/e2e/ai-decision-review.spec.js",
-      "bytes": 6636,
-      "sha256": "622c70724ea061b34a1022cd1aaf7fc38047e8030e197780e6392f0aea5e7b55"
+      "bytes": 6631,
+      "sha256": "cfa34a29c25c2319f14894fc9b123df32588eece1d82d8c9a41605a46e3123a6"
     },
     {
       "path": "frontend/e2e/errorAllowlist.js",
@@ -864,7 +864,7 @@
     {
       "path": "frontend/src/components/AiDecisionReviewCard.jsx",
       "bytes": 5603,
-      "sha256": "460cfd514fd88f95428ae6c600dd21b83c2234382d4c960b5d97e322f6753936"
+      "sha256": "2243bee9fbf839a3e1fc68b5f7c109e8670a68b7ed74887eb838e9e5676c2e27"
     },
     {
       "path": "frontend/src/components/AlternativePortfolios.jsx",
@@ -1678,8 +1678,8 @@
     },
     {
       "path": "services/decision-readiness/scripts/liveSmoke.mjs",
-      "bytes": 7358,
-      "sha256": "557126e0384356883c670a168174d7e99294493302e9bb8a24c87fa92e623521"
+      "bytes": 7431,
+      "sha256": "927b3421600f1f6589884ffc1687ec719d9bfb6732652973ac44c9142ba45568"
     },
     {
       "path": "services/decision-readiness/scripts/localServer.mjs",

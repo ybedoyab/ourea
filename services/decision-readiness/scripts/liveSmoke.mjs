@@ -60,11 +60,12 @@ function hasUsd(blob, value) {
 }
 
 function assertUsd(label, synthesis, snapshot) {
-  const blob = JSON.stringify(synthesis);
+  const { cannot_conclude: _omit, ...rest } = synthesis;
+  const blob = JSON.stringify(rest);
   if (snapshot.cost?.complete) {
     for (const value of [snapshot.cost.low, snapshot.cost.base, snapshot.cost.high]) {
       if (!Number.isFinite(value)) continue;
-      if (!hasUsd(blob, value)) {
+      if (!hasUsd(JSON.stringify(synthesis), value)) {
         throw new Error(`${label}: missing exact USD figure ${value}`);
       }
     }

@@ -83,9 +83,10 @@ test.describe('AI decision review', () => {
     await openReview(page);
     await expect(page.getByTestId('generate-decision-review')).toBeVisible();
     await expect(page.getByTestId('ai-review-result')).toHaveCount(0);
-    const pending = page.getByTestId('generate-decision-review').click();
-    await expect(page.getByTestId('ai-review-loading')).toBeVisible();
-    await pending;
+    await Promise.all([
+      expect(page.getByTestId('ai-review-loading')).toBeVisible(),
+      page.getByTestId('generate-decision-review').click(),
+    ]);
     await expect(page.getByTestId('ai-review-badge')).toBeVisible();
     await expect(page.getByTestId('ai-review-headline')).toContainText(/Walk cells/i);
     await expect(page.getByTestId('ai-review-why')).toBeVisible();
