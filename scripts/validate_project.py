@@ -254,6 +254,10 @@ require(
     cost_context["interventions"]["drainage"]["length_m"]["base"] == 60,
     "drainage scenario length drifted",
 )
+require(
+    cost_context["interventions"]["drainage"]["method"] == "rom_package",
+    "drainage must remain a ROM package, not a USD/m unit rate",
+)
 stale = subprocess.run(
     [sys.executable, str(ROOT / "scripts" / "build_cost_context.py"), "--check"],
     cwd=ROOT,

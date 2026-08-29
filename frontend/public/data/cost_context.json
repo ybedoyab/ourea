@@ -60,7 +60,49 @@
         "applies_to_prices_of": 2025,
         "note": "January–July 2026 IPC factor"
       }
-    ]
+    ],
+    "used_for": "household rainwater-harvesting equipment only"
+  },
+  "icociv": {
+    "id": "icociv_dane_to_2025-12",
+    "source": "DANE, Índice de Costos de la Construcción de Obras Civiles (ICOCIV)",
+    "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/precios-y-costos/indice-de-costos-de-la-construccion-de-obras-civiles-icociv",
+    "access_date": "2026-08-28",
+    "factors": [
+      {
+        "label": "2021",
+        "factor": 1.0556,
+        "applies_to_prices_of": 2020,
+        "note": "DANE ICOCIV annual variation December 2021 (5.56%)"
+      },
+      {
+        "label": "2022",
+        "factor": 1.0973,
+        "applies_to_prices_of": 2021,
+        "note": "DANE ICOCIV annual variation December 2022 (9.73%)"
+      },
+      {
+        "label": "2023",
+        "factor": 1.092,
+        "applies_to_prices_of": 2022,
+        "note": "DANE ICOCIV annual variation December 2023 (9.20%)"
+      },
+      {
+        "label": "2024",
+        "factor": 1.0378,
+        "applies_to_prices_of": 2023,
+        "note": "DANE ICOCIV annual variation December 2024 (3.78%)"
+      },
+      {
+        "label": "2025",
+        "factor": 1.0431,
+        "applies_to_prices_of": 2024,
+        "note": "DANE ICOCIV annual variation December 2025 (4.31%)"
+      }
+    ],
+    "ipc_bridge_2019_to_2020": 1.0161,
+    "used_for": "civil-works restoration package; 2026 drainage comparators need no inflation",
+    "ytd_2026": null
   },
   "design_allowance": {
     "id": "idb_design_well_build_better",
@@ -92,20 +134,36 @@
         "fx_banrep_trm_2026-08-28",
         "cpi_dane_ipc_to_2026-07"
       ],
-      "component": "equipment"
+      "component": "equipment",
+      "includes": [
+        "tank, connections, support, transport, installation, practical training and warranty"
+      ],
+      "excludes": [
+        "roof replacement",
+        "slope works",
+        "awarded Comuna 8 unit price"
+      ],
+      "price_date": "2026-08-28"
     },
     "drainage": {
-      "quantity_unit": "scenario metre",
+      "quantity_unit": "hillside corridor package",
+      "method": "rom_package",
       "length_m": {
         "low": 40,
         "base": 60,
         "high": 80,
         "note": "Planning-cell width is 80 m. Corridor length is not surveyed; these are named pre-feasibility length scenarios, not geometry."
       },
-      "usd_per_reported_m": {
+      "usd_per_package": {
+        "low": 408678.62,
+        "base": 852659.43,
+        "high": 1577785.69
+      },
+      "comparator_usd_per_reported_m": {
         "low": 7797.709434,
         "base": 11301.449182,
-        "high": 15777.856934
+        "high": 15777.856934,
+        "model_use": "descriptive comparator only; not multiplied as a unit rate"
       },
       "records": [
         {
@@ -115,7 +173,9 @@
           "source_date": "2026-01-19",
           "reported_length_m": 550.0,
           "reported_budget_cop": 13485000000,
+          "usd_package_total": 4288740.19,
           "usd_per_reported_m": 7797.709434,
+          "rom_corridor_package": false,
           "scope": "550 m concrete hydraulic intervention",
           "comparability": "medium",
           "model_use": "scale reference only; not a unit-cost prior",
@@ -128,6 +188,8 @@
           "evidence_tier": "descriptive-scale",
           "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/medellin-inicia-el-2026-con-seis-nuevas-obras-hidraulicas-en-ejecucion-y-el-reto-de-intervenir-91-quebradas/",
           "access_date": "2026-08-28",
+          "reader_label": "Alcaldía de Medellín - hydraulic works (Altavista hydraulic intervention)",
+          "source_type": "municipal public-works report",
           "inclusions": [
             "550 m concrete hydraulic intervention"
           ],
@@ -143,10 +205,12 @@
           "source_date": "2026-01-19",
           "reported_length_m": 98.0,
           "reported_budget_cop": 2681000000,
+          "usd_package_total": 852659.43,
           "usd_per_reported_m": 8700.606453,
+          "rom_corridor_package": true,
           "scope": "98 m stepped cover plus inspection chambers",
           "comparability": "medium",
-          "model_use": "scale reference only; not a unit-cost prior",
+          "model_use": "ROM hillside corridor package; not a transferable unit rate",
           "comparability_warning": "Naive normalization is descriptive only; project scopes differ and must not be inserted directly into the optimizer.",
           "quantity_basis": "reported metres in a heterogeneous public-works package",
           "inflation_method": "none; source already dated 2026",
@@ -156,6 +220,8 @@
           "evidence_tier": "descriptive-scale",
           "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/medellin-inicia-el-2026-con-seis-nuevas-obras-hidraulicas-en-ejecucion-y-el-reto-de-intervenir-91-quebradas/",
           "access_date": "2026-08-28",
+          "reader_label": "Alcaldía de Medellín - hydraulic works (El Pelón stepped cover)",
+          "source_type": "municipal public-works report",
           "inclusions": [
             "98 m stepped cover plus inspection chambers"
           ],
@@ -171,10 +237,12 @@
           "source_date": "2026-01-19",
           "reported_length_m": 35.0,
           "reported_budget_cop": 1285000000,
+          "usd_package_total": 408678.62,
           "usd_per_reported_m": 11676.531897,
+          "rom_corridor_package": true,
           "scope": "35 m cover plus public-space works",
           "comparability": "low-medium",
-          "model_use": "scale reference only; bundled scope",
+          "model_use": "ROM hillside corridor package; not a transferable unit rate",
           "comparability_warning": "Naive normalization is descriptive only; project scopes differ and must not be inserted directly into the optimizer.",
           "quantity_basis": "reported metres in a heterogeneous public-works package",
           "inflation_method": "none; source already dated 2026",
@@ -184,6 +252,8 @@
           "evidence_tier": "descriptive-scale",
           "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/medellin-inicia-el-2026-con-seis-nuevas-obras-hidraulicas-en-ejecucion-y-el-reto-de-intervenir-91-quebradas/",
           "access_date": "2026-08-28",
+          "reader_label": "Alcaldía de Medellín - hydraulic works (La Cabuyala cover)",
+          "source_type": "municipal public-works report",
           "inclusions": [
             "35 m cover plus public-space works"
           ],
@@ -199,10 +269,12 @@
           "source_date": "2026-04-16",
           "reported_length_m": 100.0,
           "reported_budget_cop": 4961000000,
+          "usd_package_total": 1577785.69,
           "usd_per_reported_m": 15777.856934,
+          "rom_corridor_package": true,
           "scope": "bioengineering + 100 m box culvert + receiving channel + network works",
           "comparability": "low",
-          "model_use": "do not infer pure drainage cost; bundled adaptation project",
+          "model_use": "ROM hillside corridor package; not a transferable unit rate",
           "comparability_warning": "Naive normalization is descriptive only; project scopes differ and must not be inserted directly into the optimizer.",
           "quantity_basis": "reported metres in a heterogeneous public-works package",
           "inflation_method": "none; source already dated 2026",
@@ -212,6 +284,8 @@
           "evidence_tier": "descriptive-scale",
           "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/medellin-inicia-el-2026-con-seis-nuevas-obras-hidraulicas-en-ejecucion-y-el-reto-de-intervenir-91-quebradas/",
           "access_date": "2026-08-28",
+          "reader_label": "Alcaldía de Medellín - hydraulic works (La Chorrera)",
+          "source_type": "municipal public-works report",
           "inclusions": [
             "bioengineering + 100 m box culvert + receiving channel + network works"
           ],
@@ -227,7 +301,9 @@
           "source_date": "2026-06-20",
           "reported_length_m": 298.0,
           "reported_budget_cop": 12000000000,
+          "usd_package_total": 3816454.01,
           "usd_per_reported_m": 12806.892635,
+          "rom_corridor_package": false,
           "scope": "explicit hydraulic-work component; excludes >14B land acquisition and 4.079B landscaping/public space",
           "comparability": "medium-high",
           "model_use": "scale reference only; still site-specific",
@@ -240,6 +316,8 @@
           "evidence_tier": "descriptive-scale",
           "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/medellin-inicia-el-2026-con-seis-nuevas-obras-hidraulicas-en-ejecucion-y-el-reto-de-intervenir-91-quebradas/",
           "access_date": "2026-08-28",
+          "reader_label": "Alcaldía de Medellín - hydraulic works (La Honda hydraulic component)",
+          "source_type": "municipal public-works report",
           "inclusions": [
             "explicit hydraulic-work component; excludes >14B land acquisition and 4.079B landscaping/public space"
           ],
@@ -255,7 +333,9 @@
           "source_date": "2026-01-19",
           "reported_length_m": 90.0,
           "reported_budget_cop": 3092000000,
+          "usd_package_total": 983372.98,
           "usd_per_reported_m": 10926.366467,
+          "rom_corridor_package": false,
           "scope": "90 m retaining wall plus pedestrian bridge",
           "comparability": "low",
           "model_use": "Comuna 8 local scale reference; not drainage unit cost",
@@ -268,6 +348,8 @@
           "evidence_tier": "descriptive-scale",
           "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/medellin-inicia-el-2026-con-seis-nuevas-obras-hidraulicas-en-ejecucion-y-el-reto-de-intervenir-91-quebradas/",
           "access_date": "2026-08-28",
+          "reader_label": "Alcaldía de Medellín - hydraulic works (La Aguadita retaining wall + pedestrian bridge)",
+          "source_type": "municipal public-works report",
           "inclusions": [
             "90 m retaining wall plus pedestrian bridge"
           ],
@@ -278,38 +360,58 @@
         }
       ],
       "evidence_tier": "low-medium",
-      "evidence_label": "descriptive local hydraulic scale converted at the versioned TRM; not a transferable unit price",
+      "evidence_label": "ROM packages from 2026 Medellín hydraulic works with reported length 35-100 m; not a transferable USD/m rate",
       "source_ids": [
-        "drainage_scale_altavista_hydraulic_intervention",
         "drainage_scale_el_pel_n_stepped_cover",
         "drainage_scale_la_cabuyala_cover",
         "drainage_scale_la_chorrera",
-        "drainage_scale_la_honda_hydraulic_component",
-        "drainage_scale_la_aguadita_retaining_wall_pedestrian_bridge",
-        "fx_banrep_trm_2026-08-28"
+        "fx_banrep_trm_2026-08-28",
+        "drainage_press_itigar_inundaciones_y_recuperar_espacio_publico",
+        "drainage_press_quebrada_la_honda_en_el_nororiente_de_la_ciudad"
       ],
       "component": "construction",
-      "length_note": "Planning-cell width is 80 m. Corridor length is not surveyed; these are named pre-feasibility length scenarios, not geometry."
+      "length_note": "Planning-cell width is 80 m. Corridor length is not surveyed; these are named pre-feasibility length scenarios, not geometry.",
+      "includes": [
+        "order-of-magnitude construction for one hillside corridor package per selected cell"
+      ],
+      "excludes": [
+        "transferable unit rate",
+        "surveyed alignment",
+        "land acquisition",
+        "construction supervision"
+      ],
+      "price_date": "2026"
     },
     "restoration": {
       "quantity_unit": "project-scale package",
       "usd_per_package": {
-        "low": 140000,
-        "base": 196000,
-        "high": 295000,
-        "note": "Conceptual project-scale range around the CPI- and TRM-normalized DAGRD Comuna 8 package. Not a USD/m² rate."
+        "low": 120000,
+        "base": 177000,
+        "high": 270000,
+        "note": "Conceptual project-scale range around the ICOCIV- and TRM-normalized DAGRD Comuna 8 package. Not a USD/m² rate."
       },
       "anchor_cop_2019": 400000000,
-      "normalized_cop_2026": 615718502.35,
-      "anchor_usd": 195821.78,
+      "normalized_cop_2026": 556523430.56,
+      "anchor_usd": 176995.51,
       "evidence_tier": "low",
-      "evidence_label": "CPI- and TRM-normalized Comuna 8 DAGRD project-scale package; not a USD/m² rate",
+      "evidence_label": "ICOCIV- and TRM-normalized Comuna 8 DAGRD project-scale package; not a USD/m² rate",
       "source_ids": [
         "restoration_dagrd_comuna8_2019",
         "fx_banrep_trm_2026-08-28",
+        "icociv_dane_to_2025-12",
         "cpi_dane_ipc_to_2026-07"
       ],
-      "component": "construction"
+      "component": "construction",
+      "includes": [
+        "Improving stability through bioengineering / minor mitigation works",
+        "supervision line in the same project sheet"
+      ],
+      "excludes": [
+        "USD/m² rate",
+        "cell-level bill of quantities",
+        "current Comuna 8 awarded price"
+      ],
+      "price_date": "2026-08-28"
     }
   },
   "sources": [
@@ -333,7 +435,9 @@
       "comparability_warning": "A single TRM date makes the envelope reproducible. It is not a procurement FX clause.",
       "url": "https://www.banrep.gov.co/es/glosario/tasa-cambio-trm",
       "access_date": "2026-08-28",
-      "title": "Tasa de cambio representativa del mercado (TRM)"
+      "title": "Tasa de cambio representativa del mercado (TRM)",
+      "reader_label": "Banco de la República - TRM",
+      "source_type": "official FX"
     },
     {
       "id": "cpi_dane_ipc_to_2026-07",
@@ -345,17 +449,44 @@
       "inflation_method": "Chain official annual IPC factors onto the source-year amount, then apply the January–July 2026 factor.",
       "fx_method": null,
       "inclusions": [
-        "National IPC chain used only to place historical COP budgets on a July 2026 price date"
+        "National IPC chain used only to place historical household-equipment COP budgets on a July 2026 price date"
       ],
       "exclusions": [
-        "Construction-sector-only indices",
+        "Civil-works construction indices",
         "city-specific construction baskets"
       ],
       "evidence_tier": "official-index",
-      "comparability_warning": "National IPC is a price-date normalizer, not a local construction cost index for Comuna 8.",
+      "comparability_warning": "National IPC updates household RWH equipment only. Civil works use ICOCIV.",
       "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/precios-y-costos/indice-de-precios-al-consumidor-ipc",
       "access_date": "2026-08-28",
-      "title": "IPC — variación anual y factores de actualización usados para normalizar presupuestos a julio 2026"
+      "title": "IPC — variación anual y factores de actualización usados para normalizar presupuestos a julio 2026",
+      "reader_label": "DANE - IPC",
+      "source_type": "official index"
+    },
+    {
+      "id": "icociv_dane_to_2025-12",
+      "source_date": "2025-12",
+      "location": "Colombia",
+      "original_currency": "index factor",
+      "original_amount": null,
+      "quantity_basis": "national civil-works cost index",
+      "inflation_method": "DANE ICOCIV December/December chain",
+      "fx_method": "not an FX series",
+      "inclusions": [
+        "Official ICOCIV annual variation used to place 2019 civil-works COP on a December 2025 price level"
+      ],
+      "exclusions": [
+        "Household equipment",
+        "a 2026 year-to-date ICOCIV factor",
+        "Comuna 8-specific construction baskets"
+      ],
+      "evidence_tier": "official-index",
+      "comparability_warning": "ICOCIV is the civil-works inflator. It is not a transferable unit price and does not replace a site BOQ.",
+      "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/precios-y-costos/indice-de-costos-de-la-construccion-de-obras-civiles-icociv",
+      "access_date": "2026-08-28",
+      "title": "ICOCIV — variación anual diciembre, base diciembre 2020 = 100",
+      "reader_label": "DANE - ICOCIV",
+      "source_type": "official index"
     },
     {
       "id": "idb_design_well_build_better",
@@ -375,10 +506,12 @@
         "land acquisition"
       ],
       "evidence_tier": "guidance",
-      "comparability_warning": "IDB design-share guidance is not a Medellín fee schedule.",
+      "comparability_warning": "IDB design-share guidance is not a Medellín fee schedule. It is a later pricing method for the unpriced 30% design ask, not a present lump sum.",
       "url": "https://publications.iadb.org/publications/english/document/Design_Well_Build_Better_A_Guide_for_Planning_Creating_Overseeing_and_Making_Decisions_about_Social_Infrastructure_Designs_en.pdf",
       "access_date": "2026-08-28",
-      "title": "Design Well, Build Better: A Guide for Planning, Creating, Overseeing and Making Decisions about Social Infrastructure Designs"
+      "title": "Design Well, Build Better: A Guide for Planning, Creating, Overseeing and Making Decisions about Social Infrastructure Designs",
+      "reader_label": "IDB - Design Well, Build Better",
+      "source_type": "guidance"
     },
     {
       "id": "rwh_santa_elena_1000l_2023_budget_ceiling",
@@ -401,7 +534,9 @@
       "comparability_warning": "This is a procurement budget ceiling, not a winning unit price. Santa Elena is a rural/corregimiento context and the system is 1000 L, so the value is not transferred as a Comuna 8 contract rate.",
       "url": "https://www.fundacionudea.com/sitio/img/Invitaci%C3%B3n_a_participar_C90_hoga.pdf",
       "access_date": "2026-08-28",
-      "title": "https://www.fundacionudea.com/sitio/img/Invitaci%C3%B3n_a_participar_C90_hoga.pdf"
+      "title": "https://www.fundacionudea.com/sitio/img/Invitaci%C3%B3n_a_participar_C90_hoga.pdf",
+      "reader_label": "Fundación Universidad de Antioquia - Santa Elena RWH ceiling",
+      "source_type": "official procurement budget ceiling"
     },
     {
       "id": "restoration_dagrd_comuna8_2019",
@@ -410,7 +545,7 @@
       "original_currency": "COP",
       "original_amount": 400000000,
       "quantity_basis": "one project-scale bioengineering / minor mitigation package; installed area is not reported",
-      "inflation_method": "Chain DANE IPC 2020–2025 and January–July 2026 onto the 2019 project total",
+      "inflation_method": "One-year DANE IPC bridge 2019 to 2020, then DANE ICOCIV December/December 2021–2025. No 2026 ICOCIV year-to-date factor is applied.",
       "fx_method": "Divide July-2026 COP by Banco de la República TRM 2026-08-28",
       "inclusions": [
         "Improving stability through bioengineering / minor mitigation works",
@@ -425,7 +560,9 @@
       "comparability_warning": "Installed area and detailed scope are unavailable. This is a project-scale scenario, never a USD/m² rate.",
       "url": "https://www.medellin.gov.co/ndesarrollo/wp-content/uploads/FICHAS/C8/2019/FP/19_FP_PP_C8_DAGRD.pdf",
       "access_date": "2026-08-28",
-      "title": "https://www.medellin.gov.co/ndesarrollo/wp-content/uploads/FICHAS/C8/2019/FP/19_FP_PP_C8_DAGRD.pdf"
+      "title": "https://www.medellin.gov.co/ndesarrollo/wp-content/uploads/FICHAS/C8/2019/FP/19_FP_PP_C8_DAGRD.pdf",
+      "reader_label": "Alcaldía de Medellín - DAGRD Comuna 8 bioengineering package",
+      "source_type": "municipal project sheet"
     },
     {
       "id": "drainage_scale_altavista_hydraulic_intervention",
@@ -447,7 +584,9 @@
       "comparability_warning": "Naive normalization is descriptive only; project scopes differ and must not be inserted directly into the optimizer.",
       "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/medellin-inicia-el-2026-con-seis-nuevas-obras-hidraulicas-en-ejecucion-y-el-reto-de-intervenir-91-quebradas/",
       "access_date": "2026-08-28",
-      "title": "Altavista hydraulic intervention"
+      "title": "Altavista hydraulic intervention",
+      "reader_label": "Alcaldía de Medellín - hydraulic works (Altavista hydraulic intervention)",
+      "source_type": "municipal public-works report"
     },
     {
       "id": "drainage_scale_el_pel_n_stepped_cover",
@@ -469,7 +608,9 @@
       "comparability_warning": "Naive normalization is descriptive only; project scopes differ and must not be inserted directly into the optimizer.",
       "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/medellin-inicia-el-2026-con-seis-nuevas-obras-hidraulicas-en-ejecucion-y-el-reto-de-intervenir-91-quebradas/",
       "access_date": "2026-08-28",
-      "title": "El Pelón stepped cover"
+      "title": "El Pelón stepped cover",
+      "reader_label": "Alcaldía de Medellín - hydraulic works (El Pelón stepped cover)",
+      "source_type": "municipal public-works report"
     },
     {
       "id": "drainage_scale_la_cabuyala_cover",
@@ -491,7 +632,9 @@
       "comparability_warning": "Naive normalization is descriptive only; project scopes differ and must not be inserted directly into the optimizer.",
       "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/medellin-inicia-el-2026-con-seis-nuevas-obras-hidraulicas-en-ejecucion-y-el-reto-de-intervenir-91-quebradas/",
       "access_date": "2026-08-28",
-      "title": "La Cabuyala cover"
+      "title": "La Cabuyala cover",
+      "reader_label": "Alcaldía de Medellín - hydraulic works (La Cabuyala cover)",
+      "source_type": "municipal public-works report"
     },
     {
       "id": "drainage_scale_la_chorrera",
@@ -513,7 +656,9 @@
       "comparability_warning": "Naive normalization is descriptive only; project scopes differ and must not be inserted directly into the optimizer.",
       "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/medellin-inicia-el-2026-con-seis-nuevas-obras-hidraulicas-en-ejecucion-y-el-reto-de-intervenir-91-quebradas/",
       "access_date": "2026-08-28",
-      "title": "La Chorrera"
+      "title": "La Chorrera",
+      "reader_label": "Alcaldía de Medellín - hydraulic works (La Chorrera)",
+      "source_type": "municipal public-works report"
     },
     {
       "id": "drainage_scale_la_honda_hydraulic_component",
@@ -535,7 +680,9 @@
       "comparability_warning": "Naive normalization is descriptive only; project scopes differ and must not be inserted directly into the optimizer.",
       "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/medellin-inicia-el-2026-con-seis-nuevas-obras-hidraulicas-en-ejecucion-y-el-reto-de-intervenir-91-quebradas/",
       "access_date": "2026-08-28",
-      "title": "La Honda hydraulic component"
+      "title": "La Honda hydraulic component",
+      "reader_label": "Alcaldía de Medellín - hydraulic works (La Honda hydraulic component)",
+      "source_type": "municipal public-works report"
     },
     {
       "id": "drainage_scale_la_aguadita_retaining_wall_pedestrian_bridge",
@@ -557,7 +704,9 @@
       "comparability_warning": "Naive normalization is descriptive only; project scopes differ and must not be inserted directly into the optimizer.",
       "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/medellin-inicia-el-2026-con-seis-nuevas-obras-hidraulicas-en-ejecucion-y-el-reto-de-intervenir-91-quebradas/",
       "access_date": "2026-08-28",
-      "title": "La Aguadita retaining wall + pedestrian bridge"
+      "title": "La Aguadita retaining wall + pedestrian bridge",
+      "reader_label": "Alcaldía de Medellín - hydraulic works (La Aguadita retaining wall + pedestrian bridge)",
+      "source_type": "municipal public-works report"
     },
     {
       "id": "drainage_press_itigar_inundaciones_y_recuperar_espacio_publico",
@@ -578,7 +727,9 @@
       "comparability_warning": "Project scopes differ and must not be inserted as a unit-cost prior.",
       "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/la-alcaldia-de-medellin-acelera-obras-de-mi-rio-mis-quebradas-para-mitigar-inundaciones-y-recuperar-espacio-publico/",
       "access_date": "2026-08-28",
-      "title": "Medellín hydraulic public-works reporting"
+      "title": "Medellín hydraulic public-works reporting",
+      "reader_label": "Alcaldía de Medellín - hydraulic works",
+      "source_type": "municipal public-works report"
     },
     {
       "id": "drainage_press_quebrada_la_honda_en_el_nororiente_de_la_ciudad",
@@ -599,13 +750,17 @@
       "comparability_warning": "Project scopes differ and must not be inserted as a unit-cost prior.",
       "url": "https://www.medellin.gov.co/es/sala-de-prensa/noticias/mi-rio-mis-quebradas-avanza-con-el-93-de-ejecucion-de-obras-en-la-quebrada-la-honda-en-el-nororiente-de-la-ciudad/",
       "access_date": "2026-08-28",
-      "title": "Medellín hydraulic public-works reporting"
+      "title": "Medellín hydraulic public-works reporting",
+      "reader_label": "Alcaldía de Medellín - hydraulic works",
+      "source_type": "municipal public-works report"
     }
   ],
   "guardrails": [
     "USD figures are a pre-feasibility implementation envelope, not an offer, contract or engineering estimate.",
     "Planning credits remain the optimizer unit for portfolio comparison.",
-    "Drainage corridor length is a named scenario until a topographic/hydraulic survey exists.",
+    "Drainage is a ROM corridor package per selected cell, not a transferable USD/m rate.",
+    "Corridor length 40/60/80 m is a named survey scenario, not a bill-of-quantities multiplier.",
+    "Immediate decision-preparation items are unpriced until survey and 30% design.",
     "Community review remains a decision gate."
   ]
 }

@@ -16,7 +16,9 @@
     "inclusions": ["Official TRM published for 2026-08-28"],
     "exclusions": ["Forward rates", "project-specific hedging"],
     "evidence_tier": "official-fx",
-    "comparability_warning": "A single TRM date makes the envelope reproducible. It is not a procurement FX clause."
+    "comparability_warning": "A single TRM date makes the envelope reproducible. It is not a procurement FX clause.",
+    "reader_label": "Banco de la República - TRM",
+    "source_type": "official FX"
   },
   "cpi": {
     "id": "cpi_dane_ipc_to_2026-07",
@@ -69,10 +71,96 @@
         "note": "January–July 2026 IPC factor"
       }
     ],
-    "inclusions": ["National IPC chain used only to place historical COP budgets on a July 2026 price date"],
-    "exclusions": ["Construction-sector-only indices", "city-specific construction baskets"],
+    "inclusions": ["National IPC chain used only to place historical household-equipment COP budgets on a July 2026 price date"],
+    "exclusions": ["Civil-works construction indices", "city-specific construction baskets"],
     "evidence_tier": "official-index",
-    "comparability_warning": "National IPC is a price-date normalizer, not a local construction cost index for Comuna 8."
+    "comparability_warning": "National IPC updates household RWH equipment only. Civil works use ICOCIV.",
+    "reader_label": "DANE - IPC",
+    "source_type": "official index"
+  },
+  "icociv": {
+    "id": "icociv_dane_to_2025-12",
+    "source": "DANE, Índice de Costos de la Construcción de Obras Civiles (ICOCIV)",
+    "source_title": "ICOCIV — variación anual diciembre, base diciembre 2020 = 100",
+    "url": "https://www.dane.gov.co/index.php/estadisticas-por-tema/precios-y-costos/indice-de-costos-de-la-construccion-de-obras-civiles-icociv",
+    "access_date": "2026-08-28",
+    "method": "Chain official December/December ICOCIV factors. The series begins December 2020 = 100, so a 2019 amount uses a one-year IPC bridge to 2020. No 2026 ICOCIV year-to-date factor is applied because no official bulletin for that window is in this registry.",
+    "original_currency": "index factor",
+    "quantity_basis": "national civil-works cost index",
+    "inflation_method": "DANE ICOCIV December/December chain",
+    "fx_method": "not an FX series",
+    "location": "Colombia",
+    "source_date": "2025-12",
+    "inclusions": ["Official ICOCIV annual variation used to place 2019 civil-works COP on a December 2025 price level"],
+    "exclusions": ["Household equipment", "a 2026 year-to-date ICOCIV factor", "Comuna 8-specific construction baskets"],
+    "evidence_tier": "official-index",
+    "comparability_warning": "ICOCIV is the civil-works inflator. It is not a transferable unit price and does not replace a site BOQ.",
+    "reader_label": "DANE - ICOCIV",
+    "source_type": "official index",
+    "bulletins": [
+      {
+        "year": 2021,
+        "factor": 1.0556,
+        "url": "https://www.dane.gov.co/files/investigaciones/boletines/icociv/boletin-tecnico-icociv-diciembre-2021.pdf",
+        "note": "DANE ICOCIV annual variation December 2021 (5.56%)"
+      },
+      {
+        "year": 2022,
+        "factor": 1.0973,
+        "url": "https://www.dane.gov.co/files/investigaciones/boletines/icociv/boletin-tecnico-icociv-diciembre-2022.pdf",
+        "note": "DANE ICOCIV annual variation December 2022 (9.73%)"
+      },
+      {
+        "year": 2023,
+        "factor": 1.092,
+        "url": "https://www.dane.gov.co/files/operaciones/ICOCIV/bol-ICOCIV-dic2023.pdf",
+        "note": "DANE ICOCIV annual variation December 2023 (9.20%)"
+      },
+      {
+        "year": 2024,
+        "factor": 1.0378,
+        "url": "https://www.dane.gov.co/files/operaciones/ICOCIV/bol-ICOCIV-dic2024.pdf",
+        "note": "DANE ICOCIV annual variation December 2024 (3.78%)"
+      },
+      {
+        "year": 2025,
+        "factor": 1.0431,
+        "url": "https://www.dane.gov.co/files/operaciones/ICOCIV/bol-ICOCIV-dic2025.pdf",
+        "note": "DANE ICOCIV annual variation December 2025 (4.31%)"
+      }
+    ],
+    "factors": [
+      {
+        "label": "2021",
+        "factor": 1.0556,
+        "applies_to_prices_of": 2020,
+        "note": "DANE ICOCIV annual variation December 2021 (5.56%)"
+      },
+      {
+        "label": "2022",
+        "factor": 1.0973,
+        "applies_to_prices_of": 2021,
+        "note": "DANE ICOCIV annual variation December 2022 (9.73%)"
+      },
+      {
+        "label": "2023",
+        "factor": 1.092,
+        "applies_to_prices_of": 2022,
+        "note": "DANE ICOCIV annual variation December 2023 (9.20%)"
+      },
+      {
+        "label": "2024",
+        "factor": 1.0378,
+        "applies_to_prices_of": 2023,
+        "note": "DANE ICOCIV annual variation December 2024 (3.78%)"
+      },
+      {
+        "label": "2025",
+        "factor": 1.0431,
+        "applies_to_prices_of": 2024,
+        "note": "DANE ICOCIV annual variation December 2025 (4.31%)"
+      }
+    ]
   },
   "design_allowance": {
     "id": "idb_design_well_build_better",
@@ -91,7 +179,9 @@
     "inclusions": ["Pre-feasibility design allowance used until a 30% design exists"],
     "exclusions": ["Detailed engineering", "supervision during construction", "land acquisition"],
     "evidence_tier": "guidance",
-    "comparability_warning": "IDB design-share guidance is not a Medellín fee schedule."
+    "comparability_warning": "IDB design-share guidance is not a Medellín fee schedule. It is a later pricing method for the unpriced 30% design ask, not a present lump sum.",
+    "reader_label": "IDB - Design Well, Build Better",
+    "source_type": "guidance"
   },
   "planning_assumptions": {
     "drainage_corridor_length_m": {
@@ -107,10 +197,10 @@
       "note": "Planning range around the 2026-normalized Santa Elena ceiling. Not an awarded Comuna 8 price."
     },
     "restoration_usd_per_package": {
-      "low": 140000,
-      "base": 196000,
-      "high": 295000,
-      "note": "Conceptual project-scale range around the CPI- and TRM-normalized DAGRD Comuna 8 package. Not a USD/m² rate."
+      "low": 120000,
+      "base": 177000,
+      "high": 270000,
+      "note": "Conceptual project-scale range around the ICOCIV- and TRM-normalized DAGRD Comuna 8 package. Not a USD/m² rate."
     }
   },
   "drainage_scale_table": "data/derived/local_infrastructure_cost_scale.csv",
@@ -159,7 +249,9 @@
       "evaluation_source": "https://www.fundacionudea.com/sitio/img/16.%20evaluaci%C3%B3n%20a%20participar_comuna%2090%20hogares%20y%20sector%20comercio-2023.pdf",
       "access_date": "2026-08-28",
       "comparability_warning": "This is a procurement budget ceiling, not a winning unit price. Santa Elena is a rural/corregimiento context and the system is 1000 L, so the value is not transferred as a Comuna 8 contract rate.",
-      "guardrail": "This is a procurement budget ceiling, not a winning unit price. Santa Elena is a rural/corregimiento context and the system is 1000 L, so the value is not transferred directly into the Comuna 8 optimizer."
+      "guardrail": "This is a procurement budget ceiling, not a winning unit price. Santa Elena is a rural/corregimiento context and the system is 1000 L, so the value is not transferred directly into the Comuna 8 optimizer.",
+      "reader_label": "Fundación Universidad de Antioquia - Santa Elena RWH ceiling",
+      "source_type": "official procurement budget ceiling"
     },
     {
       "id": "rwh_palmitas_2025_subbudget",
@@ -216,7 +308,7 @@
       "supervision_cop": 20000000,
       "original_currency": "COP",
       "quantity_basis": "one project-scale bioengineering / minor mitigation package; installed area is not reported",
-      "inflation_method": "Chain DANE IPC 2020–2025 and January–July 2026 onto the 2019 project total",
+      "inflation_method": "One-year DANE IPC bridge 2019 to 2020, then DANE ICOCIV December/December 2021–2025. No 2026 ICOCIV year-to-date factor is applied.",
       "fx_method": "Divide July-2026 COP by Banco de la República TRM 2026-08-28",
       "inclusions": [
         "Improving stability through bioengineering / minor mitigation works",
@@ -232,7 +324,9 @@
       "url": "https://www.medellin.gov.co/ndesarrollo/wp-content/uploads/FICHAS/C8/2019/FP/19_FP_PP_C8_DAGRD.pdf",
       "source": "https://www.medellin.gov.co/ndesarrollo/wp-content/uploads/FICHAS/C8/2019/FP/19_FP_PP_C8_DAGRD.pdf",
       "access_date": "2026-08-28",
-      "comparability_warning": "Installed area and detailed scope are unavailable. This is a project-scale scenario, never a USD/m² rate."
+      "comparability_warning": "Installed area and detailed scope are unavailable. This is a project-scale scenario, never a USD/m² rate.",
+      "reader_label": "Alcaldía de Medellín - DAGRD Comuna 8 bioengineering package",
+      "source_type": "municipal project sheet"
     }
   ]
 }

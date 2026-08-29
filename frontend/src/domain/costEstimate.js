@@ -12,6 +12,14 @@ const TYPE_LABEL = {
   restoration: 'Restoration / bioengineering',
 };
 
+const PREPARATION_ITEMS = Object.freeze([
+  'Site visit',
+  'Topographic and hydraulic survey',
+  'Community co-design',
+  '30% design',
+  'Procurement-ready bill of quantities',
+]);
+
 export function formatUsd(value) {
   if (value == null || !Number.isFinite(Number(value))) return '—';
   return USD.format(Number(value)).replace('$', 'US$');
@@ -79,27 +87,36 @@ function ordered(value) {
   return value.low <= value.base && value.base <= value.high;
 }
 
+function formulaRange(quantity, unit, unitLabel) {
+  return `${quantity} × ${formatUsd(unit.low)} / ${formatUsd(unit.base)} / ${formatUsd(unit.high)} ${unitLabel}`;
+}
+
 function drainageLine(projects, spec) {
-  const cells = projects.length;
+  const packages = projects.length;
+  const unit = spec.usd_per_package;
+  const cost = scaleBand(unit, packages);
   const lengths = spec.length_m;
-  const rates = spec.usd_per_reported_m;
-  const quantity = {
-    low: cells * lengths.low,
-    base: cells * lengths.base,
-    high: cells * lengths.high,
-  };
   return {
     type: 'drainage',
     label: TYPE_LABEL.drainage,
     component: 'construction',
-    assumedQuantity: quantity.base,
-    quantityLabel: `${cells} corridor${cells === 1 ? '' : 's'} at ${lengths.low}/${lengths.base}/${lengths.high} m scenarios`,
+    method: 'rom_package',
+    assumedQuantity: packages,
+    quantityUnit: spec.quantity_unit,
+    quantityLabel: `${packages} hillside corridor package${packages === 1 ? '' : 's'}`,
     quantityNote: spec.length_note,
-    low: quantity.low * rates.low,
-    base: quantity.base * rates.base,
-    high: quantity.high * rates.high,
+    formula: formulaRange(packages, unit, 'per ROM package'),
+    unit: unit,
+    includes: spec.includes,
+    excludes: spec.excludes,
+    priceDate: spec.price_date,
+    confidence: spec.evidence_tier,
+    low: cost.low,
+    base: cost.base,
+    high: cost.high,
     evidenceTier: spec.evidence_tier,
     sourceIds: spec.source_ids,
+    lengthScenarios: lengths,
   };
 }
 
@@ -114,9 +131,17 @@ function rwhLine(projects, cells, spec, participationShare) {
     type: 'rwh',
     label: TYPE_LABEL.rwh,
     component: 'equipment',
+    method: 'unit_rate',
     assumedQuantity: systems,
+    quantityUnit: spec.quantity_unit,
     quantityLabel: `${systems} participating system${systems === 1 ? '' : 's'}`,
     quantityNote: spec.evidence_label,
+    formula: formulaRange(systems, unit, 'per system'),
+    unit,
+    includes: spec.includes,
+    excludes: spec.excludes,
+    priceDate: spec.price_date,
+    confidence: spec.evidence_tier,
     ...cost,
     evidenceTier: spec.evidence_tier,
     sourceIds: spec.source_ids,
@@ -125,14 +150,23 @@ function rwhLine(projects, cells, spec, participationShare) {
 
 function restorationLine(projects, spec) {
   const packages = projects.length;
-  const cost = scaleBand(spec.usd_per_package, packages);
+  const unit = spec.usd_per_package;
+  const cost = scaleBand(unit, packages);
   return {
     type: 'restoration',
     label: TYPE_LABEL.restoration,
     component: 'construction',
+    method: 'rom_package',
     assumedQuantity: packages,
+    quantityUnit: spec.quantity_unit,
     quantityLabel: `${packages} project-scale package${packages === 1 ? '' : 's'}`,
     quantityNote: spec.evidence_label,
+    formula: formulaRange(packages, unit, 'per package'),
+    unit,
+    includes: spec.includes,
+    excludes: spec.excludes,
+    priceDate: spec.price_date,
+    confidence: spec.evidence_tier,
     ...cost,
     evidenceTier: spec.evidence_tier,
     sourceIds: spec.source_ids,
@@ -140,10 +174,9 @@ function restorationLine(projects, spec) {
 }
 
 function costDriver(lines) {
-  const construction = lines.filter((line) => line.component === 'construction');
-  const drainage = construction.find((line) => line.type === 'drainage');
-  if (drainage && drainage.high >= (construction[0]?.high ?? 0)) {
-    return 'Drainage corridor length and heterogeneous local hydraulic comparators dominate capital uncertainty.';
+  const drainage = lines.find((line) => line.type === 'drainage');
+  if (drainage) {
+    return 'Drainage ROM corridor packages from heterogeneous 2026 Medellín hydraulic comparators dominate capital uncertainty.';
   }
   if (lines.some((line) => line.type === 'restoration')) {
     return 'Restoration is a project-scale package with low evidence confidence because installed area is unknown.';
@@ -152,6 +185,41 @@ function costDriver(lines) {
     return 'Rainwater-harvesting system count follows the participation prior and a 2026-normalized procurement ceiling.';
   }
   return 'Quantity and evidence confidence still bound the envelope.';
+}
+
+function unpricedRow(label) {
+  return {
+    label,
+    status: 'to_be_priced_after_survey',
+    display: 'To be priced after survey',
+  };
+}
+
+export function costSensitivity(estimate) {
+  const total = estimate?.total;
+  if (!total || !estimate.lines?.length) return [];
+  const drivers = estimate.lines.map((line) => ({
+    id: line.type,
+    label: line.label,
+    low: line.low,
+    base: line.base,
+    high: line.high,
+    down: line.base - line.low,
+    up: line.high - line.base,
+  }));
+  if (estimate.fx?.cop_per_usd) {
+    const onePercent = total.base * 0.01;
+    drivers.push({
+      id: 'trm',
+      label: `TRM (${Number(estimate.fx.cop_per_usd).toLocaleString('en-US')} COP/USD)`,
+      low: total.base - onePercent,
+      base: total.base,
+      high: total.base + onePercent,
+      down: onePercent,
+      up: onePercent,
+    });
+  }
+  return drivers.sort((a, b) => (b.down + b.up) - (a.down + a.up));
 }
 
 export function estimatePortfolioCost({
@@ -172,6 +240,10 @@ export function estimatePortfolioCost({
       lines: [],
       total: null,
       display: null,
+      immediateAsk: {
+        status: 'to_be_priced_after_survey',
+        items: PREPARATION_ITEMS,
+      },
     };
   }
 
@@ -190,7 +262,7 @@ export function estimatePortfolioCost({
   }
   if (grouped.drainage.length) {
     const spec = costContext.interventions.drainage;
-    if (!spec?.usd_per_reported_m || !spec.length_m) unpriced.push('drainage');
+    if (!spec?.usd_per_package) unpriced.push('drainage');
     else lines.push(drainageLine(grouped.drainage, spec));
   }
   if (grouped.restoration.length) {
@@ -200,6 +272,21 @@ export function estimatePortfolioCost({
   }
 
   const complete = unpriced.length === 0 && (projects.length === 0 || lines.length > 0);
+  const designGuidance = costContext.design_allowance ?? { low: 0.05, base: 0.075, high: 0.1 };
+  const immediateAsk = {
+    status: 'to_be_priced_after_survey',
+    items: PREPARATION_ITEMS,
+    rows: PREPARATION_ITEMS.map(unpricedRow),
+    designShareGuidance: {
+      low: designGuidance.low,
+      base: designGuidance.base,
+      high: designGuidance.high,
+      basis: designGuidance.basis,
+      source_id: designGuidance.source_id ?? designGuidance.id,
+      note: 'IDB design-share guidance is a later pricing method, not a present lump-sum ask.',
+    },
+  };
+
   if (!complete) {
     return {
       complete: false,
@@ -210,63 +297,63 @@ export function estimatePortfolioCost({
       display: null,
       priceDate: costContext.price_date ?? null,
       fx: costContext.fx ?? null,
+      immediateAsk,
+      implementationEnvelope: null,
     };
   }
 
   const construction = addBands(lines.filter((line) => line.component === 'construction'));
   const equipment = addBands(lines.filter((line) => line.component === 'equipment'));
-  const rates = costContext.design_allowance ?? { low: 0, base: 0, high: 0 };
-  const design = band(
-    construction.low * rates.low,
-    construction.base * rates.base,
-    construction.high * rates.high,
-  );
-  const total = addBands([construction, equipment, design]);
+  const total = addBands([construction, equipment]);
   const sourceIds = [...new Set(lines.flatMap((line) => line.sourceIds ?? []))];
-  if (rates.id || rates.source_id) sourceIds.push(rates.source_id ?? rates.id);
+  if (designGuidance.id || designGuidance.source_id) {
+    sourceIds.push(designGuidance.source_id ?? designGuidance.id);
+  }
 
-  return {
+  const result = {
     complete: true,
     unpriced: [],
     confidence: 'pre-feasibility',
     priceDate: costContext.price_date,
     fx: costContext.fx,
-    designAllowance: rates,
+    designAllowance: designGuidance,
     lines: lines.map((line) => ({
       ...line,
       display: present(line, line.component === 'equipment' ? 10 : 1000),
     })),
     construction,
     equipment,
-    design,
     total,
     display: {
       construction: present(construction),
       equipment: present(equipment, 10),
-      design: present(design),
       total: present(total),
     },
     ordered: ordered(total),
     sourceIds,
     sources: (costContext.sources ?? []).filter((item) => sourceIds.includes(item.id)),
     costDriver: costDriver(lines),
+    immediateAsk,
+    implementationEnvelope: present(total),
     included: [
       'RWH tank packages at the planning participation prior',
-      'drainage construction at named 40/60/80 m corridor scenarios',
+      'drainage as ROM hillside corridor packages, not USD/m',
       'restoration as a project-scale package when selected',
-      'design allowance on construction (5% / 7.5% / 10%)',
     ].filter((item, index) => {
       if (index === 0) return grouped.rwh.length;
       if (index === 1) return grouped.drainage.length;
-      if (index === 2) return grouped.restoration.length;
-      return grouped.drainage.length || grouped.restoration.length;
+      return grouped.restoration.length;
     }),
     excluded: [
       'land acquisition',
-      'construction supervision beyond the design allowance',
+      'construction supervision',
       'maintenance after handover',
       'an awarded Comuna 8 contract price',
       'surveyed corridor geometry',
+      'a present 30% design fee',
+      'taxes isolated from source budgets',
     ],
   };
+  result.sensitivity = costSensitivity(result);
+  return result;
 }

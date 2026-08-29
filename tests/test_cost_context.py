@@ -49,36 +49,40 @@ class CostContextTests(unittest.TestCase):
     def test_low_base_high_ordering(self):
         for family in (
             self.rwh["usd_per_system"],
-            self.drainage["usd_per_reported_m"],
+            self.drainage["usd_per_package"],
             self.restoration["usd_per_package"],
         ):
             self.assertLess(family["low"], family["base"])
             self.assertLess(family["base"], family["high"])
 
-    def test_drainage_converts_each_record_independently(self):
+    def test_drainage_uses_rom_packages_not_unit_rates(self):
         records = self.drainage["records"]
         self.assertEqual(len(records), 6)
-        usd = [item["usd_per_reported_m"] for item in records]
-        self.assertEqual(self.drainage["usd_per_reported_m"]["low"], min(usd))
-        self.assertEqual(self.drainage["usd_per_reported_m"]["high"], max(usd))
-        self.assertAlmostEqual(self.drainage["usd_per_reported_m"]["low"], 7800, delta=50)
-        self.assertAlmostEqual(self.drainage["usd_per_reported_m"]["base"], 11300, delta=50)
-        self.assertAlmostEqual(self.drainage["usd_per_reported_m"]["high"], 15800, delta=50)
+        self.assertEqual(self.drainage["method"], "rom_package")
+        rom = [item for item in records if item["rom_corridor_package"]]
+        self.assertEqual(len(rom), 3)
+        packages = [item["usd_package_total"] for item in rom]
+        self.assertEqual(self.drainage["usd_per_package"]["low"], min(packages))
+        self.assertEqual(self.drainage["usd_per_package"]["high"], max(packages))
+        self.assertAlmostEqual(self.drainage["usd_per_package"]["low"], 408679, delta=5)
+        self.assertAlmostEqual(self.drainage["usd_per_package"]["base"], 852659, delta=5)
+        self.assertAlmostEqual(self.drainage["usd_per_package"]["high"], 1577786, delta=5)
         self.assertEqual(self.drainage["length_m"]["low"], 40)
-        self.assertEqual(self.drainage["length_m"]["base"], 60)
-        self.assertEqual(self.drainage["length_m"]["high"], 80)
+        self.assertIn("not multiplied", self.drainage["comparator_usd_per_reported_m"]["model_use"])
         for record in records:
             blob = f"{record['comparability_warning']} {record.get('model_use', '')}".lower()
-            self.assertTrue("unit" in blob or "scopes differ" in blob)
+            self.assertTrue("unit" in blob or "scopes differ" in blob or "rom" in blob)
             self.assertEqual(record["original_currency"], "COP")
             self.assertTrue(record["url"])
+            self.assertTrue(record["reader_label"])
 
-    def test_restoration_anchor_near_196k(self):
-        self.assertAlmostEqual(self.restoration["anchor_usd"], 196000, delta=1500)
-        self.assertEqual(self.restoration["usd_per_package"]["low"], 140000)
-        self.assertEqual(self.restoration["usd_per_package"]["base"], 196000)
-        self.assertEqual(self.restoration["usd_per_package"]["high"], 295000)
+    def test_restoration_uses_icociv_anchor(self):
+        self.assertAlmostEqual(self.restoration["anchor_usd"], 177000, delta=1500)
+        self.assertEqual(self.restoration["usd_per_package"]["low"], 120000)
+        self.assertEqual(self.restoration["usd_per_package"]["base"], 177000)
+        self.assertEqual(self.restoration["usd_per_package"]["high"], 270000)
         self.assertEqual(self.restoration["evidence_tier"], "low")
+        self.assertIn("ICOCIV", self.restoration["evidence_label"])
 
     def test_sources_carry_required_fields(self):
         required = {
@@ -94,12 +98,14 @@ class CostContextTests(unittest.TestCase):
             "comparability_warning",
             "url",
             "access_date",
+            "reader_label",
         }
         self.assertGreaterEqual(len(self.context["sources"]), 8)
         for source in self.context["sources"]:
             missing = required - set(source)
             self.assertFalse(missing, f"{source.get('id')} missing {missing}")
             self.assertTrue(str(source["url"]).startswith("http"))
+            self.assertNotIn(source["reader_label"], (source["id"], None, ""))
 
     def test_median_helper(self):
         self.assertEqual(median([Decimal(1), Decimal(3), Decimal(2)]), Decimal(2))
@@ -114,6 +120,15 @@ class CostContextTests(unittest.TestCase):
         self.assertEqual([float(item) for item in after_2023], [1.052, 1.051, 1.0494])
         after_2019 = factors_after(factors, 2019)
         self.assertEqual(len(after_2019), 7)
+
+    def test_icociv_chain_for_civil_works(self):
+        factors = self.context["icociv"]["factors"]
+        after_2020 = factors_after(factors, 2020)
+        self.assertEqual(
+            [float(item) for item in after_2020],
+            [1.0556, 1.0973, 1.092, 1.0378, 1.0431],
+        )
+        self.assertIsNone(self.context["icociv"]["ytd_2026"])
 
     def test_committed_json_is_reproducible(self):
         committed = OUTPUT.read_text(encoding="utf-8").replace("\r\n", "\n")

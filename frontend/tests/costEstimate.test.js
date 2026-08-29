@@ -21,7 +21,7 @@ test('RWH quantity follows the participation prior', () => {
   assert.equal(rwhParticipatingSystems(0, 0.25), 1);
 });
 
-test('guided RWH plus drainage envelope is near US$328k / 730k / 1.39m', () => {
+test('guided RWH plus drainage uses ROM packages, not USD/m', () => {
   const estimate = estimatePortfolioCost({
     portfolio: GUIDED_PLAN,
     cells: GUIDED_CELLS,
@@ -31,32 +31,40 @@ test('guided RWH plus drainage envelope is near US$328k / 730k / 1.39m', () => {
   assert.equal(estimate.ordered, true);
   assert.equal(estimate.lines.find((line) => line.type === 'rwh').assumedQuantity, 1);
   const drainage = estimate.lines.find((line) => line.type === 'drainage');
-  assert.equal(drainage.assumedQuantity, 60);
-  assert.match(drainage.quantityLabel, /40\/60\/80/);
-  assert.equal(estimate.display.total.low, 328000);
-  assert.equal(estimate.display.total.base, 730000);
-  assert.equal(estimate.display.total.high, 1390000);
+  assert.equal(drainage.assumedQuantity, 1);
+  assert.equal(drainage.method, 'rom_package');
+  assert.match(drainage.quantityLabel, /package/);
+  assert.match(drainage.formula, /ROM package/);
+  assert.equal(estimate.immediateAsk.status, 'to_be_priced_after_survey');
+  assert.equal(estimate.display.design, undefined);
+  const pkg = costContext.interventions.drainage.usd_per_package;
+  assert.equal(drainage.low, pkg.low);
+  assert.equal(drainage.base, pkg.base);
+  assert.equal(drainage.high, pkg.high);
+  assert.equal(estimate.display.total.low, roundUsd(pkg.low + 550));
+  assert.equal(estimate.display.total.base, roundUsd(pkg.base + 780));
+  assert.equal(estimate.display.total.high, roundUsd(pkg.high + 1200));
   assert.equal(estimate.lines.find((line) => line.type === 'rwh').display.base, 780);
-  assert.equal(estimate.lines.find((line) => line.type === 'rwh').display.low, 550);
-  assert.equal(estimate.display.total.low < estimate.display.total.base, true);
-  assert.equal(estimate.display.total.base < estimate.display.total.high, true);
   assert.ok(estimate.sourceIds.includes('rwh_santa_elena_1000l_2023_budget_ceiling'));
   assert.ok(estimate.sourceIds.some((id) => id.startsWith('drainage_scale_')));
-  assert.equal(formatUsd(estimate.display.total.base), 'US$730,000');
-  assert.equal(formatUsdMillionRange(328000, 1390000), 'US$0.33–1.39 million');
+  assert.ok(estimate.sensitivity.some((item) => item.id === 'drainage'));
+  assert.ok(estimate.sensitivity.some((item) => item.id === 'trm'));
+  assert.equal(formatUsd(550), 'US$550');
+  assert.match(formatUsdMillionRange(estimate.display.total.low, estimate.display.total.high), /US\$/);
 });
 
-test('drainage scenarios use 40/60/80 m independently of cell width', () => {
+test('drainage ROM packages do not multiply USD/m by corridor length', () => {
   const estimate = estimatePortfolioCost({
     portfolio: [{ cell_id: 18, type: 'drainage' }],
     cells: GUIDED_CELLS,
     costContext,
   });
   const line = estimate.lines[0];
-  const rates = costContext.interventions.drainage.usd_per_reported_m;
-  assert.equal(line.low, 40 * rates.low);
-  assert.equal(line.base, 60 * rates.base);
-  assert.equal(line.high, 80 * rates.high);
+  const rates = costContext.interventions.drainage.comparator_usd_per_reported_m;
+  const lengths = costContext.interventions.drainage.length_m;
+  assert.notEqual(line.low, lengths.low * rates.low);
+  assert.notEqual(line.base, lengths.base * rates.base);
+  assert.equal(line.low, costContext.interventions.drainage.usd_per_package.low);
 });
 
 test('RWH quantity is dynamic with building count', () => {
@@ -83,9 +91,8 @@ test('restoration is a project-scale package, not a USD/m2 rate', () => {
   });
   assert.equal(estimate.complete, true);
   assert.equal(estimate.lines[0].assumedQuantity, 1);
-  assert.equal(estimate.display.total.base, roundUsd(196000 * 1.075));
+  assert.equal(estimate.display.total.base, 177000);
   assert.equal(estimate.lines[0].evidenceTier, 'low');
-  assert.equal(estimate.lines[0].assumedQuantity, 1);
   assert.match(estimate.lines[0].quantityNote, /not a USD\/m/);
 });
 
@@ -111,14 +118,11 @@ test('missing cost context refuses a total', () => {
 });
 
 test('rounding is stable and presentation-only', () => {
-  assert.equal(roundUsd(328053.8), 328000);
-  assert.equal(roundUsd(729723.47), 730000);
-  assert.equal(roundUsd(1389651.41), 1390000);
+  assert.equal(roundUsd(409228.6), 409000);
   const estimate = estimatePortfolioCost({
     portfolio: GUIDED_PLAN,
     cells: GUIDED_CELLS,
     costContext,
   });
   assert.notEqual(estimate.total.base, estimate.display.total.base);
-  assert.ok(Math.abs(estimate.total.base - 729723) < 20);
 });
