@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { parseEnvText, rootEnvPath } from '../lib/loadEnv.js';
 
 test('parseEnvText loads keys, strips quotes and skips comments', () => {
@@ -21,4 +23,10 @@ test('parseEnvText loads keys, strips quotes and skips comments', () => {
 test('root env path is the repository .env', () => {
   assert.match(rootEnvPath().replaceAll('\\', '/'), /\/\.env$/);
   assert.equal(rootEnvPath().includes('services'), false);
+});
+
+test('service contract matches the frontend contract', () => {
+  const service = JSON.parse(readFileSync(fileURLToPath(new URL('../lib/aiDecisionContract.json', import.meta.url)), 'utf8'));
+  const frontend = JSON.parse(readFileSync(fileURLToPath(new URL('../../../frontend/src/config/aiDecisionContract.json', import.meta.url)), 'utf8'));
+  assert.deepEqual(service, frontend);
 });

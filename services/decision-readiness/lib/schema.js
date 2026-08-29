@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import contract from '../../../frontend/src/config/aiDecisionContract.json' with { type: 'json' };
+import contract from './aiDecisionContract.json' with { type: 'json' };
 
 const L = contract.limits;
 

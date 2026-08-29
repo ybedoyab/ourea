@@ -129,7 +129,7 @@
     "fx_date": "2026-08-28",
     "cop_per_usd": 3144.28
   },
-  "file_count_excluding_manifest": 313,
+  "file_count_excluding_manifest": 314,
   "files": [
     {
       "path": ".env.example",
@@ -1622,6 +1622,11 @@
       "sha256": "383d547eeb06bda985ac965045be9bae696bc32ee97dcd18252e1066835ebac4"
     },
     {
+      "path": "services/decision-readiness/lib/aiDecisionContract.json",
+      "bytes": 1222,
+      "sha256": "2183b862fb9fdd7a7d3d8a97cb0bf036496ffcd214819e3ace8cfd5b6d019fdb"
+    },
+    {
       "path": "services/decision-readiness/lib/handler.js",
       "bytes": 6368,
       "sha256": "6d67a30958ef158bdfe03979a7920d2af122744b00d7d8eac6a3330f9f3f4ffd"
@@ -1638,8 +1643,8 @@
     },
     {
       "path": "services/decision-readiness/lib/schema.js",
-      "bytes": 6111,
-      "sha256": "6d0abf01669fe1ce35c11663df4307f2a2de131cd196db965eac2fd074b398f7"
+      "bytes": 6084,
+      "sha256": "c018bc5603d083f0d00f44ad5298c97d737649c6e4bac25a8d18acc1bd53986a"
     },
     {
       "path": "services/decision-readiness/package-lock.json",
@@ -1668,8 +1673,8 @@
     },
     {
       "path": "services/decision-readiness/tests/loadEnv.test.js",
-      "bytes": 983,
-      "sha256": "567ef9c7172233831eeb0dde974bbde71388e4cc8baf7d64324f033dccca3f82"
+      "bytes": 1449,
+      "sha256": "a58f322e059fd7c5d511aa947c703a388601e2a30e3376c0ad69936aef9a6df5"
     },
     {
       "path": "services/decision-readiness/vercel.json",
