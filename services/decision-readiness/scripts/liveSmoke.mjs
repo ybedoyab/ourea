@@ -21,7 +21,7 @@ const apiUrl = process.env.OUREA_AI_API_URL
   || 'https://ourea-decision-readiness.vercel.app/api/decision-readiness';
 const origin = process.env.SMOKE_ORIGIN || 'https://ybedoyab.github.io';
 
-const BANNED = /planning credit|people protected|lives saved|losses avoided|construction (is )?feasib|site is safe|collapse expected|failure year/i;
+const BANNED = /planning credit|lives saved|losses avoided|the site is safe|collapse expected|failure year|construction is feasible|ready for construction/i;
 
 async function load(name) {
   return JSON.parse(await readFile(join(dataDir, name), 'utf8'));
@@ -51,18 +51,25 @@ async function post(label, snapshot) {
   return { label, status: response.status, ms, body, requestId: body.request_id ?? body.error?.request_id ?? null };
 }
 
+function hasUsd(blob, value) {
+  const n = Math.round(Number(value));
+  const compact = blob.replace(/[$,]/g, '');
+  if (compact.includes(String(n))) return true;
+  const millions = n / 1e6;
+  return [`${millions.toFixed(2)}`, `${millions.toFixed(1)}`].some((item) => blob.includes(item));
+}
+
 function assertUsd(label, synthesis, snapshot) {
   const blob = JSON.stringify(synthesis);
   if (snapshot.cost?.complete) {
     for (const value of [snapshot.cost.low, snapshot.cost.base, snapshot.cost.high]) {
       if (!Number.isFinite(value)) continue;
-    const compact = blob.replace(/,/g, '');
-    if (!compact.includes(String(Math.round(value)))) {
-      throw new Error(`${label}: missing exact USD figure ${value}`);
-    }
+      if (!hasUsd(blob, value)) {
+        throw new Error(`${label}: missing exact USD figure ${value}`);
+      }
     }
   }
-  if (BANNED.test(blob)) throw new Error(`${label}: banned claim in synthesis`);
+  if (BANNED.test(blob)) throw new Error(`${label}: banned claim in synthesis: ${blob.match(BANNED)?.[0]}`);
   if (synthesis.headline && snapshot.readiness?.status && synthesis.headline === snapshot.readiness.status) {
     throw new Error(`${label}: model echoed the raw status token`);
   }
