@@ -1678,8 +1678,8 @@
     },
     {
       "path": "services/decision-readiness/scripts/liveSmoke.mjs",
-      "bytes": 7431,
-      "sha256": "927b3421600f1f6589884ffc1687ec719d9bfb6732652973ac44c9142ba45568"
+      "bytes": 7727,
+      "sha256": "6acf14cfa807721124340da99f16d48b7ba05a56a17870d6c8892bae531de24b"
     },
     {
       "path": "services/decision-readiness/scripts/localServer.mjs",

@@ -21,8 +21,6 @@ const apiUrl = process.env.OUREA_AI_API_URL
   || 'https://ourea-decision-readiness.vercel.app/api/decision-readiness';
 const origin = process.env.SMOKE_ORIGIN || 'https://ybedoyab.github.io';
 
-const BANNED = /planning credit|lives saved|losses avoided|the site is safe|collapse expected|failure year|construction is feasible|ready for construction/i;
-
 async function load(name) {
   return JSON.parse(await readFile(join(dataDir, name), 'utf8'));
 }
@@ -59,18 +57,39 @@ function hasUsd(blob, value) {
   return [`${millions.toFixed(2)}`, `${millions.toFixed(1)}`].some((item) => blob.includes(item));
 }
 
+function flaggedClaim(blob) {
+  for (const phrase of [
+    'planning credit',
+    'lives saved',
+    'losses avoided',
+    'the site is safe',
+    'collapse expected',
+    'failure year',
+    'construction is feasible',
+    'ready for construction',
+  ]) {
+    const re = new RegExp(`.{0,48}${phrase}.{0,48}`, 'ig');
+    for (const match of blob.matchAll(re)) {
+      if (!/\b(not|cannot|never|no|without|nor)\b|do not|does not/i.test(match[0])) {
+        return match[0].trim();
+      }
+    }
+  }
+  return null;
+}
+
 function assertUsd(label, synthesis, snapshot) {
-  const { cannot_conclude: _omit, ...rest } = synthesis;
-  const blob = JSON.stringify(rest);
+  const blob = JSON.stringify(synthesis);
   if (snapshot.cost?.complete) {
     for (const value of [snapshot.cost.low, snapshot.cost.base, snapshot.cost.high]) {
       if (!Number.isFinite(value)) continue;
-      if (!hasUsd(JSON.stringify(synthesis), value)) {
+      if (!hasUsd(blob, value)) {
         throw new Error(`${label}: missing exact USD figure ${value}`);
       }
     }
   }
-  if (BANNED.test(blob)) throw new Error(`${label}: banned claim in synthesis: ${blob.match(BANNED)?.[0]}`);
+  const flagged = flaggedClaim(blob);
+  if (flagged) throw new Error(`${label}: banned claim in synthesis: ${flagged}`);
   if (synthesis.headline && snapshot.readiness?.status && synthesis.headline === snapshot.readiness.status) {
     throw new Error(`${label}: model echoed the raw status token`);
   }
