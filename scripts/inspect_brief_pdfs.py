@@ -67,7 +67,7 @@ def inspect_bytes(name: str, data: bytes) -> int:
     require("fx_banrep_trm" not in text, f"{name} leaked an internal source id")
     sizes = [float(item) for item in re.findall(r"(\d+(?:\.\d+)?) Tf", text)]
     require(sizes, f"{name} missing fonts")
-    require(min(sizes) >= 8, f"{name} font {min(sizes)} is below 8pt")
+    require(min(sizes) >= 9, f"{name} font {min(sizes)} is below 9pt")
     for match in re.finditer(r"/Rect \[([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)\]", text):
         llx, lly, urx, ury = map(float, match.groups())
         require(llx >= -0.05 and lly >= -0.05, f"{name} annotation underflow {match.group(0)}")

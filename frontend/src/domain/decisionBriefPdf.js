@@ -63,7 +63,7 @@ function header(pdf, brief) {
   pdf.fillRect(0, 0, pdf.width, 58, DARK);
   pdf.fillRect(0, 58, pdf.width, 3, GOLD);
   drawLogo(pdf, 22, 6, 0.48);
-  pdf.text('OUREA', 62, 10, { size: 8, bold: true, color: GOLD });
+  pdf.text('OUREA', 62, 10, { size: 9, bold: true, color: GOLD });
   pdf.text('Investment and decision brief', 62, 22, { size: 13, bold: true, color: WHITE });
   pdf.text(brief.subtitle, 62, 40, { size: 9, color: [217, 189, 117] });
   pdf.text(formatDate(brief.generatedAt), pdf.width - 168, 22, { size: 9, color: [140, 153, 157] });
@@ -71,7 +71,7 @@ function header(pdf, brief) {
 
 function footerBar(pdf, brief) {
   pdf.fillRect(0, pdf.height - 28, pdf.width, 28, DARK);
-  pdf.text(brief.slogan, 40, pdf.height - 18, { size: 8, color: GOLD });
+  pdf.text(brief.slogan, 40, pdf.height - 18, { size: 9, color: GOLD });
 }
 
 function startPage(pdf, brief) {
@@ -83,11 +83,18 @@ function startPage(pdf, brief) {
 function stampPages(pdf, brief) {
   pdf.stamp((page, total) => {
     pdf.text(`Page ${page} of ${total}`, pdf.width - 40, pdf.height - 18, {
-      size: 8,
+      size: 9,
       color: [140, 153, 157],
       align: 'right',
     });
   });
+}
+
+function continuePage(pdf, brief, y, needed = 28) {
+  if (y + needed <= pdf.height - 40) return y;
+  pdf.addPage();
+  startPage(pdf, brief);
+  return 76;
 }
 
 function briefPlan(brief) {
@@ -166,7 +173,7 @@ function drawMechanism(pdf, x, y, width, height) {
       pdf.strokePath([[fx + 10, y + 48], [fx + frameW - 12, y + height - 20]], { color: GOLD, lineWidth: 2 });
       pdf.fillRect(fx + 16, y + 46, 7, 9, [93, 145, 167]);
     }
-    pdf.text(frame.title, fx + 6, y + 6, { size: 8, bold: true, color: INK, maxWidth: frameW - 12 });
+    pdf.text(frame.title, fx + 6, y + 6, { size: 9, bold: true, color: INK, maxWidth: frameW - 12 });
   });
 }
 
@@ -181,8 +188,8 @@ function drawTornado(pdf, x, y, width, drivers) {
     const mid = x + 160 + barW;
     pdf.fillRect(mid - left, rowY + 4, left, 12, [200, 167, 94]);
     pdf.fillRect(mid, rowY + 4, right, 12, [108, 152, 120]);
-    pdf.text(formatUsd(driver.low), mid - barW, rowY + 4, { size: 8, color: MUTED });
-    pdf.text(formatUsd(driver.high), mid + barW, rowY + 4, { size: 8, color: MUTED, align: 'right' });
+    pdf.text(formatUsd(driver.low), mid - barW, rowY + 4, { size: 9, color: MUTED });
+    pdf.text(formatUsd(driver.high), mid + barW, rowY + 4, { size: 9, color: MUTED, align: 'right' });
   });
   return Math.min(5, drivers.length) * 28;
 }
@@ -276,23 +283,23 @@ function pageExecutive(pdf, brief) {
   y += pdf.text(brief.decisionRequested, 40, y, { size: 11, color: INK, maxWidth: 515 });
   y += 10;
   pdf.fillRect(40, y, 515, 44, CARD);
-  pdf.text('Selected portfolio', 52, y + 8, { size: 8, bold: true, color: GOLD });
+  pdf.text('Selected portfolio', 52, y + 8, { size: 9, bold: true, color: GOLD });
   pdf.text(brief.recommendation, 52, y + 22, { size: 11, bold: true, color: INK, maxWidth: 490 });
   y += 56;
 
-  pdf.fillRect(40, y, 250, 86, WHITE);
-  pdf.strokeRect(40, y, 250, 86, GOLD, 0.8);
-  pdf.text('Immediate decision-preparation ask', 52, y + 8, { size: 8, bold: true, color: GOLD });
-  pdf.text('To be priced after survey', 52, y + 26, { size: 13, bold: true, color: INK, maxWidth: 226 });
-  pdf.text('Visit, survey, co-design, 30% design and BOQ are not in the capital envelope.', 52, y + 48, {
-    size: 9,
-    color: MUTED,
-    maxWidth: 226,
-  });
+  pdf.fillRect(40, y, 250, 110, WHITE);
+  pdf.strokeRect(40, y, 250, 110, GOLD, 0.8);
+  pdf.text('Immediate decision-preparation scope', 52, y + 8, { size: 9, bold: true, color: GOLD });
+  const fieldwork = brief.immediateAsk?.fieldwork?.display
+    ?? 'To be procured through a scoped preparation TOR or supplier quotations before fieldwork.';
+  const afterSurvey = brief.immediateAsk?.afterSurvey?.display
+    ?? 'To be priced after the field survey defines the scope.';
+  pdf.text(`Before fieldwork: ${fieldwork}`, 52, y + 24, { size: 9, color: INK, maxWidth: 226 });
+  pdf.text(`After survey: ${afterSurvey}`, 52, y + 68, { size: 9, color: INK, maxWidth: 226 });
 
   const total = brief.costing?.display?.total;
-  pdf.fillRect(305, y, 250, 86, DARK);
-  pdf.text('Future implementation envelope', 317, y + 8, { size: 8, bold: true, color: GOLD });
+  pdf.fillRect(305, y, 250, 110, DARK);
+  pdf.text('Future implementation envelope', 317, y + 8, { size: 9, bold: true, color: GOLD });
   pdf.text(total ? `${formatUsd(total.low)} - ${formatUsd(total.high)}` : 'Not estimable', 317, y + 26, {
     size: 13,
     bold: true,
@@ -304,16 +311,16 @@ function pageExecutive(pdf, brief) {
       ? `Base ${formatUsd(total.base)}  |  ${brief.confidence}`
       : 'At least one selected intervention has no estimable scenario.',
     317,
-    y + 52,
+    y + 70,
     { size: 9, color: [217, 189, 117], maxWidth: 226 },
   );
-  y += 100;
+  y += 124;
 
   ['Low', 'Base', 'High'].forEach((label, index) => {
     const key = label.toLowerCase();
     const x = 40 + index * 172;
     pdf.fillRect(x, y, 164, 44, CARD);
-    pdf.text(label, x + 10, y + 8, { size: 8, bold: true, color: GOLD });
+    pdf.text(label, x + 10, y + 8, { size: 9, bold: true, color: GOLD });
     pdf.text(total ? formatUsd(total[key]) : '—', x + 154, y + 22, {
       size: 12,
       bold: true,
@@ -346,7 +353,7 @@ function pageWhere(pdf, brief) {
   pdf.text('2. Where and what', 40, y, { size: 16, bold: true, color: INK });
   y += 20;
   const projectCount = (brief.projects ?? []).length;
-  const mapHeight = projectCount > 3 ? 150 : 220;
+  const mapHeight = projectCount > 3 ? 132 : 188;
   const image = brief.siteImage;
   if (image?.bytes) {
     const size = jpegSofSize(image.bytes) ?? { width: image.width, height: image.height };
@@ -361,34 +368,44 @@ function pageWhere(pdf, brief) {
       displayWidth,
       displayHeight,
     });
-    y += displayHeight + 10;
+    y += displayHeight + 8;
   } else {
-    drawFallbackMap(pdf, brief, 40, y, 515, Math.min(168, mapHeight));
-    y += Math.min(168, mapHeight) + 10;
+    drawFallbackMap(pdf, brief, 40, y, 515, Math.min(148, mapHeight));
+    y += Math.min(148, mapHeight) + 8;
   }
-  pdf.text('Each square is an 80 m planning cell. Links open the same cell in Ourea, Google Maps or Google Earth.', 40, y, {
+  pdf.text('Each square is an 80 m planning cell. Map, Earth and Ourea open the same cell. Full URLs are clickable annotations, not body text.', 40, y, {
     size: 9,
     color: MUTED,
     maxWidth: 515,
   });
   y += 16;
+  const cols = [44, 82, 188, 318, 418];
+  pdf.fillRect(40, y, 515, 18, CARD);
+  ['Cell', 'Intervention', 'Planning quantity', 'Confidence', 'Links'].forEach((label, index) => {
+    pdf.text(label, cols[index], y + 4, { size: 9, bold: true, color: GOLD });
+  });
+  y += 20;
   (brief.projects ?? []).forEach((project) => {
+    y = continuePage(pdf, brief, y, 36);
+    const rowH = 28;
+    pdf.fillRect(40, y, 515, rowH, WHITE);
+    pdf.fillRect(40, y, 4, rowH, TYPE_COLORS[project.type] ?? GOLD);
+    pdf.text(String(project.cell_id), cols[0], y + 8, { size: 9, bold: true, color: INK });
+    pdf.text(project.label, cols[1], y + 8, { size: 9, color: INK, maxWidth: 100 });
+    pdf.text(project.quantityLabel, cols[2], y + 4, { size: 9, color: INK, maxWidth: 124 });
+    pdf.text(String(project.confidence ?? brief.confidence), cols[3], y + 8, { size: 9, color: MUTED, maxWidth: 92 });
     const link = projectLink(brief, project.cell_id);
-    pdf.fillRect(40, y, 515, 52, CARD);
-    pdf.fillRect(40, y, 6, 52, TYPE_COLORS[project.type] ?? GOLD);
-    pdf.text(`Cell ${project.cell_id}  |  ${project.label}`, 56, y + 6, { size: 10, bold: true, color: INK });
-    pdf.text(project.quantityLabel, 56, y + 20, { size: 9, color: MUTED, maxWidth: 480 });
     const items = [
-      link ? ['Ourea map', link] : null,
-      project.mapsUrl ? ['Google Maps', project.mapsUrl] : null,
-      project.earthUrl ? ['Google Earth', project.earthUrl] : null,
+      link ? ['Ourea', link] : null,
+      project.mapsUrl ? ['Maps', project.mapsUrl] : null,
+      project.earthUrl ? ['Earth', project.earthUrl] : null,
     ].filter(Boolean);
     items.forEach((item, index) => {
-      const x = 56 + index * 150;
-      pdf.text(item[0], x, y + 34, { size: 9, bold: true, color: GOLD });
-      pdf.addLink(x - 2, y + 32, 140, 14, item[1]);
+      const x = cols[4] + index * 44;
+      pdf.text(item[0], x, y + 8, { size: 9, bold: true, color: GOLD });
+      pdf.addLink(x - 2, y + 6, 42, 14, item[1]);
     });
-    y += 58;
+    y += rowH + 4;
   });
 }
 
@@ -404,10 +421,19 @@ function pageFinancial(pdf, brief) {
     { size: 10, color: INK, maxWidth: 515 },
   );
   y += 8;
-  pdf.fillRect(40, y, 515, 52, CARD);
-  pdf.text('Immediate ask', 52, y + 8, { size: 9, bold: true, color: GOLD });
-  pdf.text('To be priced after survey', 52, y + 24, { size: 12, bold: true, color: INK });
-  y += 62;
+  pdf.fillRect(40, y, 515, 72, CARD);
+  pdf.text('Immediate decision-preparation scope', 52, y + 8, { size: 9, bold: true, color: GOLD });
+  pdf.text(`Before fieldwork: ${brief.immediateAsk?.fieldwork?.display ?? 'To be procured through a scoped preparation TOR or supplier quotations before fieldwork.'}`, 52, y + 22, {
+    size: 9,
+    color: INK,
+    maxWidth: 490,
+  });
+  pdf.text(`After survey: ${brief.immediateAsk?.afterSurvey?.display ?? 'To be priced after the field survey defines the scope.'}`, 52, y + 46, {
+    size: 9,
+    color: INK,
+    maxWidth: 490,
+  });
+  y += 82;
   const total = brief.costing?.display?.total;
   pdf.fillRect(40, y, 515, 52, DARK);
   pdf.text('Future implementation envelope', 52, y + 8, { size: 9, bold: true, color: GOLD });
@@ -421,14 +447,14 @@ function pageFinancial(pdf, brief) {
   y += 16;
   const cols = [40, 130, 230, 400];
   ['Dimension', 'Status', 'Evidence', 'Next gate'].forEach((label, index) => {
-    pdf.text(label, cols[index], y, { size: 8, bold: true, color: GOLD });
+    pdf.text(label, cols[index], y, { size: 9, bold: true, color: GOLD });
   });
   y += 14;
   (brief.feasibility ?? []).forEach((row) => {
     pdf.text(row.dimension, cols[0], y, { size: 9, bold: true, color: INK, maxWidth: 86 });
     pdf.text(row.status, cols[1], y, { size: 9, color: INK, maxWidth: 96 });
-    const ev = pdf.text(row.evidence, cols[2], y, { size: 8, color: INK, maxWidth: 160 });
-    const nx = pdf.text(row.nextGate, cols[3], y, { size: 8, color: INK, maxWidth: 150 });
+    const ev = pdf.text(row.evidence, cols[2], y, { size: 9, color: INK, maxWidth: 160 });
+    const nx = pdf.text(row.nextGate, cols[3], y, { size: 9, color: INK, maxWidth: 150 });
     y += Math.max(ev, nx, 16) + 4;
   });
   y += 6;
@@ -479,6 +505,11 @@ function pageBuildUp(pdf, brief) {
       { size: 9, color: MUTED, maxWidth: 515 },
     );
     y += 4;
+    if (line.type === 'drainage' && brief.drainageConsolidationWarning) {
+      y = continuePage(pdf, brief, y, 36);
+      y += pdf.text(brief.drainageConsolidationWarning, 40, y, { size: 9, color: INK, maxWidth: 515 });
+      y += 6;
+    }
     if (line.includes?.length) {
       y += pdf.text(`Includes: ${line.includes.join('; ')}.`, 40, y, { size: 9, color: INK, maxWidth: 515 });
       y += 2;
@@ -510,9 +541,15 @@ function pageBuildUp(pdf, brief) {
   pdf.text('Immediate preparation items', 40, y, { size: 11, bold: true, color: INK });
   y += 14;
   (brief.immediateAsk?.rows ?? []).forEach((row) => {
-    pdf.text(row.label, 40, y, { size: 9, color: INK, maxWidth: 280 });
-    pdf.text(row.display, 555, y, { size: 9, color: MUTED, align: 'right' });
-    y += 13;
+    y = continuePage(pdf, brief, y, 28);
+    pdf.text(`${row.label}  (${row.stage === 'before_fieldwork' ? 'before fieldwork' : 'after survey'})`, 40, y, {
+      size: 9,
+      color: INK,
+      maxWidth: 515,
+    });
+    y += 12;
+    y += pdf.text(row.display, 40, y, { size: 9, color: MUTED, maxWidth: 515 });
+    y += 4;
   });
   y += 6;
   y += pdf.text(`Excluded from the envelope: ${(brief.costing?.excluded ?? []).join('; ')}.`, 40, y, {
@@ -521,9 +558,11 @@ function pageBuildUp(pdf, brief) {
     maxWidth: 515,
   });
   y += 8;
+  y = continuePage(pdf, brief, y, 40);
   pdf.text('Sensitivity (model-derived, not a benefit or ROI claim)', 40, y, { size: 11, bold: true, color: INK });
   y += 16;
   if (brief.costing?.sensitivity?.length) {
+    y = continuePage(pdf, brief, y, Math.min(5, brief.costing.sensitivity.length) * 28);
     drawTornado(pdf, 40, y, 515, brief.costing.sensitivity);
   }
 }
@@ -553,7 +592,7 @@ function pageEarlyAction(pdf, brief) {
   chips.forEach((chip, index) => {
     const x = 40 + index * 129;
     pdf.fillRect(x, y, 121, 44, CARD);
-    pdf.text(chip[0], x + 8, y + 8, { size: 8, bold: true, color: GOLD });
+    pdf.text(chip[0], x + 8, y + 8, { size: 9, bold: true, color: GOLD });
     pdf.text(chip[1], x + 8, y + 22, { size: 12, bold: true, color: INK, maxWidth: 105 });
   });
   y += 52;
@@ -598,12 +637,39 @@ function pageRobustness(pdf, brief) {
       y += pdf.text(`${item.order}. ${item.action}`, 52, y, { size: 9, color: INK, maxWidth: 490 });
       y += 2;
     });
+    const cost = brief.aiReview.synthesis.cost_interpretation;
+    const robust = brief.aiReview.synthesis.robustness_interpretation;
+    if (cost || robust) {
+      y += 6;
+      pdf.text('Cost and robustness interpretation', 52, y, { size: 10, bold: true, color: GOLD });
+      y += 14;
+      if (cost?.main_driver) {
+        y += pdf.text(`Main cost driver: ${cost.main_driver}`, 52, y, { size: 9, color: INK, maxWidth: 490 });
+        y += 2;
+      }
+      if (cost?.uncertainty) {
+        y += pdf.text(`Cost uncertainty: ${cost.uncertainty}`, 52, y, { size: 9, color: INK, maxWidth: 490 });
+        y += 2;
+      }
+      if (cost?.survey_requirement) {
+        y += pdf.text(`Survey requirement: ${cost.survey_requirement}`, 52, y, { size: 9, color: INK, maxWidth: 490 });
+        y += 2;
+      }
+      if (robust?.strength) {
+        y += pdf.text(`Robustness strength: ${robust.strength}`, 52, y, { size: 9, color: INK, maxWidth: 490 });
+        y += 2;
+      }
+      if (robust?.caveat) {
+        y += pdf.text(`Robustness caveat: ${robust.caveat}`, 52, y, { size: 9, color: INK, maxWidth: 490 });
+        y += 2;
+      }
+    }
     y += 4;
     pdf.text(
       `${AI_REVIEW_COPY.assisted}  |  ${brief.aiReview.generatedAt ?? ''}`,
       52,
       y,
-      { size: 8, color: MUTED, maxWidth: 490 },
+      { size: 9, color: MUTED, maxWidth: 490 },
     );
   } else {
     pdf.fillRect(40, y, 515, 36, CARD);
@@ -638,20 +704,23 @@ function pagePathway(pdf, brief) {
     const accessed = source.accessed ? `accessed ${source.accessed}` : '';
     const line = `[${source.n}] ${source.label}. ${source.title}. ${date}. ${source.type}. ${accessed}`.replace(/\s+/g, ' ').trim();
     const height = pdf.measure(line, { size: 9, maxWidth: 515 });
+    y = continuePage(pdf, brief, y, height + 8);
     pdf.text(line, 40, y, { size: 9, color: INK, maxWidth: 515 });
-    if (source.url) pdf.addLink(40, y, Math.min(515, 420), height, source.url);
+    if (source.url) pdf.addLink(40, y, Math.min(515, 420), Math.min(height, 36), source.url);
     y += height + 4;
   });
   y += 6;
   if (brief.technicalNote) {
-    y += pdf.text(brief.technicalNote, 40, y, { size: 8, color: MUTED, maxWidth: 515 });
+    y = continuePage(pdf, brief, y, 28);
+    y += pdf.text(brief.technicalNote, 40, y, { size: 9, color: MUTED, maxWidth: 515 });
     y += 4;
   }
+  y = continuePage(pdf, brief, y, 36);
   pdf.text(
     'Ourea is decision intelligence for adaptation portfolios under uncertainty. It does not predict landslides, structural failure, people saved or losses avoided.',
     40,
     y,
-    { size: 8, color: MUTED, maxWidth: 515 },
+    { size: 9, color: MUTED, maxWidth: 515 },
   );
 }
 

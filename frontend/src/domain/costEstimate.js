@@ -12,13 +12,20 @@ const TYPE_LABEL = {
   restoration: 'Restoration / bioengineering',
 };
 
-const PREPARATION_ITEMS = Object.freeze([
+const FIELDWORK_ITEMS = Object.freeze([
   'Site visit',
   'Topographic and hydraulic survey',
   'Community co-design',
+]);
+
+const AFTER_SURVEY_ITEMS = Object.freeze([
   '30% design',
   'Procurement-ready bill of quantities',
 ]);
+
+const FIELDWORK_DISPLAY = 'To be procured through a scoped preparation TOR or supplier quotations before fieldwork.';
+const AFTER_SURVEY_DISPLAY = 'To be priced after the field survey defines the scope.';
+const DRAINAGE_CONSOLIDATION_WARNING = 'Adjacent selected cells may represent one connected corridor. The current envelope counts them separately until the field survey establishes hydraulic continuity.';
 
 export function formatUsd(value) {
   if (value == null || !Number.isFinite(Number(value))) return '—';
@@ -103,8 +110,8 @@ function drainageLine(projects, spec) {
     method: 'rom_package',
     assumedQuantity: packages,
     quantityUnit: spec.quantity_unit,
-    quantityLabel: `${packages} hillside corridor package${packages === 1 ? '' : 's'}`,
-    quantityNote: spec.length_note,
+    quantityLabel: `${packages} selected planning-cell package${packages === 1 ? '' : 's'}; corridor consolidation not assessed.`,
+    quantityNote: 'Conservative planning scenario: one ROM hillside corridor package per selected cell. This is not a bill of quantities. Adjacent cells may consolidate into one corridor after the survey; hydraulic topology determines the real package count.',
     formula: formulaRange(packages, unit, 'per ROM package'),
     unit: unit,
     includes: spec.includes,
@@ -187,18 +194,40 @@ function costDriver(lines) {
   return 'Quantity and evidence confidence still bound the envelope.';
 }
 
-function unpricedRow(label) {
+function unpricedRow(label, stage) {
+  const beforeFieldwork = stage === 'before_fieldwork';
   return {
     label,
-    status: 'to_be_priced_after_survey',
-    display: 'To be priced after survey',
+    stage,
+    status: beforeFieldwork ? 'to_be_procured_before_fieldwork' : 'to_be_priced_after_survey',
+    display: beforeFieldwork ? FIELDWORK_DISPLAY : AFTER_SURVEY_DISPLAY,
+  };
+}
+
+function preparationAsk() {
+  return {
+    status: 'unpriced_preparation',
+    fieldwork: {
+      status: 'to_be_procured_before_fieldwork',
+      display: FIELDWORK_DISPLAY,
+      items: FIELDWORK_ITEMS,
+    },
+    afterSurvey: {
+      status: 'to_be_priced_after_survey',
+      display: AFTER_SURVEY_DISPLAY,
+      items: AFTER_SURVEY_ITEMS,
+    },
+    rows: [
+      ...FIELDWORK_ITEMS.map((label) => unpricedRow(label, 'before_fieldwork')),
+      ...AFTER_SURVEY_ITEMS.map((label) => unpricedRow(label, 'after_survey')),
+    ],
   };
 }
 
 export function costSensitivity(estimate) {
   const total = estimate?.total;
   if (!total || !estimate.lines?.length) return [];
-  const drivers = estimate.lines.map((line) => ({
+  return estimate.lines.map((line) => ({
     id: line.type,
     label: line.label,
     low: line.low,
@@ -206,20 +235,7 @@ export function costSensitivity(estimate) {
     high: line.high,
     down: line.base - line.low,
     up: line.high - line.base,
-  }));
-  if (estimate.fx?.cop_per_usd) {
-    const onePercent = total.base * 0.01;
-    drivers.push({
-      id: 'trm',
-      label: `TRM (${Number(estimate.fx.cop_per_usd).toLocaleString('en-US')} COP/USD)`,
-      low: total.base - onePercent,
-      base: total.base,
-      high: total.base + onePercent,
-      down: onePercent,
-      up: onePercent,
-    });
-  }
-  return drivers.sort((a, b) => (b.down + b.up) - (a.down + a.up));
+  })).sort((a, b) => (b.down + b.up) - (a.down + a.up));
 }
 
 export function estimatePortfolioCost({
@@ -240,10 +256,7 @@ export function estimatePortfolioCost({
       lines: [],
       total: null,
       display: null,
-      immediateAsk: {
-        status: 'to_be_priced_after_survey',
-        items: PREPARATION_ITEMS,
-      },
+      immediateAsk: preparationAsk(),
     };
   }
 
@@ -273,10 +286,9 @@ export function estimatePortfolioCost({
 
   const complete = unpriced.length === 0 && (projects.length === 0 || lines.length > 0);
   const designGuidance = costContext.design_allowance ?? { low: 0.05, base: 0.075, high: 0.1 };
+  const drainagePackages = grouped.drainage.length;
   const immediateAsk = {
-    status: 'to_be_priced_after_survey',
-    items: PREPARATION_ITEMS,
-    rows: PREPARATION_ITEMS.map(unpricedRow),
+    ...preparationAsk(),
     designShareGuidance: {
       low: designGuidance.low,
       base: designGuidance.base,
@@ -286,6 +298,7 @@ export function estimatePortfolioCost({
       note: 'IDB design-share guidance is a later pricing method, not a present lump-sum ask.',
     },
   };
+  const drainageConsolidationWarning = drainagePackages > 1 ? DRAINAGE_CONSOLIDATION_WARNING : null;
 
   if (!complete) {
     return {
@@ -298,6 +311,7 @@ export function estimatePortfolioCost({
       priceDate: costContext.price_date ?? null,
       fx: costContext.fx ?? null,
       immediateAsk,
+      drainageConsolidationWarning,
       implementationEnvelope: null,
     };
   }
@@ -334,6 +348,7 @@ export function estimatePortfolioCost({
     sources: (costContext.sources ?? []).filter((item) => sourceIds.includes(item.id)),
     costDriver: costDriver(lines),
     immediateAsk,
+    drainageConsolidationWarning,
     implementationEnvelope: present(total),
     included: [
       'RWH tank packages at the planning participation prior',
