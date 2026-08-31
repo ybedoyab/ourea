@@ -463,8 +463,8 @@
     },
     {
       "path": "frontend/e2e/ai-decision-review.spec.js",
-      "bytes": 6793,
-      "sha256": "023f55f68d91c79217f93d8d9ab5d780371230305469cda2c852cea451ab1441"
+      "bytes": 7448,
+      "sha256": "caaa9f55e7ca6d7a18be4c8d56a427f3d66b3b8616bf78cbb9d642db912e149b"
     },
     {
       "path": "frontend/e2e/errorAllowlist.js",
@@ -1043,8 +1043,8 @@
     },
     {
       "path": "frontend/src/config/aiReview.js",
-      "bytes": 2501,
-      "sha256": "baa1bba9d651ea06c03503bfe0df69e697a52e7f7b55958465077d1ad8af244f"
+      "bytes": 2541,
+      "sha256": "885c8713e663b05d6acbb8ea2f85f2a31549ad71f58fb76744eefded0b65a87b"
     },
     {
       "path": "frontend/src/config/assetUrl.js",
@@ -1148,13 +1148,13 @@
     },
     {
       "path": "frontend/src/domain/decisionBrief.js",
-      "bytes": 16788,
-      "sha256": "22f4341fa431f46d3ad9e557143591b56a739468da4ff2bd7c3df76345848e7b"
+      "bytes": 16317,
+      "sha256": "bdfd225a6a2c3e657d9b0640ff081cfe761def2ea62a58fe7239ed53d98aa1ea"
     },
     {
       "path": "frontend/src/domain/decisionBriefPdf.js",
-      "bytes": 29601,
-      "sha256": "9de4cbea634c2989b8891212eaa50fbb8b986cae9e1389b100baac1842bcc87c"
+      "bytes": 30062,
+      "sha256": "2d553f036f23c72c46a010d1ecf62f715fa7089a2a7cae91b0a6fbdfcda526ed"
     },
     {
       "path": "frontend/src/domain/decisionPackage.js",
@@ -1468,8 +1468,8 @@
     },
     {
       "path": "frontend/tests/decisionBrief.test.js",
-      "bytes": 12058,
-      "sha256": "4b4aed388b48abd504af2162a8039a9f1660fbcfb68096bec852c5d9df2ebbc0"
+      "bytes": 14371,
+      "sha256": "d478634334565d2ba4ab463807e6c9a62e55d79e5c0ab73fd70d1723e4eabd65"
     },
     {
       "path": "frontend/tests/decisionPackage.test.js",
@@ -1478,8 +1478,8 @@
     },
     {
       "path": "frontend/tests/decisionPackageBrief.test.js",
-      "bytes": 4639,
-      "sha256": "adcfe42083a5b112402fc917829e402ea5e26bce7d25a961b4119763532e2723"
+      "bytes": 4691,
+      "sha256": "eea13b281b09b2ad421bcc22e511e7b631dd7f92bfad20dc9472d5c7b6ba5373"
     },
     {
       "path": "frontend/tests/decisionReadiness.test.js",
