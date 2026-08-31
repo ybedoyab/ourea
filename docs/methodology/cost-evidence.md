@@ -86,7 +86,7 @@ Machine-readable descriptive table:
 
 The rough normalized figures span approximately **COP 24–50 million per reported metre** even before correcting for radically different scopes. That spread is evidence **against** pretending there is one drainage unit cost.
 
-Ourea therefore does **not** multiply those ratios by 40/60/80 m. Comparable 2026 packages with reported length 35–100 m (La Cabuyala, El Pelón, La Chorrera) are treated as **ROM hillside corridor packages**. Each selected drainage cell is one package. Length 40/60/80 m remains a named survey scenario, not a bill-of-quantities multiplier. SECOP II BOQ/APU lines comparable to a Llanaditas hillside drain were not recovered; until they are, the envelope stays an order-of-magnitude comparator.
+Ourea therefore does **not** multiply those ratios by 40/60/80 m. Comparable 2026 packages with reported length 35–100 m (La Cabuyala, El Pelón, La Chorrera) are treated as **ROM hillside corridor packages**. Each selected drainage cell is one package. That is a conservative planning scenario, not a bill of quantities: adjacent selected cells may later consolidate into one corridor once the field survey establishes hydraulic continuity. The envelope does not reduce the total by mere spatial adjacency. Length 40/60/80 m remains a named survey scenario, not a bill-of-quantities multiplier. SECOP II BOQ/APU lines comparable to a Llanaditas hillside drain were not recovered; until they are, the envelope stays an order-of-magnitude comparator.
 
 Civil-works amounts use **DANE ICOCIV** (December/December 2021–2025; 2019 uses a one-year IPC bridge because ICOCIV begins December 2020 = 100). Household RWH equipment keeps **DANE IPC** because it is a consumer-goods package, not a civil-works basket. 2026 drainage comparators need no inflation.
 
@@ -119,14 +119,14 @@ Credits compare portfolios. They do not appear in the decision brief.
 
 The exported PDF shows a **US$ implementation envelope** for the selected portfolio. It is generated from `frontend/public/data/cost_context.json`, built offline by `scripts/build_cost_context.py` from this registry and `data/derived/local_infrastructure_cost_scale.csv`. Runtime Ourea does not call price APIs.
 
-Versioned FX (Banco de la República TRM, 2026-08-28, 3,144.28 COP/USD), DANE IPC for household RWH equipment, and DANE ICOCIV for civil works make the conversion reproducible.
+Versioned FX (Banco de la República TRM, 2026-08-28, 3,144.28 COP/USD), DANE IPC for household RWH equipment, and DANE ICOCIV for civil works make the conversion reproducible. The dated TRM is a conversion assumption, not a tornado driver: Ourea does not present an unsupported ±1% FX swing as empirical sensitivity. The cost tornado is the low/base/high spread of drainage ROM packages, restoration packages and RWH systems.
 
 | Family | Quantity basis | Low / base / high | Evidence |
 |---|---|---|---|
 | Rainwater harvesting | Participating systems = max(1, round(buildings × 0.25)) | US$550 / 780 / 1,200 per system | 2023 Santa Elena ceiling, IPC-normalized to 2026 (~US$782/system); not an awarded Comuna 8 price |
 | Drainage | One ROM hillside corridor package per selected cell | US$408,679 / 852,659 / 1,577,786 per package | Comparable 2026 Medellín hydraulic works with reported length 35–100 m; not a transferable USD/m rate |
 | Restoration | One project-scale package per selected cell | US$120,000 / 177,000 / 270,000 | ICOCIV- and TRM-normalized 2019 DAGRD Comuna 8 COP 400 million sheet; not a USD/m² rate |
-| Immediate ask | Visit, survey, co-design, 30% design, BOQ | To be priced after survey | IDB design-share guidance (5% / 7.5% / 10%) is a later pricing method, not a present lump sum |
+| Immediate ask | Visit, survey and co-design procured before fieldwork; 30% design and BOQ priced after the survey | No present lump sum | IDB design-share guidance (5% / 7.5% / 10%) is a later pricing method, not a present lump sum |
 
 The future implementation envelope is equipment plus ROM construction packages. Design percent is not stacked on top of a fourfold ROM spread. Community review remains a decision gate.
 
