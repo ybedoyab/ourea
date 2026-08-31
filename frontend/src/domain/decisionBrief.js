@@ -80,7 +80,7 @@ function quantityFor(project, cell) {
   if (project.type === 'drainage') {
     return {
       quantity: 1,
-      quantityLabel: '1 selected planning-cell package; corridor consolidation not assessed.',
+      quantityLabel: '1 selected planning-cell package',
       quantityBasis: 'Conservative planning scenario: one ROM hillside corridor package per selected cell, not a bill of quantities.',
       confidence: 'descriptive-scale',
     };
@@ -263,15 +263,6 @@ export function buildDecisionBrief(payload, extras = {}) {
     costContext: extras.costContext,
   });
   const packaged = fromPackage(extras, payload);
-  const drainageLine = (costing.lines ?? []).find((line) => line.type === 'drainage');
-  if (drainageLine) {
-    for (const order of orders) {
-      if (order.type !== 'drainage') continue;
-      order.quantityLabel = drainageLine.quantityLabel;
-      order.quantityBasis = drainageLine.quantityNote ?? order.quantityBasis;
-      order.confidence = drainageLine.confidence ?? drainageLine.evidenceTier ?? order.confidence;
-    }
-  }
   const monteCarlo = extras.monteCarlo ?? (uncertainty
     ? {
         p10: uncertainty.benefit_proxy_p10 ?? uncertainty.p10,

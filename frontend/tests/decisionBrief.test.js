@@ -24,6 +24,12 @@ function pdfText(bytes) {
   return new TextDecoder('latin1').decode(bytes);
 }
 
+function pdfVisible(body) {
+  return [...body.matchAll(/\((?:\\.|[^\\)])*\) Tj/g)]
+    .map((match) => match[0].slice(1, -4).replace(/\\([()\\])/g, '$1'))
+    .join(' ');
+}
+
 async function pdfOf(brief) {
   return pdfText(new Uint8Array(await buildDecisionBriefPdf(brief).arrayBuffer()));
 }
@@ -72,9 +78,39 @@ test('decision brief names hillside cells and costing quantities', () => {
   assert.match(brief.projects[0].place, /Llanaditas No\. 2/);
   assert.match(brief.projects[1].place, /Llanaditas No\. 2/);
   assert.equal(brief.projects[0].quantity, 1);
-  assert.match(brief.projects[1].quantityLabel, /package/);
+  assert.match(brief.projects[1].quantityLabel, /^1 selected planning-cell package$/);
   assert.match(brief.projects[0].mapsUrl, /maps\/search/);
   assert.match(brief.projects[1].earthUrl, /earth\.google\.com/);
+});
+
+test('drainage work orders stay at one package per cell while the cost line keeps N', async () => {
+  const portfolio = [
+    { cell_id: 1, type: 'drainage' },
+    { cell_id: 18, type: 'drainage' },
+    { cell_id: 2, type: 'drainage' },
+  ];
+  const brief = buildDecisionBrief(guidedPayload({ portfolio }), { cells: GUIDED_CELLS, costContext });
+  const drainageOrders = brief.projects.filter((item) => item.type === 'drainage');
+  const line = brief.costing.lines.find((item) => item.type === 'drainage');
+  const pkg = costContext.interventions.drainage.usd_per_package;
+  assert.equal(drainageOrders.length, 3);
+  for (const order of drainageOrders) {
+    assert.equal(order.quantity, 1);
+    assert.equal(order.quantityLabel, '1 selected planning-cell package');
+  }
+  assert.equal(drainageOrders.reduce((sum, item) => sum + item.quantity, 0), line.assumedQuantity);
+  assert.equal(line.assumedQuantity, 3);
+  assert.equal(line.quantityLabel, '3 selected planning-cell packages; corridor consolidation not assessed.');
+  assert.match(brief.drainageConsolidationWarning, /Adjacent selected cells may represent one connected corridor/);
+  assert.equal(brief.costing.total.low, pkg.low * 3);
+  assert.equal(brief.costing.total.base, pkg.base * 3);
+  assert.equal(brief.costing.total.high, pkg.high * 3);
+  const body = await pdfOf(brief);
+  const visible = pdfVisible(body);
+  assert.equal([...visible.matchAll(/1 selected planning-cell package(?!s)/g)].length, 3);
+  assert.equal([...visible.matchAll(/3 selected planning-cell packages; corridor consolidation not assessed/g)].length, 1);
+  assert.equal([...visible.matchAll(/Adjacent selected cells may represent one connected corridor/g)].length, 1);
+  assert.ok(pageCount(body) >= 6 && pageCount(body) <= 8);
 });
 
 test('guided decision brief PDF is a 7-page document with metadata and USD', async () => {
@@ -157,6 +193,7 @@ test('AI-assisted PDF section stays within eight pages and does not change USD t
   assert.match(body, /Cost and robustness interpretation/);
   assert.match(body, /Main cost driver/);
   assert.match(body, /Robustness caveat/);
+  assert.match(body, /What Ourea cannot conclude/);
   assert.doesNotMatch(body, /Environmental[\s\S]{0,40}Blocked/);
   assert.equal(brief.costing.display.total.base, brief.costing.implementationEnvelope.base);
   assert.doesNotMatch(body, /planning credit/i);
@@ -266,5 +303,7 @@ test('six-intervention and many-reference briefs stay within eight pages', async
   assert.ok(pageCount(sixBody) <= 8);
   assert.match(sixBody, /Restoration/);
   assert.match(sixBody, /connected corridor/);
+  assert.equal(six.projects.filter((item) => item.type === 'drainage').every((item) => item.quantity === 1 && item.quantityLabel === '1 selected planning-cell package'), true);
+  assert.equal([...sixBody.matchAll(/Adjacent selected cells may represent one connected corridor/g)].length, 1);
   assert.doesNotMatch(sixBody, /TRM \(/);
 });
