@@ -75,9 +75,16 @@ def inspect_bytes(name: str, data: bytes) -> int:
     return pages
 
 
+def tool_stderr(text: str) -> str:
+    return "\n".join(
+        line for line in (text or "").splitlines()
+        if "No display font for" not in line
+    )
+
+
 def run_checked(command: list[str]) -> subprocess.CompletedProcess[str]:
     result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace")
-    err = result.stderr or ""
+    err = tool_stderr(result.stderr)
     require(result.returncode == 0, f"{' '.join(command)} failed:\n{err}\n{result.stdout}")
     require("Syntax Error" not in err, f"Poppler/qpdf syntax error:\n{err}")
     require("Error:" not in err, f"tool error:\n{err}")

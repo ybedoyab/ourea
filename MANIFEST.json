@@ -129,7 +129,7 @@
     "fx_date": "2026-08-28",
     "cop_per_usd": 3144.28
   },
-  "file_count_excluding_manifest": 321,
+  "file_count_excluding_manifest": 325,
   "files": [
     {
       "path": ".env.example",
@@ -297,9 +297,29 @@
       "sha256": "6939b323cf1a5c421350a0e2f5bb1b93e881dfbfe1e93a3a1f07bcce8f4dc16f"
     },
     {
+      "path": "docs/competition/screenshots/ai-review-idle.png",
+      "bytes": 10149,
+      "sha256": "ff514a600bc6aa2ac8c6caa41213d946397b64efb5753f4d11002f38fa96b6ce"
+    },
+    {
+      "path": "docs/competition/screenshots/ai-review-loading.png",
+      "bytes": 10449,
+      "sha256": "7366751d4c9f75263956752f3c5c6194d3050318156f28160f05dc915960701f"
+    },
+    {
+      "path": "docs/competition/screenshots/ai-review-success.png",
+      "bytes": 62387,
+      "sha256": "d9e4df51c53ff80ffae3d4f7ab7540c611023150a78cb021b1911936f8b87566"
+    },
+    {
       "path": "docs/competition/screenshots/drawer-advanced-desktop.png",
       "bytes": 861821,
       "sha256": "d8b0bbe3c49308142cdfefa8dbc9c9ecafb8202cc25af0cd32a8edf54cff5f82"
+    },
+    {
+      "path": "docs/competition/screenshots/mechanism-reduced-motion.png",
+      "bytes": 21738,
+      "sha256": "68fa04c6d92d709ddc807e4dd38831eddc9eb6103b948a5ce02e2b16d76ab9d1"
     },
     {
       "path": "docs/competition/screenshots/mobile-review.png",
@@ -1573,8 +1593,8 @@
     },
     {
       "path": "scripts/inspect_brief_pdfs.py",
-      "bytes": 6199,
-      "sha256": "e226e022c3cae4575d250511ab51aac3b76bcd230019272ed79b7b669fc1ab40"
+      "bytes": 6367,
+      "sha256": "99239b14a52e87b60f67a86c369ae6110bdd16701ba4b029405c376d070f06f8"
     },
     {
       "path": "scripts/make_manifest.py",
