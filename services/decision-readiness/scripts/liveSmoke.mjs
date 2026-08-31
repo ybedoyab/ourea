@@ -12,6 +12,7 @@ import { actionFootprint } from '../../../frontend/src/domain/actionFootprint.js
 import { buildAiDecisionSnapshot } from '../../../frontend/src/domain/aiDecisionSnapshot.js';
 import { DEFAULT_SCENARIO, MODEL_PARAMETERS } from '../../../frontend/src/config/modelConfig.js';
 import { SynthesisSchema } from '../lib/schema.js';
+import { assertSynthesisClaims } from '../lib/liveSmokeClaims.js';
 import { VALID_SNAPSHOT } from '../../../frontend/tests/fixtures/aiReview.js';
 
 const frontendRoot = fileURLToPath(new URL('../../../frontend/', import.meta.url));
@@ -49,58 +50,12 @@ async function post(label, snapshot) {
   return { label, status: response.status, ms, body, requestId: body.request_id ?? body.error?.request_id ?? null };
 }
 
-function hasUsd(blob, value) {
-  const n = Math.round(Number(value));
-  const compact = blob.replace(/[$,]/g, '');
-  if (compact.includes(String(n))) return true;
-  const millions = n / 1e6;
-  return [`${millions.toFixed(2)}`, `${millions.toFixed(1)}`].some((item) => blob.includes(item));
-}
-
-function flaggedClaim(blob) {
-  for (const phrase of [
-    'planning credit',
-    'lives saved',
-    'losses avoided',
-    'the site is safe',
-    'collapse expected',
-    'failure year',
-    'construction is feasible',
-    'ready for construction',
-  ]) {
-    const re = new RegExp(`.{0,48}${phrase}.{0,48}`, 'ig');
-    for (const match of blob.matchAll(re)) {
-      if (!/\b(not|cannot|never|no|without|nor)\b|do not|does not/i.test(match[0])) {
-        return match[0].trim();
-      }
-    }
-  }
-  return null;
-}
-
-function assertUsd(label, synthesis, snapshot) {
-  const blob = JSON.stringify(synthesis);
-  if (snapshot.cost?.complete) {
-    for (const value of [snapshot.cost.low, snapshot.cost.base, snapshot.cost.high]) {
-      if (!Number.isFinite(value)) continue;
-      if (!hasUsd(blob, value)) {
-        throw new Error(`${label}: missing exact USD figure ${value}`);
-      }
-    }
-  }
-  const flagged = flaggedClaim(blob);
-  if (flagged) throw new Error(`${label}: banned claim in synthesis: ${flagged}`);
-  if (synthesis.headline && snapshot.readiness?.status && synthesis.headline === snapshot.readiness.status) {
-    throw new Error(`${label}: model echoed the raw status token`);
-  }
-}
-
 function assertSchema(label, synthesis, snapshot) {
   const parsed = SynthesisSchema.safeParse(synthesis);
   if (!parsed.success) {
     throw new Error(`${label}: schema mismatch ${parsed.error.issues.slice(0, 4).map((item) => item.message).join('; ')}`);
   }
-  assertUsd(label, parsed.data, snapshot);
+  assertSynthesisClaims(label, parsed.data, snapshot);
 }
 
 const buildings = await load('buildings.geojson');

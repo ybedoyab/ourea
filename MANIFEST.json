@@ -129,7 +129,7 @@
     "fx_date": "2026-08-28",
     "cop_per_usd": 3144.28
   },
-  "file_count_excluding_manifest": 319,
+  "file_count_excluding_manifest": 321,
   "files": [
     {
       "path": ".env.example",
@@ -1652,6 +1652,11 @@
       "sha256": "d76f685f821ae98e47d14716a96957d0c23a3913b6e08af708e49e3da5048b51"
     },
     {
+      "path": "services/decision-readiness/lib/liveSmokeClaims.js",
+      "bytes": 2094,
+      "sha256": "3136ad1ec49ee2772c0a586ce59edec69976eac9342fb60ae6547fb3d25d197f"
+    },
+    {
       "path": "services/decision-readiness/lib/loadEnv.js",
       "bytes": 1026,
       "sha256": "6d25e16919f6662125a46bfd5e8505b7e9c8782e0111481f129101a0a9fc92b0"
@@ -1678,8 +1683,8 @@
     },
     {
       "path": "services/decision-readiness/scripts/liveSmoke.mjs",
-      "bytes": 7727,
-      "sha256": "6acf14cfa807721124340da99f16d48b7ba05a56a17870d6c8892bae531de24b"
+      "bytes": 6311,
+      "sha256": "650dd2c7c699c0b3f208280f94f42c3db65195653828e65d5df2733162df546e"
     },
     {
       "path": "services/decision-readiness/scripts/localServer.mjs",
@@ -1695,6 +1700,11 @@
       "path": "services/decision-readiness/tests/handler.test.js",
       "bytes": 5365,
       "sha256": "d7618b4952b74cd1ac6691c6f859e44676efe7aa2d008352364c1a0737fcb518"
+    },
+    {
+      "path": "services/decision-readiness/tests/liveSmokeClaims.test.js",
+      "bytes": 1566,
+      "sha256": "e8174ec92a036caa4239df7a4d0674652e06c33a3fd818efd73a9da40194fd8f"
     },
     {
       "path": "services/decision-readiness/tests/loadEnv.test.js",
