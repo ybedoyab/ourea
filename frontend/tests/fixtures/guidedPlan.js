@@ -1,3 +1,6 @@
+import evidenceStatus from '../../public/data/evidence_status.json' with { type: 'json' };
+import planAlignment from '../../public/data/plan_alignment.json' with { type: 'json' };
+
 export const GUIDED_PLAN = Object.freeze([
   { cell_id: 12, type: 'rwh' },
   { cell_id: 18, type: 'drainage' },
@@ -179,6 +182,10 @@ export function guidedPayload(overrides = {}) {
       climatology_period: { label: '1991-2020' },
     },
     scenario: { preset_id: 'typical_wet' },
+    evidence_status: evidenceStatus,
+    plan_alignment: planAlignment,
+    selection_benchmark: { strategies: [{ id: 'ourea_robust', p10: 8.2 }] },
+    portfolio_breakage: { scenarioCombinationsBelowThreshold: [], breaches: [] },
     reproducible_id: 'ourea-test',
     scope: { city: 'Medellín' },
     ...overrides,

@@ -74,19 +74,22 @@ function quantityFor(project, cell) {
       quantity: systems,
       quantityLabel: `${systems} participating system${systems === 1 ? '' : 's'}`,
       quantityBasis: `${buildings} cadastral buildings × ${Math.round((RWH_ASSUMPTIONS.participationShare ?? 0.25) * 100)}% participation prior`,
+      confidence: 'medium',
     };
   }
   if (project.type === 'drainage') {
     return {
       quantity: 1,
-      quantityLabel: '1 hillside corridor package (ROM)',
-      quantityBasis: 'ROM package from comparable 2026 Medellín hydraulic works. 40 / 60 / 80 m remains a named survey scenario, not a USD/m multiplier.',
+      quantityLabel: '1 selected planning-cell package; corridor consolidation not assessed.',
+      quantityBasis: 'Conservative planning scenario: one ROM hillside corridor package per selected cell, not a bill of quantities.',
+      confidence: 'descriptive-scale',
     };
   }
   return {
     quantity: 1,
     quantityLabel: '1 project-scale package',
     quantityBasis: 'Comuna 8 DAGRD-scale bioengineering package; installed area is unknown.',
+    confidence: 'low',
   };
 }
 
@@ -175,14 +178,25 @@ function changeTriggers(orders, costing) {
   return triggers;
 }
 
+const DECISION_REQUESTED = 'Authorize procurement of the scoped field-validation package; after the survey, commission 30% design and return with a bill of quantities before any construction decision.';
+
 function decisionText(orders, costing) {
   const cellPhrase = joinCells(orders.map((item) => item.cell_id));
-  const ask = 'Immediate decision-preparation (visit, survey, co-design, 30% design and BOQ) is to be priced after survey.';
+  const prep = 'Site visit, topographic and hydraulic survey and community co-design are procured before fieldwork. 30% design and a procurement-ready BOQ are priced after the field survey defines the scope.';
   if (!costing?.complete || !costing.display?.total) {
-    return `Decision requested: Fund site validation and 30% design for ${cellPhrase}, then return with a bill of quantities before construction approval. ${ask} A complete future implementation envelope cannot be shown until every selected intervention has an estimable scenario. Community review is a mandatory decision gate. Ourea identifies where to investigate and which portfolio remains robust; it does not predict which house will fail.`;
+    return `Decision requested: ${DECISION_REQUESTED} Apply this to ${cellPhrase}. ${prep} A complete future implementation envelope cannot be shown until every selected intervention has an estimable scenario. Community review is a mandatory decision gate. Ourea identifies where to investigate and which portfolio remains robust; it does not predict which house will fail.`;
   }
   const { low, base, high } = costing.display.total;
-  return `Decision requested: Fund site validation and 30% design for ${cellPhrase}, then return with a bill of quantities before construction approval. ${ask} Current evidence places the future implementation envelope at a preliminary ${formatUsdMillionRange(low, high)}, with a ${formatUsdMillions(base)} base scenario. Community review is a mandatory decision gate. Ourea identifies where to investigate and which portfolio remains robust; it does not predict which house will fail.`;
+  return `Decision requested: ${DECISION_REQUESTED} Apply this to ${cellPhrase}. ${prep} Current evidence places the future implementation envelope at a preliminary ${formatUsdMillionRange(low, high)}, with a ${formatUsdMillions(base)} base scenario. Community review is a mandatory decision gate. Ourea identifies where to investigate and which portfolio remains robust; it does not predict which house will fail.`;
+}
+
+function fromPackage(extras, payload) {
+  return {
+    evidence: extras.evidence ?? payload?.evidence_status ?? payload?.evidence,
+    benchmark: extras.benchmark ?? payload?.selection_benchmark ?? payload?.benchmark,
+    breakage: extras.breakage ?? payload?.portfolio_breakage ?? payload?.breakage,
+    planAlignment: extras.planAlignment ?? payload?.plan_alignment,
+  };
 }
 
 function citationList(costing) {
@@ -248,24 +262,34 @@ export function buildDecisionBrief(payload, extras = {}) {
     cells,
     costContext: extras.costContext,
   });
+  const packaged = fromPackage(extras, payload);
+  const drainageLine = (costing.lines ?? []).find((line) => line.type === 'drainage');
+  if (drainageLine) {
+    for (const order of orders) {
+      if (order.type !== 'drainage') continue;
+      order.quantityLabel = drainageLine.quantityLabel;
+      order.quantityBasis = drainageLine.quantityNote ?? order.quantityBasis;
+      order.confidence = drainageLine.confidence ?? drainageLine.evidenceTier ?? order.confidence;
+    }
+  }
   const monteCarlo = extras.monteCarlo ?? (uncertainty
     ? {
         p10: uncertainty.benefit_proxy_p10 ?? uncertainty.p10,
-        median: uncertainty.median,
+        median: uncertainty.median ?? uncertainty.benefit_proxy_median,
         p90: uncertainty.benefit_proxy_p90 ?? uncertainty.p90,
       }
     : null);
   const readiness = extras.readiness ?? assessDecisionReadiness({
     portfolio: projects,
     costing,
-    evidence: payload?.evidence ?? extras.evidence,
+    evidence: packaged.evidence,
     communityAssessment: payload?.community_safeguards,
-    planAlignment: extras.planAlignment ?? payload?.plan_alignment,
+    planAlignment: packaged.planAlignment,
     climateContext: payload?.climate_context,
     metrics: extras.metrics ?? monteCarlo,
     monteCarlo,
-    benchmark: extras.benchmark ?? payload?.benchmark ?? null,
-    breakage: extras.breakage ?? payload?.breakage ?? null,
+    benchmark: packaged.benchmark,
+    breakage: packaged.breakage,
     profileId,
     scenario: payload?.scenario,
   });
@@ -295,7 +319,7 @@ export function buildDecisionBrief(payload, extras = {}) {
     city: payload?.scope?.city ?? 'Medellín',
     generatedAt: payload?.generated_at ?? new Date().toISOString(),
     recommendation,
-    decisionRequested: `Fund site validation and 30% design for ${joinCells(orders.map((item) => item.cell_id))}, then return with a bill of quantities before construction approval.`,
+    decisionRequested: DECISION_REQUESTED,
     rainfall,
     rainfallHeadline: rainfallHeadline(payload?.climate_context),
     priority: priority.name,
@@ -325,8 +349,10 @@ export function buildDecisionBrief(payload, extras = {}) {
     envelope,
     immediateAsk: costing.immediateAsk ?? null,
     citations,
+    readiness,
     feasibility,
     risks: riskRegister(feasibility),
+    drainageConsolidationWarning: costing.drainageConsolidationWarning ?? null,
     mustBeTrue: [
       'Community review is recorded for the selected cells.',
       'A topographic and hydraulic survey exists where drainage is proposed.',
