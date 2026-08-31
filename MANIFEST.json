@@ -129,7 +129,7 @@
     "fx_date": "2026-08-28",
     "cop_per_usd": 3144.28
   },
-  "file_count_excluding_manifest": 325,
+  "file_count_excluding_manifest": 326,
   "files": [
     {
       "path": ".env.example",
@@ -368,8 +368,8 @@
     },
     {
       "path": "docs/methodology/cost-evidence.md",
-      "bytes": 10092,
-      "sha256": "698ad4db0e7581d533d8a47fe945a714d679e481e9c4e89d1d6e7e6988130898"
+      "bytes": 10647,
+      "sha256": "1e955cdde3ca165ff1b3ef027cc52b08f45354656c55e3dacd52bfebda37bb0e"
     },
     {
       "path": "docs/methodology/data-provenance.md",
@@ -463,8 +463,8 @@
     },
     {
       "path": "frontend/e2e/ai-decision-review.spec.js",
-      "bytes": 6631,
-      "sha256": "cfa34a29c25c2319f14894fc9b123df32588eece1d82d8c9a41605a46e3123a6"
+      "bytes": 6793,
+      "sha256": "023f55f68d91c79217f93d8d9ab5d780371230305469cda2c852cea451ab1441"
     },
     {
       "path": "frontend/e2e/errorAllowlist.js",
@@ -883,8 +883,8 @@
     },
     {
       "path": "frontend/src/components/AiDecisionReviewCard.jsx",
-      "bytes": 5603,
-      "sha256": "2243bee9fbf839a3e1fc68b5f7c109e8670a68b7ed74887eb838e9e5676c2e27"
+      "bytes": 7566,
+      "sha256": "d2b06e1eb91d84b2f678e2406beb7a15d1b1b41435b8e64518bb32c0ae6a62d7"
     },
     {
       "path": "frontend/src/components/AlternativePortfolios.jsx",
@@ -1043,8 +1043,8 @@
     },
     {
       "path": "frontend/src/config/aiReview.js",
-      "bytes": 2301,
-      "sha256": "3837efe75d33d07497c91f35a30d18fddfe66f85fc54a6f3b5d0cd1abe494648"
+      "bytes": 2501,
+      "sha256": "baa1bba9d651ea06c03503bfe0df69e697a52e7f7b55958465077d1ad8af244f"
     },
     {
       "path": "frontend/src/config/assetUrl.js",
@@ -1143,18 +1143,18 @@
     },
     {
       "path": "frontend/src/domain/costEstimate.js",
-      "bytes": 11378,
-      "sha256": "c48620eb9cc014522cfa07d41c342c65ba42391f1e6c506f3a6410c2a73bc037"
+      "bytes": 12477,
+      "sha256": "f4fd1f8b95f1c963a23b26f747fa885fa0e42aec932033d007185f837f7d6403"
     },
     {
       "path": "frontend/src/domain/decisionBrief.js",
-      "bytes": 15785,
-      "sha256": "9c75668b32aadff5c358db0efd643368ed2f813f02ae3d3c44e661f545815a74"
+      "bytes": 16788,
+      "sha256": "22f4341fa431f46d3ad9e557143591b56a739468da4ff2bd7c3df76345848e7b"
     },
     {
       "path": "frontend/src/domain/decisionBriefPdf.js",
-      "bytes": 26506,
-      "sha256": "f4167d5aa2891ebccd1364bf0b01c4c01dc67981f540557b6d17d673d6c14a34"
+      "bytes": 29601,
+      "sha256": "9de4cbea634c2989b8891212eaa50fbb8b986cae9e1389b100baac1842bcc87c"
     },
     {
       "path": "frontend/src/domain/decisionPackage.js",
@@ -1368,8 +1368,8 @@
     },
     {
       "path": "frontend/src/styles/flow.css",
-      "bytes": 18074,
-      "sha256": "cfd0483a4d10e75b40d09c44c683cb4301698a2601b6327f24edc3cec0da4b5f"
+      "bytes": 18258,
+      "sha256": "b24d954984951274173cdd22d3d325e26af84acde733464474ffba07fc4bd881"
     },
     {
       "path": "frontend/src/styles/index.css",
@@ -1453,8 +1453,8 @@
     },
     {
       "path": "frontend/tests/costEstimate.test.js",
-      "bytes": 4909,
-      "sha256": "8b642e29688e3dad4b86085f0e49c979c93656aedcb4c92258cd8b4c918f3165"
+      "bytes": 6751,
+      "sha256": "7230d8adb3a835ad93be39040d414e30204b43c8dd4083defdd854677a122c63"
     },
     {
       "path": "frontend/tests/dataService.test.js",
@@ -1468,13 +1468,18 @@
     },
     {
       "path": "frontend/tests/decisionBrief.test.js",
-      "bytes": 10835,
-      "sha256": "73d482bf548b98fbe9dcfc3aa5ef0811813fc023875be4fca34eb11fc035fbb1"
+      "bytes": 12058,
+      "sha256": "4b4aed388b48abd504af2162a8039a9f1660fbcfb68096bec852c5d9df2ebbc0"
     },
     {
       "path": "frontend/tests/decisionPackage.test.js",
       "bytes": 2788,
       "sha256": "d3d4154f6bea7814bc4470affbaa50a770864e3d218a7eab24dbef8af9aeaaa2"
+    },
+    {
+      "path": "frontend/tests/decisionPackageBrief.test.js",
+      "bytes": 4639,
+      "sha256": "adcfe42083a5b112402fc917829e402ea5e26bce7d25a961b4119763532e2723"
     },
     {
       "path": "frontend/tests/decisionReadiness.test.js",
@@ -1493,8 +1498,8 @@
     },
     {
       "path": "frontend/tests/fixtures/guidedPlan.js",
-      "bytes": 4648,
-      "sha256": "2cefeb11ea8c07211e15f1bce510714d517d173b350f0322c56619509d2eb935"
+      "bytes": 5060,
+      "sha256": "49ba84094a858995f25ddd8eda6046c20e0c2c5d9582b95b7eaf3769d367b352"
     },
     {
       "path": "frontend/tests/flow.test.js",
@@ -1594,7 +1599,7 @@
     {
       "path": "scripts/inspect_brief_pdfs.py",
       "bytes": 6367,
-      "sha256": "99239b14a52e87b60f67a86c369ae6110bdd16701ba4b029405c376d070f06f8"
+      "sha256": "283be24331019ea2180938bc75f90b56624fc0f4dd77589fa8fb8c2126346cbb"
     },
     {
       "path": "scripts/make_manifest.py",
