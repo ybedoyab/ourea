@@ -113,6 +113,43 @@ export function AiDecisionReviewCard({ readiness, review }) {
                 ))}
               </ol>
             </section>
+            {(review.synthesis.cost_interpretation || review.synthesis.robustness_interpretation) && (
+              <section className="ai-review-cost" data-testid="ai-review-cost-robustness">
+                <b>{AI_REVIEW_COPY.cost}</b>
+                <dl>
+                  {review.synthesis.cost_interpretation?.main_driver && (
+                    <>
+                      <dt>{AI_REVIEW_COPY.costDriver}</dt>
+                      <dd data-testid="ai-review-cost-driver">{review.synthesis.cost_interpretation.main_driver}</dd>
+                    </>
+                  )}
+                  {review.synthesis.cost_interpretation?.uncertainty && (
+                    <>
+                      <dt>{AI_REVIEW_COPY.costUncertainty}</dt>
+                      <dd data-testid="ai-review-cost-uncertainty">{review.synthesis.cost_interpretation.uncertainty}</dd>
+                    </>
+                  )}
+                  {review.synthesis.cost_interpretation?.survey_requirement && (
+                    <>
+                      <dt>{AI_REVIEW_COPY.surveyRequirement}</dt>
+                      <dd data-testid="ai-review-survey">{review.synthesis.cost_interpretation.survey_requirement}</dd>
+                    </>
+                  )}
+                  {review.synthesis.robustness_interpretation?.strength && (
+                    <>
+                      <dt>{AI_REVIEW_COPY.robustStrength}</dt>
+                      <dd data-testid="ai-review-robust-strength">{review.synthesis.robustness_interpretation.strength}</dd>
+                    </>
+                  )}
+                  {review.synthesis.robustness_interpretation?.caveat && (
+                    <>
+                      <dt>{AI_REVIEW_COPY.robustCaveat}</dt>
+                      <dd data-testid="ai-review-robust-caveat">{review.synthesis.robustness_interpretation.caveat}</dd>
+                    </>
+                  )}
+                </dl>
+              </section>
+            )}
             <List title={AI_REVIEW_COPY.cannot} items={review.synthesis.cannot_conclude} testId="ai-review-cannot" />
             <p className="hint">
               <time dateTime={review.generatedAt}>{review.generatedAt}</time>

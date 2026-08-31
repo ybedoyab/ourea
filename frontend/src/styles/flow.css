@@ -1018,10 +1018,22 @@
   color: #d9a39a;
 }
 
-.ai-review-skeleton {
-  display: grid;
-  gap: 8px;
-  margin: 10px 0;
+.ai-review-cost dl {
+  margin: 0;
+}
+
+.ai-review-cost dt {
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ai-review-cost dd {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .ai-review-skeleton span {

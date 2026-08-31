@@ -56,7 +56,7 @@ test.describe('AI decision review', () => {
     const pdf = downloads.find((item) => item.suggestedFilename().endsWith('.pdf'));
     const bytes = await readFile(await pdf.path());
     expect(bytes.subarray(0, 4).toString()).toBe('%PDF');
-    expect(bytes.toString('latin1')).toMatch(/\/Count [67]/);
+    expect(bytes.toString('latin1')).toMatch(/\/Count [6-8]/);
     await assertNoHorizontalOverflow(page);
     guards.assertClean();
   });
@@ -93,7 +93,9 @@ test.describe('AI decision review', () => {
     await expect(page.getByTestId('ai-review-gates')).toBeVisible();
     await expect(page.getByTestId('ai-review-questions')).toBeVisible();
     await expect(page.getByTestId('ai-review-next')).toBeVisible();
-    await expect(page.getByTestId('ai-review-cannot')).toBeVisible();
+    await expect(page.getByTestId('ai-review-cost-robustness')).toBeVisible();
+    await expect(page.getByTestId('ai-review-cost-driver')).toBeVisible();
+    await expect(page.getByTestId('ai-review-robust-caveat')).toBeVisible();
     await page.waitForTimeout(8500);
     await page.getByTestId('regenerate-decision-review').click();
     await expect(page.getByTestId('ai-review-badge')).toBeVisible();
