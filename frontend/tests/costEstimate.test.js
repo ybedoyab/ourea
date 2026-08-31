@@ -33,9 +33,12 @@ test('guided RWH plus drainage uses ROM packages, not USD/m', () => {
   const drainage = estimate.lines.find((line) => line.type === 'drainage');
   assert.equal(drainage.assumedQuantity, 1);
   assert.equal(drainage.method, 'rom_package');
-  assert.match(drainage.quantityLabel, /package/);
+  assert.match(drainage.quantityLabel, /selected planning-cell package/);
   assert.match(drainage.formula, /ROM package/);
-  assert.equal(estimate.immediateAsk.status, 'to_be_priced_after_survey');
+  assert.equal(estimate.immediateAsk.status, 'unpriced_preparation');
+  assert.match(estimate.immediateAsk.fieldwork.display, /before fieldwork/);
+  assert.match(estimate.immediateAsk.afterSurvey.display, /after the field survey defines the scope/);
+  assert.doesNotMatch(estimate.immediateAsk.fieldwork.display, /after survey/);
   assert.equal(estimate.display.design, undefined);
   const pkg = costContext.interventions.drainage.usd_per_package;
   assert.equal(drainage.low, pkg.low);
@@ -48,7 +51,7 @@ test('guided RWH plus drainage uses ROM packages, not USD/m', () => {
   assert.ok(estimate.sourceIds.includes('rwh_santa_elena_1000l_2023_budget_ceiling'));
   assert.ok(estimate.sourceIds.some((id) => id.startsWith('drainage_scale_')));
   assert.ok(estimate.sensitivity.some((item) => item.id === 'drainage'));
-  assert.ok(estimate.sensitivity.some((item) => item.id === 'trm'));
+  assert.equal(estimate.sensitivity.some((item) => item.id === 'trm'), false);
   assert.equal(formatUsd(550), 'US$550');
   assert.match(formatUsdMillionRange(estimate.display.total.low, estimate.display.total.high), /US\$/);
 });
@@ -115,6 +118,40 @@ test('missing cost context refuses a total', () => {
   });
   assert.equal(estimate.complete, false);
   assert.equal(estimate.total, null);
+});
+
+test('one drainage cell is one ROM package without a consolidation warning', () => {
+  const estimate = estimatePortfolioCost({
+    portfolio: [{ cell_id: 18, type: 'drainage' }],
+    cells: GUIDED_CELLS,
+    costContext,
+  });
+  const pkg = costContext.interventions.drainage.usd_per_package;
+  assert.equal(estimate.lines[0].assumedQuantity, 1);
+  assert.equal(estimate.total.base, pkg.base);
+  assert.equal(estimate.drainageConsolidationWarning, null);
+  assert.match(estimate.lines[0].quantityLabel, /1 selected planning-cell package/);
+});
+
+test('several drainage cells keep separate ROM totals and warn about consolidation', () => {
+  const adjacent = estimatePortfolioCost({
+    portfolio: [{ cell_id: 1, type: 'drainage' }, { cell_id: 2, type: 'drainage' }],
+    cells: GUIDED_CELLS,
+    costContext,
+  });
+  const several = estimatePortfolioCost({
+    portfolio: [{ cell_id: 18, type: 'drainage' }, { cell_id: 2, type: 'drainage' }],
+    cells: GUIDED_CELLS,
+    costContext,
+  });
+  const pkg = costContext.interventions.drainage.usd_per_package;
+  assert.equal(adjacent.lines[0].assumedQuantity, 2);
+  assert.equal(adjacent.total.base, pkg.base * 2);
+  assert.equal(several.total.base, pkg.base * 2);
+  assert.equal(adjacent.total.base, several.total.base);
+  assert.match(adjacent.drainageConsolidationWarning, /connected corridor/);
+  assert.match(several.drainageConsolidationWarning, /counts them separately/);
+  assert.match(adjacent.lines[0].quantityLabel, /2 selected planning-cell packages; corridor consolidation not assessed/);
 });
 
 test('rounding is stable and presentation-only', () => {

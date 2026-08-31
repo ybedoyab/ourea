@@ -51,9 +51,15 @@ test('decision brief stays in plain language and keeps a specialist annex', () =
   assert.doesNotMatch(brief.recommendation, /planning credit/i);
   assert.doesNotMatch(brief.rainfall, /CHIRPS/i);
   assert.match(brief.pathway[0].title, /Ourea deployment/i);
-  assert.match(brief.decision, /to be priced after survey/i);
+  assert.match(brief.decision, /before fieldwork/i);
+  assert.match(brief.decision, /after the field survey defines the scope/i);
+  assert.doesNotMatch(brief.decision, /visit, survey, co-design, 30% design and BOQ\) is to be priced after survey/i);
   assert.match(brief.decision, /US\$/);
-  assert.equal(brief.immediateAsk.status, 'to_be_priced_after_survey');
+  assert.equal(brief.immediateAsk.status, 'unpriced_preparation');
+  assert.equal(brief.immediateAsk.fieldwork.status, 'to_be_procured_before_fieldwork');
+  assert.equal(brief.readiness.status, 'ready_for_field_validation');
+  assert.equal(brief.feasibility.find((row) => row.dimension === 'Environmental').status, 'Screening only');
+  assert.equal(brief.feasibility.find((row) => row.dimension === 'Institutional').status, 'Documentary alignment');
   assert.match(brief.technicalNote, /CHIRPS/);
   assert.match(brief.simulatorUrl, /ourea/);
   assert.equal(brief.costing.display.total.base, brief.costing.implementationEnvelope.base);
@@ -91,16 +97,21 @@ test('guided decision brief PDF is a 7-page document with metadata and USD', asy
   assert.match(body, /Implementation pathway/);
   assert.match(body, /Why early action matters/);
   assert.match(body, /Decision requested/);
-  assert.match(body, /Immediate decision-preparation ask/);
+  assert.match(body, /Immediate decision-preparation/);
   assert.match(body, /Future implementation envelope/);
-  assert.match(body, /To be priced after survey/);
+  assert.match(body, /before fieldwork/);
+  assert.match(body, /after the field survey defines the scope/);
+  assert.doesNotMatch(body, /To be priced after survey[.]/);
+  assert.match(body, /Planning quantity/);
+  assert.match(body, /Confidence/);
+  assert.match(body, /selected planning-cell package/);
   assert.match(body, /US\$/);
   assert.match(body, /pre-feasibility/);
   assert.match(body, /2026-08-28/);
   assert.match(body, /3144\.28/);
-  assert.match(body, /Ourea map/);
-  assert.match(body, /Google Maps/);
-  assert.match(body, /Google Earth/);
+  assert.match(body, /Ourea/);
+  assert.match(body, /Maps/);
+  assert.match(body, /Earth/);
   assert.match(body, /\/S \/URI/);
   assert.match(body, /ybedoyab\.github\.io\/ourea/);
   assert.match(body, /maps\/search/);
@@ -123,6 +134,8 @@ test('guided decision brief PDF is a 7-page document with metadata and USD', asy
     assert.ok(nums.every((value) => value >= -0.01 && value <= 842));
     assert.ok(nums[0] >= 0 && nums[2] <= 595.28 + 0.05);
   }
+  const sizes = [...body.matchAll(/(\d+(?:\.\d+)?) Tf/g)].map((item) => Number(item[1]));
+  assert.ok(Math.min(...sizes) >= 9);
 });
 
 test('AI-assisted PDF section stays within eight pages and does not change USD totals', async () => {
@@ -141,6 +154,10 @@ test('AI-assisted PDF section stays within eight pages and does not change USD t
   assert.ok(pages >= 6 && pages <= 8);
   assert.match(body, /AI-assisted decision synthesis/);
   assert.match(body, /Ready for field validation/);
+  assert.match(body, /Cost and robustness interpretation/);
+  assert.match(body, /Main cost driver/);
+  assert.match(body, /Robustness caveat/);
+  assert.doesNotMatch(body, /Environmental[\s\S]{0,40}Blocked/);
   assert.equal(brief.costing.display.total.base, brief.costing.implementationEnvelope.base);
   assert.doesNotMatch(body, /planning credit/i);
 });
@@ -248,4 +265,6 @@ test('six-intervention and many-reference briefs stay within eight pages', async
   const sixBody = await pdfOf(six);
   assert.ok(pageCount(sixBody) <= 8);
   assert.match(sixBody, /Restoration/);
+  assert.match(sixBody, /connected corridor/);
+  assert.doesNotMatch(sixBody, /TRM \(/);
 });
