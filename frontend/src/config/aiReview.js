@@ -26,6 +26,7 @@ export const AI_REVIEW_COPY = Object.freeze({
   surveyRequirement: 'Survey requirement',
   robustStrength: 'Robustness strength',
   robustCaveat: 'Robustness caveat',
+  cannot: 'What Ourea cannot conclude',
   timeout: 'The decision review timed out. Deterministic analysis remains available.',
   busy: 'The review service is busy. Try again in a moment.',
   unavailable: 'The review service is unavailable. Deterministic analysis remains available.',

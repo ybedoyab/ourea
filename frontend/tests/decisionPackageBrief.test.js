@@ -110,6 +110,7 @@ test('buildDecisionPackage payload feeds buildDecisionBrief without unpublished 
   assert.match(body, /Screening only/);
   assert.match(body, /Documentary alignment/);
   assert.match(body, /Cost and robustness interpretation/);
+  assert.match(body, /What Ourea cannot conclude/);
   assert.doesNotMatch(body, /Environmental[\s\S]{0,80}Blocked/);
   assert.doesNotMatch(body, /planning credit/i);
   const sizes = [...body.matchAll(/(\d+(?:\.\d+)?) Tf/g)].map((item) => Number(item[1]));

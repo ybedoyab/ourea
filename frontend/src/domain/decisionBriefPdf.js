@@ -664,7 +664,18 @@ function pageRobustness(pdf, brief) {
         y += 2;
       }
     }
-    y += 4;
+    const cannot = (brief.aiReview.synthesis.cannot_conclude ?? []).slice(0, 3);
+    if (cannot.length) {
+      y = continuePage(pdf, brief, y, 18 + cannot.length * 16);
+      y += 6;
+      pdf.text(AI_REVIEW_COPY.cannot, 52, y, { size: 10, bold: true, color: GOLD });
+      y += 14;
+      cannot.forEach((item) => {
+        y += pdf.text(`- ${item}`, 52, y, { size: 9, color: INK, maxWidth: 490 });
+        y += 2;
+      });
+    }
+    y = continuePage(pdf, brief, y, 16);
     pdf.text(
       `${AI_REVIEW_COPY.assisted}  |  ${brief.aiReview.generatedAt ?? ''}`,
       52,
