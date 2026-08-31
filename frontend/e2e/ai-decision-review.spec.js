@@ -28,6 +28,25 @@ async function openReview(page) {
   await generateToReview(page);
 }
 
+function mockEnvelope() {
+  return {
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({
+      synthesis: VALID_SYNTHESIS,
+      generated_at: '2026-08-28T12:00:00Z',
+    }),
+  };
+}
+
+function pendingGate() {
+  let release = () => {};
+  const wait = new Promise((resolve) => {
+    release = resolve;
+  });
+  return { wait, release };
+}
+
 async function mockReview(page, fulfill) {
   await page.addInitScript((path) => {
     window.__OUREA_AI_API_URL__ = `${window.location.origin}${path}`;
@@ -63,6 +82,8 @@ test.describe('AI decision review', () => {
 
   test('generate, loading, success, regenerate and safeguards summary', async ({ page }) => {
     const guards = attachErrorGuards(page);
+    const urls = collectAiRequests(page);
+    const gate = pendingGate();
     let hits = 0;
     await mockReview(page, async (route) => {
       if (route.request().method() === 'OPTIONS') {
@@ -70,23 +91,18 @@ test.describe('AI decision review', () => {
         return;
       }
       hits += 1;
-      await new Promise((resolve) => setTimeout(resolve, 400));
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          synthesis: VALID_SYNTHESIS,
-          generated_at: '2026-08-28T12:00:00Z',
-        }),
-      });
+      await gate.wait;
+      await route.fulfill(mockEnvelope());
     });
     await openReview(page);
     await expect(page.getByTestId('generate-decision-review')).toBeVisible();
     await expect(page.getByTestId('ai-review-result')).toHaveCount(0);
-    await Promise.all([
-      expect(page.getByTestId('ai-review-loading')).toBeVisible(),
-      page.getByTestId('generate-decision-review').click(),
-    ]);
+    await page.getByTestId('generate-decision-review').click();
+    await expect(page.getByTestId('ai-review-loading')).toBeVisible();
+    await expect(page.getByTestId('cancel-decision-review')).toBeVisible();
+    expect(hits).toBe(1);
+    expect(urls.filter((item) => item.url.includes('openai.com'))).toEqual([]);
+    gate.release();
     await expect(page.getByTestId('ai-review-badge')).toBeVisible();
     await expect(page.getByTestId('ai-review-headline')).toContainText(/Walk cells/i);
     await expect(page.getByTestId('ai-review-why')).toBeVisible();
@@ -96,10 +112,14 @@ test.describe('AI decision review', () => {
     await expect(page.getByTestId('ai-review-cost-robustness')).toBeVisible();
     await expect(page.getByTestId('ai-review-cost-driver')).toBeVisible();
     await expect(page.getByTestId('ai-review-robust-caveat')).toBeVisible();
-    await page.waitForTimeout(8500);
-    await page.getByTestId('regenerate-decision-review').click();
+    await expect(page.getByTestId('ai-review-cannot')).toBeVisible();
+    await expect(page.getByTestId('ai-review-cannot')).toContainText('What Ourea cannot conclude');
+    await expect(async () => {
+      await page.getByTestId('regenerate-decision-review').click();
+      expect(hits).toBe(2);
+    }).toPass({ timeout: 20000 });
     await expect(page.getByTestId('ai-review-badge')).toBeVisible();
-    expect(hits).toBeGreaterThanOrEqual(2);
+    expect(urls.filter((item) => item.url.includes('openai.com'))).toEqual([]);
     await page.getByTestId('review-safeguards').click();
     await expect(page.getByTestId('ai-review-summary')).toBeVisible();
     await expect(page.getByTestId('ai-review-summary')).toContainText(/Ready for field validation|Proceed with conditions|Needs evidence review/);
