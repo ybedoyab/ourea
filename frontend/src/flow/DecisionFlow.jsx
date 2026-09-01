@@ -200,6 +200,19 @@ export function DecisionFlow({
 
   const review = useDecisionReview({ snapshot });
 
+  async function exportWithReview() {
+    let aiReview = null;
+    if (review.status === 'success' && review.synthesis) {
+      aiReview = { readiness, synthesis: review.synthesis, generatedAt: review.generatedAt };
+    } else if (review.apiUrl) {
+      const result = await review.generate();
+      if (result?.synthesis) {
+        aiReview = { readiness, synthesis: result.synthesis, generatedAt: result.generatedAt };
+      }
+    }
+    await onExport({ aiReview });
+  }
+
   function analyzeLlanaditas() {
     if (llanaditas) onSelectBarrio(llanaditas.properties);
     dispatch({ type: 'SELECT_AREA', areaId: 'llanaditas' });
@@ -281,7 +294,8 @@ export function DecisionFlow({
           selectedCell={selectedCell}
           selectedCellId={selectedCellId}
           onSelectCell={onSelectCell}
-          onExport={onExport}
+          onExport={exportWithReview}
+          review={review}
           onInvalidate={() => dispatch({ type: 'SET_CONDITIONS' })}
         />
       ) : (
@@ -379,11 +393,7 @@ export function DecisionFlow({
           onEvidence={() => dispatch({ type: 'OPEN_DRAWER', drawer: 'evidence' })}
           onCommunity={() => dispatch({ type: 'OPEN_MODAL', modal: 'community' })}
           onAlignment={() => dispatch({ type: 'OPEN_DRAWER', drawer: 'alignment' })}
-          onExport={() => onExport({
-            aiReview: review.status === 'success'
-              ? { readiness, synthesis: review.synthesis, generatedAt: review.generatedAt }
-              : null,
-          })}
+          onExport={exportWithReview}
           onBack={() => dispatch({ type: 'GO_BACK' })}
           onSelectCell={onSelectCell}
         />

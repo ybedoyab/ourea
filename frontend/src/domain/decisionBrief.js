@@ -1,5 +1,5 @@
 import { rainfallChip, rainfallHeadline } from '../config/climateCopy.js';
-import { PRIORITY_CARDS, INTERVENTION_COPY } from '../config/uiCopy.js';
+import { CITY_LENSES, PRIORITY_CARDS, INTERVENTION_COPY } from '../config/uiCopy.js';
 import { INTERVENTIONS, RWH_ASSUMPTIONS, SANDBOX_BBOX } from '../config/modelConfig.js';
 import { BRAND } from '../config/brand.js';
 import { estimatePortfolioCost, formatUsd, formatUsdMillionRange, formatUsdMillions, rwhParticipatingSystems } from './costEstimate.js';
@@ -128,26 +128,32 @@ function sixMonthPathway(orders) {
   const hasRwh = orders.some((item) => item.type === 'rwh');
   return [
     {
+      when: 'Now',
       title: 'Ourea deployment and decision preparation',
       body: 'Keep the sandbox, evidence pack and this brief as the shared decision object for municipal staff, designers and community leaders.',
     },
     {
+      when: 'Weeks 1–4',
       title: 'Site validation',
       body: `Walk ${cells} with residents and municipal counterparts. Confirm water paths, access and which buildings can actually host works.`,
     },
     {
+      when: 'Weeks 4–8',
       title: 'Community co-design',
       body: 'Record consent, livelihood, maintenance and access concerns before any trench or tank is specified. Community review is a gate, not a later annex.',
     },
     {
+      when: 'Weeks 8–12',
       title: 'Topographic and hydraulic survey',
       body: 'Survey corridor length and drainage catchments. Named 40 / 60 / 80 m scenarios become a bill of quantities only after this survey. They are not used as a unit-rate multiplier.',
     },
     {
+      when: 'Month 4',
       title: '30% design',
       body: 'Produce a 30% package that a reviewer can price. Design allowance in this brief is not that package.',
     },
     {
+      when: 'Month 5–6',
       title: 'Procurement-ready bill of quantities',
       body: 'Return with quantities, specifications and a construction decision. This envelope is not an offer.',
     },
@@ -253,6 +259,8 @@ export function buildDecisionBrief(payload, extras = {}) {
     : null;
   const profileId = payload?.selected_ai_policy ?? 'balanced';
   const priority = PRIORITY_CARDS[profileId] ?? PRIORITY_CARDS.balanced;
+  const lensId = payload?.scope?.city_screen_lens ?? 'balanced';
+  const lens = CITY_LENSES[lensId] ?? CITY_LENSES.balanced;
   const presetId = payload?.scenario?.preset_id;
   const rainfall = rainfallChip(payload?.climate_context, { presetId });
   const communityStatus = payload?.community_safeguards?.validation_status;
@@ -332,6 +340,14 @@ export function buildDecisionBrief(payload, extras = {}) {
       : 'Robustness has not been computed for this portfolio.',
     community: communityPlain(communityStatus),
     communityStatus,
+    contextWhy: 'Llanaditas is the detailed proving ground because it combines hillside exposure, dense cadastral coverage and a documented 2022 event. It is not cherry-picked as rank #1 under every city lens.',
+    context: [
+      { label: 'Proving ground', value: extras.areaLabel ?? BRAND.provingGround },
+      { label: 'City screening lens', value: `${lens.label}. ${lens.question}` },
+      { label: 'Rainfall context', value: rainfall },
+      { label: 'Policy priority', value: `${priority.name}. ${priority.how}` },
+      { label: 'Community review', value: communityStatus === 'community_reviewed' ? 'Recorded' : communityStatus === 'requires_deliberation' ? 'Needs deliberation' : communityStatus === 'incomplete' ? 'Incomplete' : 'Not assessed' },
+    ],
     changeTriggers: changeTriggers(orders, costing),
     earlyAction: EARLY_ACTION,
     mechanismCaption: MECHANISM_COPY.caption,

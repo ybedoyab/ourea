@@ -36,21 +36,21 @@ export function useDecisionReview({ snapshot = null } = {}) {
   const generate = useCallback(async ({ force = false } = {}) => {
     if (!apiUrl) {
       setStatus('unconfigured');
-      return;
+      return null;
     }
-    if (!snapshot || inFlightRef.current) return;
-    const now = Date.now();
-    if (now - lastRequestRef.current < AI_DECISION_CONTRACT.client_cooldown_ms) {
-      setError({ code: 'cooldown', message: AI_REVIEW_COPY.cooldown });
-      return;
-    }
+    if (!snapshot || inFlightRef.current) return null;
     const cached = cacheRef.current.get(fingerprint);
     if (!force && cached) {
       setSynthesis(cached.synthesis);
       setGeneratedAt(cached.generatedAt);
       setError(null);
       setStatus('success');
-      return;
+      return cached;
+    }
+    const now = Date.now();
+    if (now - lastRequestRef.current < AI_DECISION_CONTRACT.client_cooldown_ms) {
+      setError({ code: 'cooldown', message: AI_REVIEW_COPY.cooldown });
+      return cached ?? null;
     }
     const controller = new AbortController();
     abortRef.current = controller;
@@ -65,23 +65,25 @@ export function useDecisionReview({ snapshot = null } = {}) {
         snapshot,
         signal: controller.signal,
       });
-      if (fingerprintRef.current !== fingerprint) return;
+      if (fingerprintRef.current !== fingerprint) return null;
       if (!result.ok) {
         setStatus('error');
         setError(result.error);
-        return;
+        return null;
       }
       cacheRef.current.set(fingerprint, result);
       setSynthesis(result.synthesis);
       setGeneratedAt(result.generatedAt);
       setStatus('success');
+      return result;
     } catch (caught) {
       if (caught?.name === 'AbortError') {
         if (fingerprintRef.current === fingerprint) setStatus('idle');
-        return;
+        return null;
       }
       setStatus('error');
       setError({ code: 'unreachable', message: AI_REVIEW_COPY.unreachable });
+      return null;
     } finally {
       clearTimeout(timer);
       inFlightRef.current = false;

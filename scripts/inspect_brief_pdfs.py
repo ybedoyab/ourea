@@ -59,7 +59,7 @@ def inspect_bytes(name: str, data: bytes) -> int:
     require(title is not None and "Š" not in title.group(0), f"{name} has a corrupt title")
     require(f"Page {pages} of {pages}" in text, f"{name} missing last page label")
     require("Page 9 of" not in text, f"{name} has a trailing page")
-    for banned in ("houses fall", "houses lean", "planning credit", "collapse in year", "collapse expected", "failure year"):
+    for banned in ("houses fall", "houses lean", "planning credit", "collapse in year", "collapse expected", "failure year", "clickable annotations"):
         require(banned.lower() not in text.lower(), f"{name} contains banned copy: {banned}")
     require("US$" in text or r"US\$" in text, f"{name} missing US$")
     require("ybedoyab.github.io/ourea" in text, f"{name} missing public Pages URL")

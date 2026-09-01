@@ -1,3 +1,4 @@
+import { AI_REVIEW_COPY } from '../config/aiReview.js';
 import { RWH_ASSUMPTIONS } from '../config/modelConfig.js';
 import { frontierTakeaway } from '../config/uiCopy.js';
 import { actionFootprint } from '../domain/actionFootprint.js';
@@ -38,6 +39,7 @@ export function DecisionAnalysis({
   cells,
   activePlan,
   rainMm,
+  review,
 }) {
   const takeaway = frontierTakeaway(frontier);
   const footprint = actionFootprint({
@@ -208,9 +210,20 @@ export function DecisionAnalysis({
       />
 
       <div className="export-row">
-        <button type="button" className="primary" data-testid="export-package" onClick={onExport} disabled={!canExport}>
-          Download PDF
+        <button
+          type="button"
+          className="primary"
+          data-testid="export-package"
+          onClick={onExport}
+          disabled={!canExport || review?.status === 'loading'}
+        >
+          {review?.status === 'loading' ? AI_REVIEW_COPY.preparingPdf : 'Download PDF'}
         </button>
+        {review?.status === 'loading' && (
+          <p className="hint pdf-export-loading" role="status" data-testid="pdf-export-loading">
+            {AI_REVIEW_COPY.preparingPdf}
+          </p>
+        )}
         <small>
           A formatted PDF proposal for the meeting: decision, map, implementation steps and crew notes.
         </small>

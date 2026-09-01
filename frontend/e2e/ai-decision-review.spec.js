@@ -80,6 +80,43 @@ test.describe('AI decision review', () => {
     guards.assertClean();
   });
 
+  test('Download PDF prepares AI review automatically with loading', async ({ page }) => {
+    const guards = attachErrorGuards(page);
+    const urls = collectAiRequests(page);
+    const gate = pendingGate();
+    let hits = 0;
+    await mockReview(page, async (route) => {
+      if (route.request().method() === 'OPTIONS') {
+        await route.fulfill({ status: 204 });
+        return;
+      }
+      hits += 1;
+      await gate.wait;
+      await route.fulfill(mockEnvelope());
+    });
+    await openReview(page);
+    await page.getByTestId('review-safeguards').click();
+    await expect(page.getByTestId('export-package')).toBeVisible();
+    const downloads = [];
+    page.on('download', (download) => downloads.push(download));
+    await page.getByTestId('export-package').click();
+    await expect(page.getByTestId('pdf-export-loading')).toBeVisible();
+    expect(hits).toBe(1);
+    expect(urls.filter((item) => item.url.includes('openai.com'))).toEqual([]);
+    gate.release();
+    await expect.poll(() => downloads.length).toBeGreaterThanOrEqual(1);
+    const pdf = downloads.find((item) => item.suggestedFilename().endsWith('.pdf'));
+    const bytes = await readFile(await pdf.path());
+    const body = bytes.toString('latin1');
+    expect(body).toMatch(/\/Count [6-8]/);
+    expect(body).toMatch(/Ready for field validation|Walk cells/);
+    expect(body).toMatch(/Cost and robustness interpretation/);
+    expect(hits).toBe(1);
+    expect(urls.filter((item) => item.url.includes('openai.com'))).toEqual([]);
+    await assertNoHorizontalOverflow(page);
+    guards.assertClean();
+  });
+
   test('generate, loading, success, regenerate and safeguards summary', async ({ page }) => {
     const guards = attachErrorGuards(page);
     const urls = collectAiRequests(page);

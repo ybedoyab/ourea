@@ -187,7 +187,7 @@ export function guidedPayload(overrides = {}) {
     selection_benchmark: { strategies: [{ id: 'ourea_robust', p10: 8.2 }] },
     portfolio_breakage: { scenarioCombinationsBelowThreshold: [], breaches: [] },
     reproducible_id: 'ourea-test',
-    scope: { city: 'Medellín' },
+    scope: { city: 'Medellín', city_screen_lens: 'balanced' },
     ...overrides,
   };
 }

@@ -97,6 +97,25 @@ function continuePage(pdf, brief, y, needed = 28) {
   return 76;
 }
 
+const ZEBRA = [242, 237, 226];
+
+function tableHeader(pdf, x, y, width, columns) {
+  pdf.fillRect(x, y, width, 18, CARD);
+  columns.forEach((col) => {
+    pdf.text(col.label, x + col.dx, y + 4, { size: 9, bold: true, color: GOLD, maxWidth: col.width ?? 80 });
+  });
+  return y + 18;
+}
+
+function tableBand(pdf, x, y, width, height, stripe) {
+  pdf.fillRect(x, y, width, height, stripe ? ZEBRA : WHITE);
+}
+
+function usdTriple(value) {
+  if (!value) return ['—', '—', '—'];
+  return [formatUsd(value.low), formatUsd(value.base), formatUsd(value.high)];
+}
+
 function briefPlan(brief) {
   return (brief.projects ?? []).map((item) => ({ cell_id: item.cell_id, type: item.type }));
 }
@@ -277,11 +296,30 @@ function pageExecutive(pdf, brief) {
     color: MUTED,
     maxWidth: 515,
   });
-  y += 18;
+  y += 16;
+  pdf.text('Why this proving ground', 40, y, { size: 9, bold: true, color: GOLD });
+  y += 12;
+  y += pdf.text(brief.contextWhy, 40, y, { size: 10, color: INK, maxWidth: 515 });
+  y += 8;
+  y = tableHeader(pdf, 40, y, 515, [
+    { label: 'Setting', dx: 8, width: 120 },
+    { label: 'Configured value', dx: 140, width: 360 },
+  ]);
+  (brief.context ?? []).forEach((row, index) => {
+    const height = Math.max(22, pdf.measure(row.value, { size: 9, maxWidth: 360 }) + 8);
+    y = continuePage(pdf, brief, y, height);
+    tableBand(pdf, 40, y, 515, height, index % 2 === 1);
+    pdf.text(row.label, 48, y + 6, { size: 9, bold: true, color: GOLD, maxWidth: 120 });
+    pdf.text(row.value, 180, y + 6, { size: 9, color: INK, maxWidth: 360 });
+    y += height;
+  });
+  y += 12;
+  y = continuePage(pdf, brief, y, 36);
   pdf.text('Decision requested', 40, y, { size: 9, bold: true, color: GOLD });
   y += 12;
   y += pdf.text(brief.decisionRequested, 40, y, { size: 11, color: INK, maxWidth: 515 });
   y += 10;
+  y = continuePage(pdf, brief, y, 280);
   pdf.fillRect(40, y, 515, 44, CARD);
   pdf.text('Selected portfolio', 52, y + 8, { size: 9, bold: true, color: GOLD });
   pdf.text(brief.recommendation, 52, y + 22, { size: 11, bold: true, color: INK, maxWidth: 490 });
@@ -316,19 +354,20 @@ function pageExecutive(pdf, brief) {
   );
   y += 124;
 
-  ['Low', 'Base', 'High'].forEach((label, index) => {
-    const key = label.toLowerCase();
-    const x = 40 + index * 172;
-    pdf.fillRect(x, y, 164, 44, CARD);
-    pdf.text(label, x + 10, y + 8, { size: 9, bold: true, color: GOLD });
-    pdf.text(total ? formatUsd(total[key]) : '—', x + 154, y + 22, {
+  y = tableHeader(pdf, 40, y, 515, [
+    { label: 'Low', dx: 12, width: 150 },
+    { label: 'Base', dx: 180, width: 150 },
+    { label: 'High', dx: 348, width: 150 },
+  ]);
+  tableBand(pdf, 40, y, 515, 28, false);
+  ['low', 'base', 'high'].forEach((key, index) => {
+    pdf.text(total ? formatUsd(total[key]) : '—', 52 + index * 168, y + 8, {
       size: 12,
       bold: true,
       color: INK,
-      align: 'right',
     });
   });
-  y += 56;
+  y += 40;
   pdf.text('Main cost driver', 40, y, { size: 9, bold: true, color: GOLD });
   y += 12;
   y += pdf.text(brief.costing?.costDriver ?? 'Quantity assumptions still bound the envelope.', 40, y, {
@@ -336,15 +375,13 @@ function pageExecutive(pdf, brief) {
     color: INK,
     maxWidth: 515,
   });
-  y += 10;
+  y += 8;
   y += pdf.text(
     `Funding stage: ${brief.fundingStage}. FX ${brief.costing?.fx?.cop_per_usd ?? '—'} COP/USD on ${brief.costing?.fx?.date ?? brief.costing?.priceDate ?? '—'} ${cite(brief, brief.costing?.fx?.id)}. Amounts in US$. This envelope is pre-feasibility, not a contract.`,
     40,
     y,
     { size: 9, color: MUTED, maxWidth: 515 },
   );
-  y += 8;
-  y += pdf.text(brief.decision, 40, y, { size: 10, color: INK, maxWidth: 515 });
 }
 
 function pageWhere(pdf, brief) {
@@ -373,26 +410,29 @@ function pageWhere(pdf, brief) {
     drawFallbackMap(pdf, brief, 40, y, 515, Math.min(148, mapHeight));
     y += Math.min(148, mapHeight) + 8;
   }
-  pdf.text('Each square is an 80 m planning cell. Map, Earth and Ourea open the same cell. Full URLs are clickable annotations, not body text.', 40, y, {
+  y += pdf.text('Each square is an 80 m planning cell. Ourea, Maps and Earth open the same cell.', 40, y, {
     size: 9,
     color: MUTED,
     maxWidth: 515,
   });
   y += 16;
-  const cols = [44, 82, 188, 318, 418];
-  pdf.fillRect(40, y, 515, 18, CARD);
-  ['Cell', 'Intervention', 'Planning quantity', 'Confidence', 'Links'].forEach((label, index) => {
-    pdf.text(label, cols[index], y + 4, { size: 9, bold: true, color: GOLD });
-  });
-  y += 20;
-  (brief.projects ?? []).forEach((project) => {
-    y = continuePage(pdf, brief, y, 36);
-    const rowH = 28;
-    pdf.fillRect(40, y, 515, rowH, WHITE);
+  const cols = [48, 88, 198, 328, 428];
+  y = tableHeader(pdf, 40, y, 515, [
+    { label: 'Cell', dx: 8, width: 36 },
+    { label: 'Intervention', dx: 48, width: 100 },
+    { label: 'Planning quantity', dx: 158, width: 120 },
+    { label: 'Confidence', dx: 288, width: 90 },
+    { label: 'Links', dx: 388, width: 110 },
+  ]);
+  (brief.projects ?? []).forEach((project, index) => {
+    const qtyHeight = pdf.measure(project.quantityLabel, { size: 9, maxWidth: 118 });
+    const rowH = Math.max(28, qtyHeight + 10);
+    y = continuePage(pdf, brief, y, rowH + 4);
+    tableBand(pdf, 40, y, 515, rowH, index % 2 === 1);
     pdf.fillRect(40, y, 4, rowH, TYPE_COLORS[project.type] ?? GOLD);
     pdf.text(String(project.cell_id), cols[0], y + 8, { size: 9, bold: true, color: INK });
     pdf.text(project.label, cols[1], y + 8, { size: 9, color: INK, maxWidth: 100 });
-    pdf.text(project.quantityLabel, cols[2], y + 4, { size: 9, color: INK, maxWidth: 124 });
+    pdf.text(project.quantityLabel, cols[2], y + 6, { size: 9, color: INK, maxWidth: 118 });
     pdf.text(String(project.confidence ?? brief.confidence), cols[3], y + 8, { size: 9, color: MUTED, maxWidth: 92 });
     const link = projectLink(brief, project.cell_id);
     const items = [
@@ -400,12 +440,12 @@ function pageWhere(pdf, brief) {
       project.mapsUrl ? ['Maps', project.mapsUrl] : null,
       project.earthUrl ? ['Earth', project.earthUrl] : null,
     ].filter(Boolean);
-    items.forEach((item, index) => {
-      const x = cols[4] + index * 44;
+    items.forEach((item, linkIndex) => {
+      const x = cols[4] + linkIndex * 44;
       pdf.text(item[0], x, y + 8, { size: 9, bold: true, color: GOLD });
       pdf.addLink(x - 2, y + 6, 42, 14, item[1]);
     });
-    y += rowH + 4;
+    y += rowH;
   });
 }
 
@@ -444,20 +484,26 @@ function pageFinancial(pdf, brief) {
   });
   y += 64;
   pdf.text('Prefeasibility matrix  |  deterministic gates, not an AI score', 40, y, { size: 11, bold: true, color: INK });
-  y += 16;
-  const cols = [40, 130, 230, 400];
-  ['Dimension', 'Status', 'Evidence', 'Next gate'].forEach((label, index) => {
-    pdf.text(label, cols[index], y, { size: 9, bold: true, color: GOLD });
-  });
   y += 14;
-  (brief.feasibility ?? []).forEach((row) => {
-    pdf.text(row.dimension, cols[0], y, { size: 9, bold: true, color: INK, maxWidth: 86 });
-    pdf.text(row.status, cols[1], y, { size: 9, color: INK, maxWidth: 96 });
-    const ev = pdf.text(row.evidence, cols[2], y, { size: 9, color: INK, maxWidth: 160 });
-    const nx = pdf.text(row.nextGate, cols[3], y, { size: 9, color: INK, maxWidth: 150 });
-    y += Math.max(ev, nx, 16) + 4;
+  y = tableHeader(pdf, 40, y, 515, [
+    { label: 'Dimension', dx: 8, width: 86 },
+    { label: 'Status', dx: 96, width: 96 },
+    { label: 'Evidence', dx: 200, width: 150 },
+    { label: 'Next gate', dx: 360, width: 145 },
+  ]);
+  (brief.feasibility ?? []).forEach((row, index) => {
+    const ev = pdf.measure(row.evidence, { size: 9, maxWidth: 150 });
+    const nx = pdf.measure(row.nextGate, { size: 9, maxWidth: 145 });
+    const rowH = Math.max(22, ev, nx) + 6;
+    y = continuePage(pdf, brief, y, rowH);
+    tableBand(pdf, 40, y, 515, rowH, index % 2 === 1);
+    pdf.text(row.dimension, 48, y + 5, { size: 9, bold: true, color: INK, maxWidth: 86 });
+    pdf.text(row.status, 136, y + 5, { size: 9, color: INK, maxWidth: 96 });
+    pdf.text(row.evidence, 240, y + 5, { size: 9, color: INK, maxWidth: 150 });
+    pdf.text(row.nextGate, 400, y + 5, { size: 9, color: INK, maxWidth: 145 });
+    y += rowH;
   });
-  y += 6;
+  y += 10;
   pdf.text('What must be true for this project to advance', 40, y, { size: 10, bold: true, color: GOLD });
   y += 14;
   (brief.mustBeTrue ?? []).forEach((item) => {
@@ -466,14 +512,22 @@ function pageFinancial(pdf, brief) {
   });
   y += 6;
   pdf.text('Risk register', 40, y, { size: 10, bold: true, color: GOLD });
-  y += 14;
-  (brief.risks ?? []).forEach((item) => {
-    y += pdf.text(`- ${item.risk}: ${item.status}. Owner: ${item.owner}. Next: ${item.next}`, 40, y, {
-      size: 9,
-      color: INK,
-      maxWidth: 515,
-    });
-    y += 2;
+  y += 10;
+  y = tableHeader(pdf, 40, y, 515, [
+    { label: 'Risk', dx: 8, width: 90 },
+    { label: 'Status', dx: 100, width: 90 },
+    { label: 'Owner', dx: 200, width: 110 },
+    { label: 'Next', dx: 320, width: 180 },
+  ]);
+  (brief.risks ?? []).forEach((item, index) => {
+    const rowH = Math.max(22, pdf.measure(item.next, { size: 9, maxWidth: 180 }) + 8);
+    y = continuePage(pdf, brief, y, rowH);
+    tableBand(pdf, 40, y, 515, rowH, index % 2 === 1);
+    pdf.text(item.risk, 48, y + 5, { size: 9, bold: true, color: INK, maxWidth: 90 });
+    pdf.text(item.status, 140, y + 5, { size: 9, color: INK, maxWidth: 90 });
+    pdf.text(item.owner, 240, y + 5, { size: 9, color: INK, maxWidth: 110 });
+    pdf.text(item.next, 360, y + 5, { size: 9, color: INK, maxWidth: 180 });
+    y += rowH;
   });
 }
 
@@ -487,69 +541,88 @@ function pageBuildUp(pdf, brief) {
     color: MUTED,
     maxWidth: 515,
   });
-  y += 16;
-  (brief.costing?.lines ?? []).forEach((line) => {
-    const marks = citesFor(brief, line.sourceIds);
-    pdf.text(`${line.label} ${marks}`, 40, y, { size: 11, bold: true, color: INK, maxWidth: 515 });
-    y += 14;
-    y += pdf.text(line.formula, 40, y, { size: 10, color: INK, maxWidth: 515 });
-    y += 2;
-    pdf.text(formatUsd(line.display.low), 40, y, { size: 10, bold: true, color: INK });
-    pdf.text(formatUsd(line.display.base), 200, y, { size: 10, bold: true, color: INK });
-    pdf.text(formatUsd(line.display.high), 360, y, { size: 10, bold: true, color: INK });
-    y += 14;
-    y += pdf.text(
-      `Quantity ${line.quantityLabel}. Confidence ${line.confidence ?? line.evidenceTier}. Price date ${line.priceDate ?? brief.costing?.priceDate ?? '—'}.`,
-      40,
-      y,
-      { size: 9, color: MUTED, maxWidth: 515 },
-    );
-    y += 4;
-    if (line.type === 'drainage' && brief.drainageConsolidationWarning) {
-      y = continuePage(pdf, brief, y, 36);
-      y += pdf.text(brief.drainageConsolidationWarning, 40, y, { size: 9, color: INK, maxWidth: 515 });
-      y += 6;
-    }
-    if (line.includes?.length) {
-      y += pdf.text(`Includes: ${line.includes.join('; ')}.`, 40, y, { size: 9, color: INK, maxWidth: 515 });
-      y += 2;
-    }
-    if (line.excludes?.length) {
-      y += pdf.text(`Excludes: ${line.excludes.join('; ')}.`, 40, y, { size: 9, color: INK, maxWidth: 515 });
-      y += 6;
-    }
-  });
+  y += 14;
   const display = brief.costing?.display;
-  [
-    ['Construction subtotal', display?.construction],
+  const amountRows = [
+    ...(brief.costing?.lines ?? []).map((line) => [
+      `${line.label} ${citesFor(brief, line.sourceIds)}`.trim(),
+      line.display,
+      false,
+    ]),
+    ['Construction subtotal', display?.construction, false],
     display?.equipment && (display.equipment.base || display.equipment.high)
-      ? ['Known equipment', display.equipment]
+      ? ['Known equipment', display.equipment, false]
       : null,
-    ['Future implementation envelope', display?.total],
-  ].filter(Boolean).forEach(([label, value]) => {
-    const bold = label.startsWith('Future');
-    pdf.text(label, 40, y, { size: 10, bold, color: INK, maxWidth: 250 });
-    pdf.text(value ? `${formatUsd(value.low)} / ${formatUsd(value.base)} / ${formatUsd(value.high)}` : '—', 555, y, {
-      size: 10,
-      bold,
-      color: INK,
-      align: 'right',
+    ['Future implementation envelope', display?.total, true],
+  ].filter(Boolean);
+  y = tableHeader(pdf, 40, y, 515, [
+    { label: 'Item', dx: 8, width: 180 },
+    { label: 'Low', dx: 200, width: 100 },
+    { label: 'Base', dx: 310, width: 100 },
+    { label: 'High', dx: 420, width: 90 },
+  ]);
+  amountRows.forEach(([label, value, emphasize], index) => {
+    y = continuePage(pdf, brief, y, 22);
+    tableBand(pdf, 40, y, 515, 22, index % 2 === 1);
+    pdf.text(label, 48, y + 5, { size: 9, bold: emphasize, color: INK, maxWidth: 180 });
+    usdTriple(value).forEach((amount, col) => {
+      pdf.text(amount, 240 + col * 110, y + 5, { size: 9, bold: emphasize, color: INK });
     });
-    y += 16;
+    y += 22;
+  });
+  y += 8;
+  (brief.costing?.lines ?? []).forEach((line) => {
+    const meta = `Quantity ${line.quantityLabel}. Confidence ${line.confidence ?? line.evidenceTier}. Price date ${line.priceDate ?? brief.costing?.priceDate ?? '—'}.`;
+    const included = line.includes?.length ? line.includes.join('; ') : '—';
+    const excluded = line.excludes?.length ? line.excludes.join('; ') : '—';
+    const noteH = Math.max(
+      pdf.measure(line.formula, { size: 9, maxWidth: 490 }),
+      pdf.measure(meta, { size: 9, maxWidth: 490 }),
+    );
+    const splitH = Math.max(
+      14,
+      pdf.measure(included, { size: 9, maxWidth: 238 }),
+      pdf.measure(excluded, { size: 9, maxWidth: 238 }),
+    );
+    const warning = line.type === 'drainage' && brief.drainageConsolidationWarning
+      ? pdf.measure(brief.drainageConsolidationWarning, { size: 9, maxWidth: 490 }) + 6
+      : 0;
+    const block = 16 + noteH + 16 + splitH + 10 + warning;
+    y = continuePage(pdf, brief, y, Math.min(block, 90));
+    pdf.text(line.label, 40, y, { size: 10, bold: true, color: INK, maxWidth: 515 });
+    y += 12;
+    y += pdf.text(line.formula, 40, y, { size: 9, color: INK, maxWidth: 515 });
+    y += 2;
+    y += pdf.text(meta, 40, y, { size: 9, color: MUTED, maxWidth: 515 });
+    y += 4;
+    if (warning) {
+      y += pdf.text(brief.drainageConsolidationWarning, 40, y, { size: 9, color: INK, maxWidth: 515 });
+      y += 4;
+    }
+    tableBand(pdf, 40, y, 515, splitH + 16, false);
+    pdf.text('Includes', 48, y + 4, { size: 9, bold: true, color: GOLD });
+    pdf.text('Excludes', 308, y + 4, { size: 9, bold: true, color: GOLD });
+    pdf.text(included, 48, y + 14, { size: 9, color: INK, maxWidth: 238 });
+    pdf.text(excluded, 308, y + 14, { size: 9, color: INK, maxWidth: 238 });
+    y += splitH + 22;
   });
   y += 4;
   pdf.text('Immediate preparation items', 40, y, { size: 11, bold: true, color: INK });
-  y += 14;
-  (brief.immediateAsk?.rows ?? []).forEach((row) => {
-    y = continuePage(pdf, brief, y, 28);
-    pdf.text(`${row.label}  (${row.stage === 'before_fieldwork' ? 'before fieldwork' : 'after survey'})`, 40, y, {
-      size: 9,
-      color: INK,
-      maxWidth: 515,
-    });
-    y += 12;
-    y += pdf.text(row.display, 40, y, { size: 9, color: MUTED, maxWidth: 515 });
-    y += 4;
+  y += 12;
+  y = tableHeader(pdf, 40, y, 515, [
+    { label: 'Item', dx: 8, width: 140 },
+    { label: 'When', dx: 160, width: 90 },
+    { label: 'Status', dx: 260, width: 240 },
+  ]);
+  (brief.immediateAsk?.rows ?? []).forEach((row, index) => {
+    const when = row.stage === 'before_fieldwork' ? 'Before fieldwork' : 'After survey';
+    const height = Math.max(24, pdf.measure(row.display, { size: 9, maxWidth: 240 }) + 8);
+    y = continuePage(pdf, brief, y, height);
+    tableBand(pdf, 40, y, 515, height, index % 2 === 1);
+    pdf.text(row.label, 48, y + 5, { size: 9, bold: true, color: INK, maxWidth: 140 });
+    pdf.text(when, 200, y + 5, { size: 9, color: INK, maxWidth: 90 });
+    pdf.text(row.display, 300, y + 5, { size: 9, color: MUTED, maxWidth: 240 });
+    y += height;
   });
   y += 6;
   y += pdf.text(`Excluded from the envelope: ${(brief.costing?.excluded ?? []).join('; ')}.`, 40, y, {
@@ -642,27 +715,26 @@ function pageRobustness(pdf, brief) {
     if (cost || robust) {
       y += 6;
       pdf.text('Cost and robustness interpretation', 52, y, { size: 10, bold: true, color: GOLD });
-      y += 14;
-      if (cost?.main_driver) {
-        y += pdf.text(`Main cost driver: ${cost.main_driver}`, 52, y, { size: 9, color: INK, maxWidth: 490 });
-        y += 2;
-      }
-      if (cost?.uncertainty) {
-        y += pdf.text(`Cost uncertainty: ${cost.uncertainty}`, 52, y, { size: 9, color: INK, maxWidth: 490 });
-        y += 2;
-      }
-      if (cost?.survey_requirement) {
-        y += pdf.text(`Survey requirement: ${cost.survey_requirement}`, 52, y, { size: 9, color: INK, maxWidth: 490 });
-        y += 2;
-      }
-      if (robust?.strength) {
-        y += pdf.text(`Robustness strength: ${robust.strength}`, 52, y, { size: 9, color: INK, maxWidth: 490 });
-        y += 2;
-      }
-      if (robust?.caveat) {
-        y += pdf.text(`Robustness caveat: ${robust.caveat}`, 52, y, { size: 9, color: INK, maxWidth: 490 });
-        y += 2;
-      }
+      y += 12;
+      const rows = [
+        cost?.main_driver && ['Main cost driver', cost.main_driver],
+        cost?.uncertainty && ['Cost uncertainty', cost.uncertainty],
+        cost?.survey_requirement && ['Survey requirement', cost.survey_requirement],
+        robust?.strength && ['Robustness strength', robust.strength],
+        robust?.caveat && ['Robustness caveat', robust.caveat],
+      ].filter(Boolean);
+      y = tableHeader(pdf, 52, y, 490, [
+        { label: 'Topic', dx: 8, width: 120 },
+        { label: 'Interpretation', dx: 140, width: 330 },
+      ]);
+      rows.forEach((item, index) => {
+        const height = Math.max(22, pdf.measure(item[1], { size: 9, maxWidth: 330 }) + 8);
+        y = continuePage(pdf, brief, y, height);
+        tableBand(pdf, 52, y, 490, height, index % 2 === 1);
+        pdf.text(item[0], 60, y + 5, { size: 9, bold: true, color: GOLD, maxWidth: 120 });
+        pdf.text(item[1], 192, y + 5, { size: 9, color: INK, maxWidth: 330 });
+        y += height;
+      });
     }
     const cannot = (brief.aiReview.synthesis.cannot_conclude ?? []).slice(0, 3);
     if (cannot.length) {
@@ -691,23 +763,32 @@ function pageRobustness(pdf, brief) {
 function pagePathway(pdf, brief) {
   startPage(pdf, brief);
   let y = 76;
-  pdf.text('7. Implementation pathway and sources', 40, y, { size: 16, bold: true, color: INK });
+  pdf.text('7. Implementation pathway', 40, y, { size: 16, bold: true, color: INK });
   y += 16;
-  pdf.text('This is decision preparation, not a promise that a hydraulic corridor is built in six months.', 40, y, {
+  y += pdf.text('This is decision preparation, not a promise that a hydraulic corridor is built in six months.', 40, y, {
     size: 9,
     color: MUTED,
     maxWidth: 515,
   });
-  y += 14;
-  (brief.pathway ?? []).slice(0, 6).forEach((step, index) => {
-    pdf.fillRect(40, y, 18, 18, GOLD);
-    pdf.text(String(index + 1), 45, y + 3, { size: 9, bold: true, color: DARK });
-    pdf.text(step.title, 66, y + 2, { size: 10, bold: true, color: INK, maxWidth: 470 });
-    y += 18;
-    y += pdf.text(step.body, 66, y, { size: 9, color: INK, maxWidth: 470 });
-    y += 6;
+  y += 10;
+  const steps = (brief.pathway ?? []).slice(0, 6);
+  const lineX = 52;
+  steps.forEach((step, index) => {
+    const bodyHeight = pdf.measure(step.body, { size: 9, maxWidth: 455 });
+    const block = 30 + bodyHeight;
+    y = continuePage(pdf, brief, y, block);
+    if (index < steps.length - 1) {
+      pdf.strokePath([[lineX, y + 16], [lineX, y + block - 4]], { color: GOLD, lineWidth: 1.4 });
+    }
+    pdf.fillRect(lineX - 8, y, 16, 16, GOLD);
+    pdf.text(String(index + 1), lineX - 3, y + 3, { size: 9, bold: true, color: DARK });
+    const when = step.when ? `${step.when}  ·  ` : '';
+    pdf.text(`${when}${step.title}`, 72, y + 2, { size: 10, bold: true, color: INK, maxWidth: 455 });
+    y += 16;
+    y += pdf.text(step.body, 72, y, { size: 9, color: INK, maxWidth: 455 });
+    y += 10;
   });
-  y += 4;
+  y = continuePage(pdf, brief, y, 48);
   pdf.text('Sources', 40, y, { size: 12, bold: true, color: INK });
   y += 14;
   (brief.citations ?? []).forEach((source) => {

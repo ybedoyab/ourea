@@ -127,8 +127,16 @@ test('guided decision brief PDF is a 7-page document with metadata and USD', asy
   assert.match(body, /\/Keywords/);
   assert.match(body, /\/CreationDate \(D:20260828150000Z\)/);
   assert.match(body, /\/Lang \(en-US\)/);
-  assert.match(body, /Executive decision/);
-  assert.match(body, /Where and what/);
+  assert.match(body, /Why this proving ground/);
+  assert.match(body, /Setting/);
+  assert.match(body, /City screening lens/);
+  assert.match(body, /Rainfall context/);
+  assert.match(body, /Policy priority/);
+  assert.match(body, /Weeks 1/);
+  assert.match(body, /Includes/);
+  assert.match(body, /Excludes/);
+  assert.doesNotMatch(body, /Full URLs are clickable/);
+  assert.doesNotMatch(body, /clickable annotations/);
   assert.match(body, /Cost build-up/);
   assert.match(body, /Implementation pathway/);
   assert.match(body, /Why early action matters/);
