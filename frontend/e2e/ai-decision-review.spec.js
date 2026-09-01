@@ -80,10 +80,9 @@ test.describe('AI decision review', () => {
     guards.assertClean();
   });
 
-  test('Download PDF prepares AI review automatically with loading', async ({ page }) => {
+  test('Download PDF stays deterministic when no review was generated', async ({ page }) => {
     const guards = attachErrorGuards(page);
     const urls = collectAiRequests(page);
-    const gate = pendingGate();
     let hits = 0;
     await mockReview(page, async (route) => {
       if (route.request().method() === 'OPTIONS') {
@@ -91,26 +90,60 @@ test.describe('AI decision review', () => {
         return;
       }
       hits += 1;
-      await gate.wait;
       await route.fulfill(mockEnvelope());
     });
     await openReview(page);
+    await expect(page.getByTestId('generate-decision-review')).toBeVisible();
     await page.getByTestId('review-safeguards').click();
-    await expect(page.getByTestId('export-package')).toBeVisible();
+    await expect(page.getByTestId('export-package')).toBeEnabled();
     const downloads = [];
     page.on('download', (download) => downloads.push(download));
     await page.getByTestId('export-package').click();
-    await expect(page.getByTestId('pdf-export-loading')).toBeVisible();
-    expect(hits).toBe(1);
-    expect(urls.filter((item) => item.url.includes('openai.com'))).toEqual([]);
-    gate.release();
     await expect.poll(() => downloads.length).toBeGreaterThanOrEqual(1);
+    expect(hits).toBe(0);
+    expect(urls.filter((item) => item.url.includes('openai.com'))).toEqual([]);
     const pdf = downloads.find((item) => item.suggestedFilename().endsWith('.pdf'));
     const bytes = await readFile(await pdf.path());
     const body = bytes.toString('latin1');
+    expect(bytes.subarray(0, 4).toString()).toBe('%PDF');
     expect(body).toMatch(/\/Count [6-8]/);
-    expect(body).toMatch(/Ready for field validation|Walk cells/);
+    expect(body).toMatch(/Executive decision|Implementation pathway|Why this proving ground/);
+    expect(body).not.toMatch(/AI-assisted decision synthesis/);
+    expect(body).not.toMatch(/Cost and robustness interpretation/);
+    await assertNoHorizontalOverflow(page);
+    guards.assertClean();
+  });
+
+  test('cached AI synthesis is included in the PDF without a second request', async ({ page }) => {
+    const guards = attachErrorGuards(page);
+    const urls = collectAiRequests(page);
+    let hits = 0;
+    await mockReview(page, async (route) => {
+      if (route.request().method() === 'OPTIONS') {
+        await route.fulfill({ status: 204 });
+        return;
+      }
+      hits += 1;
+      await route.fulfill(mockEnvelope());
+    });
+    await openReview(page);
+    await page.getByTestId('generate-decision-review').click();
+    await expect(page.getByTestId('ai-review-badge')).toBeVisible();
+    expect(hits).toBe(1);
+    await page.getByTestId('review-safeguards').click();
+    const downloads = [];
+    page.on('download', (download) => downloads.push(download));
+    await page.getByTestId('export-package').click();
+    await expect.poll(() => downloads.length).toBeGreaterThanOrEqual(1);
+    expect(hits).toBe(1);
+    const pdf = downloads.find((item) => item.suggestedFilename().endsWith('.pdf'));
+    const body = (await readFile(await pdf.path())).toString('latin1');
+    expect(body).toMatch(/\/Count [6-8]/);
+    expect(body).toMatch(/AI-assisted decision synthesis/);
     expect(body).toMatch(/Cost and robustness interpretation/);
+    expect(body).toMatch(/Ready for field validation|Walk cells/);
+    await page.getByTestId('export-package').click();
+    await expect.poll(() => downloads.length).toBeGreaterThanOrEqual(2);
     expect(hits).toBe(1);
     expect(urls.filter((item) => item.url.includes('openai.com'))).toEqual([]);
     await assertNoHorizontalOverflow(page);
@@ -174,11 +207,13 @@ test.describe('AI decision review', () => {
   test('timeout, 429 and 500 leave the deterministic flow usable', async ({ page }) => {
     const guards = attachErrorGuards(page);
     const queue = [408, 429, 500];
+    let hits = 0;
     await mockReview(page, async (route) => {
       if (route.request().method() === 'OPTIONS') {
         await route.fulfill({ status: 204 });
         return;
       }
+      hits += 1;
       const status = queue.shift() ?? 500;
       await route.fulfill({ status, contentType: 'application/json', body: '{"error":{"code":"x"}}' });
     });
@@ -191,8 +226,18 @@ test.describe('AI decision review', () => {
     await page.waitForTimeout(8500);
     await page.getByTestId('generate-decision-review').click();
     await expect(page.getByTestId('ai-review-error')).toBeVisible();
+    expect(hits).toBe(3);
     await page.getByTestId('review-safeguards').click();
     await expect(page.getByTestId('export-package')).toBeEnabled();
+    const downloads = [];
+    page.on('download', (download) => downloads.push(download));
+    await page.getByTestId('export-package').click();
+    await expect.poll(() => downloads.length).toBeGreaterThanOrEqual(1);
+    expect(hits).toBe(3);
+    const pdf = downloads.find((item) => item.suggestedFilename().endsWith('.pdf'));
+    const body = (await readFile(await pdf.path())).toString('latin1');
+    expect(body).toMatch(/\/Count [6-8]/);
+    expect(body).not.toMatch(/AI-assisted decision synthesis/);
     await assertNoHorizontalOverflow(page);
     guards.assertClean();
   });
@@ -205,6 +250,9 @@ for (const [name, viewport] of Object.entries({ tablet: VIEWPORTS.tablet, mobile
       const guards = attachErrorGuards(page);
       await openReview(page);
       await expect(page.getByTestId('ai-decision-review')).toBeVisible();
+      await assertNoHorizontalOverflow(page);
+      await page.getByTestId('review-safeguards').click();
+      await expect(page.getByTestId('export-package')).toBeEnabled();
       await assertNoHorizontalOverflow(page);
       guards.assertClean();
     });

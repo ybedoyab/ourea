@@ -1,4 +1,3 @@
-import { AI_REVIEW_COPY } from '../../config/aiReview.js';
 import { EVIDENCE_GROUPS } from '../../config/uiCopy.js';
 import { COMMUNITY_COPY } from '../../config/communityEvidence.js';
 import { INTERVENTIONS } from '../../config/modelConfig.js';
@@ -48,16 +47,13 @@ export function SafeguardsStep({
           backLabel="Back to review"
           onBack={onBack}
           onContinue={onExport}
-          continueLabel={review?.status === 'loading' ? AI_REVIEW_COPY.preparingPdf : 'Download PDF'}
-          continueDisabled={!canExport || review?.status === 'loading'}
+          continueLabel="Download PDF"
+          continueDisabled={!canExport}
           continueTestId="export-package"
         />
       )}
     >
       <p className="flow-banner" data-testid="package-ready">Ready to take this decision to a meeting</p>
-      {review?.status === 'loading' && (
-        <p className="hint pdf-export-loading" role="status" data-testid="pdf-export-loading">{AI_REVIEW_COPY.preparingPdf}</p>
-      )}
       <AiDecisionReviewSummary readiness={readiness} review={review} />
       <p className="hint">
         <span className="label-with-icon"><DownloadIcon /> Downloads a formatted PDF proposal for the meeting.</span>

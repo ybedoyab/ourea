@@ -139,6 +139,8 @@ test('guided decision brief PDF is a 7-page document with metadata and USD', asy
   assert.doesNotMatch(body, /clickable annotations/);
   assert.match(body, /Cost build-up/);
   assert.match(body, /Implementation pathway/);
+  assert.doesNotMatch(body, /AI-assisted decision synthesis/);
+  assert.doesNotMatch(body, /AI review not generated/);
   assert.match(body, /Why early action matters/);
   assert.match(body, /Decision requested/);
   assert.match(body, /Immediate decision-preparation/);

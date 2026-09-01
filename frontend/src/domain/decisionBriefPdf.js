@@ -754,9 +754,6 @@ function pageRobustness(pdf, brief) {
       y,
       { size: 9, color: MUTED, maxWidth: 490 },
     );
-  } else {
-    pdf.fillRect(40, y, 515, 36, CARD);
-    pdf.text('AI review not generated', 52, y + 12, { size: 11, bold: true, color: INK });
   }
 }
 

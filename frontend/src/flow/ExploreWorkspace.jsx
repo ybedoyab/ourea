@@ -24,7 +24,6 @@ export function ExploreWorkspace({
   selectedCellId,
   onSelectCell,
   onExport,
-  review,
   onInvalidate,
 }) {
   return (
@@ -110,7 +109,6 @@ export function ExploreWorkspace({
             onAnalyzeFrontier={workspace.analyzeFrontier}
             onExport={onExport}
             canExport={Boolean(workspace.metrics)}
-            review={review}
             stability={workspace.stability}
             stabilityBusy={workspace.stabilityBusy}
             stabilityError={workspace.stabilityError}

@@ -36,7 +36,6 @@ export const AI_REVIEW_COPY = Object.freeze({
   refused: 'The model declined this review. Deterministic analysis remains available.',
   unreachable: 'The review service could not be reached. Deterministic analysis remains available.',
   cooldown: 'Wait a few seconds before generating again.',
-  preparingPdf: 'Preparing the decision review for this PDF…',
 });
 
 export const READINESS_LABELS = Object.freeze({

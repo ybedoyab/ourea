@@ -200,17 +200,12 @@ export function DecisionFlow({
 
   const review = useDecisionReview({ snapshot });
 
-  async function exportWithReview() {
-    let aiReview = null;
-    if (review.status === 'success' && review.synthesis) {
-      aiReview = { readiness, synthesis: review.synthesis, generatedAt: review.generatedAt };
-    } else if (review.apiUrl) {
-      const result = await review.generate();
-      if (result?.synthesis) {
-        aiReview = { readiness, synthesis: result.synthesis, generatedAt: result.generatedAt };
-      }
-    }
-    await onExport({ aiReview });
+  function exportWithReview() {
+    onExport({
+      aiReview: review.status === 'success' && review.synthesis
+        ? { readiness, synthesis: review.synthesis, generatedAt: review.generatedAt }
+        : null,
+    });
   }
 
   function analyzeLlanaditas() {
@@ -295,7 +290,6 @@ export function DecisionFlow({
           selectedCellId={selectedCellId}
           onSelectCell={onSelectCell}
           onExport={exportWithReview}
-          review={review}
           onInvalidate={() => dispatch({ type: 'SET_CONDITIONS' })}
         />
       ) : (
