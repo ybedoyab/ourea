@@ -1,14 +1,14 @@
 # Ourea — QA report
 
-**QA date:** 2026-08-28  
+**QA date:** 2026-09-01  
 **Artifact:** Ourea / package 1.0.0  
 **Scientific status:** complete decision product with CHIRPS-anchored rainfall contexts; intervention-effect ranges and internal planning credits remain explicit assumptions; the decision brief reports a pre-feasibility US$ envelope.
 
 ## Overall status
 
-Local revalidation on 2026-08-28: Node tests (115/115), decision-readiness API tests (9/9), data validation, source validation including production-bundle secret scan, USD cost context, decision-brief PDF inspection, Vite production build, CHIRPS climate context, checkpoint regeneration, MILP, full geospatial validation, Playwright (20, including AI review fallbacks) and manifest regeneration.
+Freeze revalidation on 2026-09-01: frontend Node tests (126/126), decision-readiness API tests (18/18), data validation, source validation of 93 JS/JSX files including production-bundle secret scan, USD cost context, 6–8-page decision-brief PDF inspection, Vite production build, CHIRPS climate context, checkpoint regeneration, MILP, full geospatial validation, Playwright (20, including AI review fallbacks; no live OpenAI in that suite) and manifest regeneration.
 
-MapLibre dominates the production JavaScript bundle (~1.24 MB minified). That warning is accepted; a fragile extra split is not worth the maintenance cost.
+The initial application JavaScript is around 441.81 kB. MapLibre remains a deferred chunk. Deck, video, registration and submission are not complete.
 
 ## PASS — Node domain/service tests
 
@@ -20,7 +20,7 @@ node --test tests/*.test.js
 ```
 
 Result:
-- **115/115 passed**;
+- **126/126 passed**;
 - 0 failed;
 - 0 skipped.
 
@@ -40,6 +40,24 @@ Coverage includes:
 - sampled non-dominated trade-offs;
 - named-policy consensus;
 - optional replay loading and required-data failures.
+
+## PASS — decision-readiness API tests
+
+```bash
+cd services/decision-readiness
+npm test
+```
+
+Result: **18/18 passed**. These tests inject a fake OpenAI client. They do not call the live API.
+
+## PASS — Playwright
+
+```bash
+cd frontend
+npx playwright test
+```
+
+Result: **20 passed** (desktop, tablet, mobile, AI review with a mocked endpoint, published-demo smoke). The suite does not post to OpenAI.
 
 ## PASS — Ourea frontend data validation
 
@@ -65,7 +83,7 @@ Llanaditas Ourea invariant:
 
 ## PASS — source / DRY / reproducibility validation
 
-- **45 JS/JSX source files** inspected;
+- **93 JS/JSX source files** inspected;
 - all local imports resolve;
 - no unseeded `Math.random` in the domain model;
 - no obsolete V1 risk-weighted fields;
@@ -77,7 +95,7 @@ Llanaditas Ourea invariant:
 
 ## PASS — JS/JSX syntax parse
 
-JS/JSX parse is covered by Node tests and the Vite production build. Current source validation inspects **45** application files.
+JS/JSX parse is covered by Node tests and the Vite production build. Current source validation inspects **93** application files.
 
 ## PASS — Python compilation
 
@@ -212,9 +230,11 @@ It checks city data, detailed GIS, evidence, browser checkpoints, policy alterna
 
 ## PASS — fresh Vite production build
 
-`npm run build` succeeded locally on 2026-08-27.
+`npm run build` succeeded on the freeze HEAD.
 
-The reporter warns that some chunks exceed 500 kB after minification. MapLibre accounts for most of that payload. Ourea documents the warning rather than adding an unmaintainable extra split.
+The initial application JavaScript is around 441.81 kB. MapLibre remains deferred and still triggers the >500 kB chunk warning. Ourea documents that warning rather than adding an unmaintainable extra split.
+
+Decision-brief fixtures inspect as 6–8 A4 pages.
 
 Final local release gate:
 

@@ -134,22 +134,13 @@ Expand at least two selected projects.
 
 ## 12. Decision export
 
-Click **Export decision package**.
+Click **Download PDF**.
 
-Open JSON and verify:
-- [ ] schema = `ourea-decision-package`;
-- [ ] city lens included;
-- [ ] selected AI policy included;
-- [ ] active portfolio included;
-- [ ] uncertainty included;
-- [ ] robust alternatives included if generated;
-- [ ] policy consensus included;
-- [ ] frontier/stability/Pareto included if analyzed;
-- [ ] climate percentile, window and source included;
-- [ ] benchmark and sensitivity included if analyzed;
-- [ ] documentary alignment included;
-- [ ] community-evidence status included;
-- [ ] schema versions and reproducible identifier included;
+Open the PDF and verify:
+- [ ] 6–8 pages;
+- [ ] US$ envelope, not planning credits;
+- [ ] cell links (Ourea / Maps / Earth);
+- [ ] an illustrative early-action mechanism animation, not a site-specific collapse forecast;
 
 ## 13. Responsive/browser smoke test
 

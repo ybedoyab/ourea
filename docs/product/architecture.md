@@ -79,7 +79,7 @@ Focused UI pieces:
 - `stability.js` — selection stability under uncertainty resampling;
 - `pareto.js` — sampled non-dominated multi-objective trade-offs;
 - `decisionPackage.js` — auditable export;
-- `decisionBrief.js` / `decisionBriefPdf.js` — six-page decision brief;
+- `decisionBrief.js` / `decisionBriefPdf.js` — 6–8-page decision brief;
 - `costEstimate.js` — pre-feasibility US$ envelope from `cost_context.json`;
 - `decisionReadiness.js` — deterministic field-validation gates;
 - `aiDecisionSnapshot.js` — minimized AI request payload;

@@ -278,8 +278,8 @@
     },
     {
       "path": "docs/competition/demo-script.md",
-      "bytes": 2204,
-      "sha256": "321fe433bba4bbafeff29ca0ca68178366600ebdf1ad3b0cdc0c9612b549c112"
+      "bytes": 2243,
+      "sha256": "1a3bb0274a541fc4bdfd3f0ed29fdbbdec07ca26d38ff054fcb81770cf69635a"
     },
     {
       "path": "docs/competition/final-submission-checklist.md",
@@ -413,8 +413,8 @@
     },
     {
       "path": "docs/product/architecture.md",
-      "bytes": 10460,
-      "sha256": "fb9e4121023edfe0b9bf6c7459ca707fb181e4889c544814b8c3c9db9f2231cf"
+      "bytes": 10462,
+      "sha256": "42541536b8bac0e85b68fadfdc0ef3fe08792d6b9f376d50d5d2fa3f40b594cb"
     },
     {
       "path": "docs/product/competitive-landscape.md",
@@ -448,8 +448,8 @@
     },
     {
       "path": "docs/validation/final-user-checklist.md",
-      "bytes": 4895,
-      "sha256": "efb317be1a9ddd140f836a145b81fcdb2d532f8a7c5e0c59dfea7d944c66d8f9"
+      "bytes": 4537,
+      "sha256": "f29bae13f3f88f221b59ac730e54fb5c7cb19dba9b994a38bbd297d8425418a8"
     },
     {
       "path": "docs/validation/optimizer-crosscheck.md",
@@ -458,8 +458,8 @@
     },
     {
       "path": "docs/validation/qa-report.md",
-      "bytes": 7948,
-      "sha256": "1c35e2bffbd5429cfb82db23357895d10d12a785128febbbd88b542b3c7bb6ff"
+      "bytes": 8482,
+      "sha256": "89ee2a7bfcff6afa38758ad277670c0ca4bb0bfabfd9c6edc7bc5ba913a6bd2e"
     },
     {
       "path": "frontend/e2e/ai-decision-review.spec.js",
